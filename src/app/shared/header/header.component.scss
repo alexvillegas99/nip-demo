@@ -1,0 +1,108 @@
+.container-navbar {
+  .navbar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: var(--header);
+    height: 3.5rem !important;
+    padding: 5px;
+    .side-nav-button {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+
+      .logo {
+        max-width: 200px;
+      }
+      i {
+        color: white;
+        font-size: 20px;
+        margin-right: 5px;
+        &:hover {
+          cursor: pointer;
+        }
+      }
+    }
+
+    .avatar-container {
+      margin-right: 1.5rem;
+      justify-content: center;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      .info {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: flex-start;
+        gap: 1rem;
+
+        .avatar {
+          border-radius: 50%;
+          border: 1px solid hsla(200, 10%, 50%, 100);
+          -webkit-border-radius: 50%;
+          -moz-border-radius: 50%;
+          -ms-border-radius: 50%;
+          -o-border-radius: 50%;
+          width: 40px;
+          height: 40px;
+        }
+        .name {
+          p {
+            text-align: left;
+            margin-bottom: 0px;
+            margin-top: 0px;
+            color: white;
+          }
+          .salir {
+            text-decoration: underline;
+            &:hover {
+              cursor: pointer;
+            }
+          }
+        }
+        .nav-link {
+          margin-top: 7px;
+        }
+      }
+    }
+  }
+}
+@media (max-width: 474px){
+    p{
+        font-size: 12px !important;
+    }
+    .avatar{
+        width: 30px !important;
+        height: 30px !important;
+    
+    }
+    .logo{
+        width: 150px !important;
+    
+    }
+
+}
+@media (max-width: 392px){
+  .container-navbar {
+ .navbar{
+  height: 5.5rem !important;
+ }}
+
+}
+/* @media (max-width: 474px) {
+  .container-navbar {
+    .navbar {
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      height: 10rem !important;
+      .side-nav-button {
+        flex-direction: column !important;
+        justify-content: flex-start !important;
+        align-items: flex-start !important;
+      }
+    }
+  }
+} */

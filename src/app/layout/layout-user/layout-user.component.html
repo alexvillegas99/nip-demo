@@ -1,0 +1,22 @@
+
+<div class="animate__animated animate__fadeIn" >
+  <app-header
+  (sideNavToggled)="sideNavStatus = $event"
+  [sideNavStatus]="sideNavStatus"
+  ></app-header>
+  <main>
+    <app-sidebar
+      [sideNavStatus]="sideNavStatus"
+      [ngClass]="{ 'nav-list-open': sideNavStatus }"
+      (sideNavStatusChange)="sideNavStatus = $event"
+      class=""
+      class="animate__animated animate__fadeIn scroll"
+    ></app-sidebar>
+    <div
+    class="display-area p-3 scroll"
+    [ngClass]="{ 'display-area-shrink': sideNavStatus }"
+    >
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>

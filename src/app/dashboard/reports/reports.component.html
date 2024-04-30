@@ -1,0 +1,26 @@
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+          <div class="title">
+            <h3>REPORTES</h3>
+            <hr>
+          </div>
+          <div class="listado">
+            <div class="card" *ngFor="let item of arrayReportes">
+                <div class="card-body">
+                    <div class="img">
+                        <img [src]="item.image" alt="">
+                    </div>
+                    <div class="info">
+                        <h4>{{item.name}}</h4>
+                        <span class="badge text-bg-primary">{{item.type | titlecase}}</span>
+                        <p>{{item.descripcion}}</p>
+                        <a  class="btn btn-success">Ver reporte</a>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </div>
+        
+    </div>
+</div>

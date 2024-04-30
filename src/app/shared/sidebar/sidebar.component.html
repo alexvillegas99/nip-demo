@@ -1,0 +1,27 @@
+<div class="side-nav-content">
+    <ul class="nav-list" >
+      <div class="nav-list-item-header card">
+        <div class="card-body">
+          <img src="assets/imgs/logos/logo.svg" alt=""  class="logo1" />
+          <label class="leyenda">Control total de tus equipos industriales</label>
+        </div>
+      </div>
+      <div class="nav-list-item card" *ngFor="let item of menu"  >
+        <div class="card-body menu"  [class.selected-menu]="item.isOpen" (click)="[toggleMenu(item),goToPage(item.route)]" >
+          <div class="info">
+            <img [src]="item.icon" alt="" class="icon" />
+            <label>{{item.name}}</label>
+          </div>
+         
+          <img src="assets/imgs/icons/arrow-down.png" alt="" class="arrow" *ngIf="item.submenus "   [class.rotate-image]="item.isOpen"  [class.original-state]="!item.isOpen"   />
+        </div>
+        <div class="card-body sub-menu-item" *ngIf="item.submenus && item.isOpen" [ngClass]="{'fade-in': item.isOpen}" >
+          <li *ngFor="let submenu of item.submenus"  [class.selected-submenu]="submenu.isSelected" (click)="selectedSubMenu(submenu)" [routerLink]="submenu.route" >
+            <img [src]="submenu.icon" alt=""  class="icon" style="width: 25px;" >
+            <label>{{submenu.name}}</label>
+          </li>
+        </div>
+      </div>
+    </ul>
+  </div>
+  

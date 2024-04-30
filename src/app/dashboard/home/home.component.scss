@@ -1,0 +1,32 @@
+.charts {
+  display: flex;
+  gap: 1rem;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.graficos {
+  width: 400px; /* Ajusta el ancho del gráfico al 100% del contenedor */
+}
+
+@media (max-width: 767px) {
+  .graficos {
+    width: 300px; /* Reducir la altura del gráfico en pantallas más pequeñas */
+  }
+}
+
+.title{
+  padding: 1rem;
+
+}
+
+
+.body-container-chart{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}

@@ -1,0 +1,75 @@
+<div class="screen animate__animated animate__fadeIn">
+  <div class="info-container">
+    <img src="assets/imgs/logos/logo.svg" class="logo no-pointer" />
+    <img src="assets/temp/temp.webp" class="welcome no-pointer" />
+    <p class="info">Mantén el control de tus equipos desde cualquier lugar.</p>
+  </div>
+  <div class="form-container">
+    <div class="card" [formGroup]="loginForm">
+      <div class="card-body">
+        <div class="header">
+          <p class="title">Bienvenido</p>
+          <p class="subtitle">NIP automation.</p>
+        </div>
+        <div class="input-group">
+          <input
+            #user
+            required=""
+            type="text"
+            name="text"
+            autocomplete="off"
+            class="input"
+            formControlName="user"
+          />
+          <label class="input-label">Usuario</label>
+          <img
+            src="assets/imgs/auth/user-secure.svg"
+            alt=""
+            class="icon-input"
+          />
+        </div>
+
+        <div class="input-group">
+          <input
+            #password
+            required=""
+            type="password"
+            name="text"
+            autocomplete="off"
+            class="input"
+            formControlName="password"
+          />
+          <label class="input-label">Contraseña</label>
+          <img
+            src="assets/imgs/auth/eye.svg"
+            alt=""
+            style="margin-top: 3px"
+            class="icon-input"
+            *ngIf="viewPasswordFormlogin"
+            (click)="ViewPassword()"
+          />
+          <img
+            src="assets/imgs/auth/eye.svg"
+            alt=""
+            style="margin-top: 3px"
+            class="icon-input"
+            *ngIf="!viewPasswordFormlogin"
+            (click)="ViewPassword()"
+          />
+        </div>
+        <div class="options">
+          <p class="option">Olvidé mi <span>contraseña</span></p>
+        </div>
+        <div class="button-container">
+          <button
+            class="btn btn-primary"
+            (click)="login()"
+            [disabled]="loginForm.invalid"
+          >
+            Continuar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

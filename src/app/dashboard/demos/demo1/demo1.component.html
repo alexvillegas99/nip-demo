@@ -1,0 +1,113 @@
+<div class="container">
+  <div
+    class="card card-compresor"
+    style="width: 100%; padding-bottom: 1rem"
+    *ngIf="compresor"
+  >
+    <div class="title">
+      <h3>{{title}}</h3>
+      <hr />
+
+      <div
+        class="alert alert-danger"
+        role="alert"
+        (click)="cambiarScreen(2)"
+        style="
+          margin: 0.5rem;
+          padding: 0.1rem;
+          display: flex;
+          flex-direction: row;
+          gap: 1rem;
+          justify-content: space-between;
+          align-items: center;
+          padding-left: 0.5rem;
+        "
+      >
+        <label>Visualizar eventos</label>
+        <img
+          src="assets/demos/warning.gif"
+          alt=""
+          style="width: 50px; height: 50px"
+        />
+      </div>
+
+      <div class="grafico">
+        <div class="grafico1">
+          <img src="assets/demos/CompresorDePistonDeDosPasos.gif" alt="" />
+        </div>
+        <div class="grafico2">
+          <div class="card">
+            <div class="card-body">
+              <div class="graficos">
+                <canvas id="myChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="outputs"
+        style="
+          padding: 1rem;
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+        "
+      >
+        <div class="names card" style="background-color: antiquewhite">
+          <div class="card-body"><h3>Outputs</h3></div>
+        </div>
+        <div class="item card">
+          <div class="card-body">
+            <label>Tiempo de actividad : {{ hrs }} hrs</label>
+          </div>
+        </div>
+        <div class="item card">
+          <div class="card-body">
+            <label>Velocidad de rotación : {{ rpm }} rpm</label>
+          </div>
+        </div>
+        <div class="item card">
+          <div class="card-body">
+            <label>Potencia : {{ kw }} kW</label>
+          </div>
+        </div>
+        <div class="item card">
+          <div class="card-body">
+            <label>Temperatura : {{ temperatura }} ºC</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card card-eventos" *ngIf="eventos">
+    <div class="card-body">
+      <h3>
+        <i
+          class="fa fa-arrow-left"
+          aria-hidden="true"
+          (click)="cambiarScreen(1)"
+        ></i>
+       {{title}}
+      </h3>
+      <hr />
+      <div class="listado">
+        <div
+          *ngFor="let item of listaDeEventosCompresor"
+          [ngClass]="item.clase"
+          role="alert"
+          style="
+            display: flex;
+            flex-direction: row;
+            gap: 1rem;
+            justify-content: space-between;
+            align-items: center;
+          "
+        >
+          <label>{{ item.mensaje }}</label>
+          <i [ngClass]="item.icon"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,117 @@
+app-header {
+    position: fixed;
+    width: 100%;
+    top: 0px;
+    height: 6rem;
+    z-index: 1001;
+  }
+  app-navbar {
+    position: fixed;
+    top: 3rem;
+    width: 100%;
+    height: 6rem;
+    z-index: 100;
+  }
+  main {
+    position: absolute;
+    width: 100%;
+    top: 4.5rem;
+    z-index: 1;
+  
+  }
+  app-sidebar {
+    position: fixed;
+    left: 0rem;
+    width: 0px;
+    height: calc(100vh - 1vh);
+    background-color: white ;
+    border-top: 1px solid white;
+    overflow-x: hidden;
+    overflow-y: auto;
+    white-space: nowrap;
+    transition: width 250ms ease-in;
+    z-index: 9999;
+  
+  }
+  .nav-list-open {
+    width: 325px;
+  }
+  .display-area {
+    position: absolute;
+    left: 0px;
+    width: calc(100%);
+    transition: left 250ms ease-in, width 250ms ease-in;
+  
+  }
+  
+  .display-area-shrink {
+    padding: 0rem;
+    left: 325px;
+    width: calc(100% - 350px); /* Cambiado a un valor calculado */
+  }
+  
+  @media (max-width: 795px) {
+    app-header {
+      height: 3.5rem;
+    }
+    main {
+      top: 3rem;
+    }
+  }
+  
+  @media (max-width: 800px) {
+    app-sidebar {
+      max-width: 250px;
+    }
+  
+    .display-area-shrink {
+      left: 0px;
+      position: relative;
+    }
+    .display-area {
+      width: 100%;
+    }
+    app-sidebar {
+      z-index: 1;
+    }
+  }
+  .block {
+    pointer-events: none;
+  }
+  @media (max-width: 795px) {
+    app-header {
+      height: 3.5rem;
+    }
+    main {
+      top: 5rem;
+    }
+  }
+
+  @media (max-width: 795px) {
+    app-header {
+      height: 3.5rem;
+    }
+    main {
+      top: 5rem;
+    }
+  }
+
+  
+  @media (max-width: 474px) {
+    app-header {
+      height: 5rem;
+    }
+    main {
+      top: 4.5rem;
+    }
+  }
+
+  @media (max-width: 392px){
+    app-header {
+      height: 6rem;
+    }
+    main {
+      top: 5rem !important;
+    }
+  
+  }

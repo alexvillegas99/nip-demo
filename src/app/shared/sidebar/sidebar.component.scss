@@ -1,0 +1,260 @@
+.side-nav-content {
+    background-color: white;
+    width: 300px;
+   
+  }
+  .card {
+    box-shadow: 0px 2px 2px 2px rgba(0, 0, 0, 0.1) !important;
+  }
+  .card-body {
+    border-top-right-radius: 10px !important;
+    border-top-left-radius: 10px !important;
+  }
+  .nav-list {
+    width: 90%;
+    padding: 5px;
+    margin-bottom: 0%;
+    margin-left: 15px;
+    overflow-y: auto;
+    max-height: calc(100vh - 10.5rem);
+  }
+  .nav-list-item-header {
+   
+    border-radius: 10px;
+    font-weight: 600;
+    color: white;
+    font-size: 14px;
+    .card-body {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      align-items: center;
+      padding: 8px;
+      label{
+        color: black;
+      }
+    }
+  }
+  
+  .nav-list-item {
+    margin-top: 1rem;
+    border-radius: 10px;
+    .menu {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      padding: 10px;
+      &:hover {
+        background-color: #f5f5f5;
+        cursor: pointer;
+      }
+      .info {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: 1rem;
+        .icon {
+          width: 25px;
+          height: 25px;
+          &:hover {
+            cursor: pointer;
+          }
+        }
+        label {
+          font-weight: 700;
+          color: #535353;
+          &:hover {
+            cursor: pointer;
+          }
+        }
+      }
+      .arrow {
+        margin-right: 25px;
+        width: 20px;
+        height: 20px;
+        &:hover {
+          cursor: pointer;
+        }
+      }
+    }
+    .sub-menu-item {
+      display: flex;
+      flex-direction: column;
+      padding: 8px;
+      overflow: hidden;
+      opacity: 0.5;
+      max-height: 0;
+      animation: fade-in 1.5s ease-in-out forwards;
+      li {
+        margin-left: 15px;
+        list-style: none;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        width: 95%;
+        font-size: 14px;
+        gap: 1rem;
+        font-weight: 700;
+        color: #535353;
+        height: 40px;
+        border-radius: 10px;
+        padding: 4px;
+        &:hover {
+          background-color: #f5f5f5;
+          cursor: pointer;
+        }
+        label {
+          &:hover {
+            cursor: pointer;
+          }
+        }
+      }
+    }
+  }
+  
+  .selected-menu {
+    background-color: #c2c2c2 !important;
+    border-radius: 10px;
+    label {
+      color: #fff !important;
+    }
+  }
+  
+  .selected-submenu {
+    background-color: #c2c2c2 !important;
+    label {
+      color: #fff !important;
+    }
+  }
+  @keyframes fade-in {
+    from {
+      opacity: 1;
+      max-height: 0;
+      margin: 0px;
+      display: none;
+    }
+    to {
+      opacity: 1;
+      max-height: 1000px;
+      display: block;
+    }
+  }
+  
+  .fade-out-animation {
+    animation: fade-out 0.6s ease-in-out forwards !important;
+  }
+  @keyframes fade-out {
+    from {
+      opacity: 1;
+      max-height: 1000px;
+    }
+    to {
+      opacity: 0;
+      max-height: 0 !important;
+      padding: 0px;
+      margin: 0px;
+      display: none;
+    }
+  }
+  
+  @keyframes rotate180 {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(180deg);
+    }
+  }
+  @keyframes rotateBack {
+    from {
+      transform: rotate(180deg);
+    }
+    to {
+      transform: rotate(0deg);
+    }
+  }
+  .rotate-image {
+    animation: rotate180 0.6s linear forwards;
+  }
+  
+  .original-state {
+    animation: rotateBack 0.6s linear;
+  }
+  
+  @media (max-width: 800px) {
+    .leyenda{
+      font-size: 11px !important;
+  }
+    .nav-list{
+      margin-left: 5px;
+    }
+    .side-nav-content {
+      width: 245px;
+    }
+    .nav-list-item-header {
+      font-size: 12px;
+      .card-body {
+        padding: 8px;
+       /*  img {
+          width: 25px;
+          height: 25px;
+        } */
+      }
+    }
+    .nav-list-item {
+     
+      .menu {
+       
+        .info {
+       
+          .icon {
+            width: 20px;
+            height: 20px;
+          }
+          label {
+            font-size: 12px;
+          }
+          .arrow {
+            width: 20px;
+            height: 20px;
+          }
+        }
+      }
+      .sub-menu-item {
+        li {
+          margin-left: 5px;
+          label {
+            font-size: 9.5px;
+          }
+          img {
+            width: 20px;
+            height: 20px;
+          }
+        }
+      }
+    }
+  }
+  @keyframes rotateBack {
+    from {
+      transform: rotate(180deg);
+    }
+    to {
+      transform: rotate(0deg);
+    }
+  }
+
+  @media (max-width: 474px){
+    .leyenda{
+        font-size: 10px !important;
+    }
+    .logo1{
+        width: 200px !important;
+    }
+  }
+
+  .logo1{
+    width: 200px;
+  }

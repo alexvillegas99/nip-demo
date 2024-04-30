@@ -1,0 +1,103 @@
+<div class="container">
+  <div class="card" *ngIf="screen1">
+    <div class="card-body">
+      <div class="title">
+        <h3>MANTENIMIENTO</h3>
+        <hr />
+      </div>
+      <div class="listado">
+        <div class="card">
+          <div class="card-body">
+            <div class="img">
+              <img src="assets/demos/CompresorDePistonDeDosPasos.gif" alt="" />
+            </div>
+            <div class="info">
+              <h4>COMPRESOR XYZ</h4>
+              <a class="btn btn-primary" (click)="cambiarPantalla(2)"
+                >Revisar</a
+              >
+            </div>
+          </div>
+        </div>
+        <!--      <div class="card" *ngFor="let item of arrayReportes">
+          <div class="card-body">
+            <div class="img">
+              <img [src]="item.image" alt="" />
+            </div>
+            <div class="info">
+              <h4>{{ item.name }}</h4>
+              <a class="btn btn-primary">Revisar</a>
+            </div>
+          </div>
+        </div> -->
+      </div>
+    </div>
+  </div>
+  <div class="card" *ngIf="screen2">
+    <div class="card-body">
+      <h3>
+        <i
+          class="fa fa-arrow-left"
+          aria-hidden="true"
+          (click)="cambiarPantalla(1)"
+        ></i>
+        COMPRESOR XYZ
+      </h3>
+      <hr />
+      <div
+        class="card"
+        *ngFor="let item of mantenimientos"
+        style="margin-bottom: 0.5rem"
+      >
+        <div class="card-body">
+          <h4 class="title-link" (click)="seleccionarMantenimiento(item)">
+            {{ item.nombre }}
+          </h4>
+          <h5>{{ item.detalle }}</h5>
+          <p style="margin-bottom: 0px">{{ item.funcion }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card" *ngIf="screen3">
+    <div class="card-body">
+      <h3>
+        <i
+          class="fa fa-arrow-left"
+          aria-hidden="true"
+          (click)="cambiarPantalla(2)"
+        ></i>
+        {{ mantenimientoSeleccionado.nombre }}
+      </h3>
+
+      <hr />
+
+        <div  style="display: grid; place-items: center;">
+          <img
+            [src]="mantenimientoSeleccionado.detallesAdicionales.imagen"
+            style="width: 100%; max-width: 25rem; min-width: 17rem;"
+          />
+        </div>
+  
+      <h3>Detalle</h3>
+      <p>{{ mantenimientoSeleccionado.detalle }}</p>
+      <h3>Función:</h3>
+      <p>{{ mantenimientoSeleccionado.funcion }}</p>
+      <h3>Descripción</h3>
+      <p>{{ mantenimientoSeleccionado.detallesAdicionales.descripcion }}</p>
+      <h3>Pasos</h3>
+      <div
+        class="card"
+        *ngFor="
+          let item of mantenimientoSeleccionado.detallesAdicionales.pasos;
+          let i = index
+        "
+        style="margin-bottom: 0.5rem"
+      >
+        <div class="card-body">
+          <p style="margin-bottom: 0px">{{ i + 1 }}: {{ item }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
