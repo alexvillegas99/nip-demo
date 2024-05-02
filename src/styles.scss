@@ -1,3 +1,6 @@
+/*Importación de bootstrap*/
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
 /* You can add global styles to this file, and also import other style files */
 :root {
   /** primary **/
@@ -27,7 +30,7 @@ body {
   margin: 0px;
 }
 .scroll::-webkit-scrollbar {
-  width: 10px; /* Oculta la barra de desplazamiento en navegadores webkit (Chrome, Safari, etc.) */
+  width: 0px !important; /* Oculta la barra de desplazamiento en navegadores webkit (Chrome, Safari, etc.) */
 }
 
 

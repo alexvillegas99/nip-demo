@@ -13,7 +13,7 @@
             </div>
             <div class="info">
               <h4>COMPRESOR XYZ</h4>
-              <a class="btn btn-primary" (click)="cambiarPantalla(2)"
+              <a class="btn btn-primary" [routerLink]="['/demos/demo1']" routerLinkActive="router-link-active" 
                 >Revisar</a
               >
             </div>
@@ -33,7 +33,7 @@
       </div>
     </div>
   </div>
-  <div class="card" *ngIf="screen2">
+<!--   <div class="card" *ngIf="screen2">
     <div class="card-body">
       <h3>
         <i
@@ -99,5 +99,5 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 </div>

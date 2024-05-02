@@ -2,9 +2,14 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { MenuSelectedService } from '../../services/menu-selected.service';
-import { SELECTED_MENU, SELECTED_SUBMENU } from '../../core/constants/local-store.constants';
+import {
+  SELECTED_MENU,
+  SELECTED_SUBMENU,
+  SELECTED_SUBSUBMENU,
+} from '../../core/constants/local-store.constants';
 import { CommonModule } from '@angular/common';
 import { ConvertDataService } from '../../core/services/convert-data.service';
+import { Menu } from '../../core/interfaces/menu.interface';
 
 @Component({
   selector: 'app-sidebar',
@@ -30,41 +35,67 @@ export class SidebarComponent {
 
   constructor(
     private readonly convertDataService: ConvertDataService,
-
     private readonly menuSelectedService: MenuSelectedService,
     private readonly router: Router
-  ) {
-    console.log(this.menu);
-  }
+  ) {}
 
-  menu = [
+  menu: Menu[] = [
     {
       id: 1,
       icon: 'assets/imgs/icons/panel.png',
-      name: 'Panel de control',
+      name: 'Portal',
       route: '/',
-      isOpen: false,
+      isSelected: false,
     },
     {
       id: 2,
-      icon: 'https://cdn-icons-png.flaticon.com/512/5511/5511365.png',
-      name: 'Demos',
+      icon: 'https://w7.pngwing.com/pngs/897/885/png-transparent-computer-icons-industry-factory-industrial-building-architectural-engineering-project-thumbnail.png',
+      name: 'Equipo Industrial',
       route: '#',
-      isOpen: false,
+      isSelected: false,
       submenus: [
         {
           icon: 'https://cdn-icons-png.flaticon.com/512/10178/10178345.png',
-          name: 'Compresor',
-          route: '/demos/demo1',
+          name: 'Compresores',
+          route: '#',
           isSelected: false,
+          submenus: [
+            {
+              icon: 'https://cdn-icons-png.flaticon.com/512/6900/6900514.png',
+              name: 'Mantenimiento',
+              route: '/mantenimiento',
+              isSelected: false,
+            },
+
+            {
+              icon: 'https://cdn-icons-png.flaticon.com/512/4363/4363708.png',
+              name: 'Logística',
+              route: '/demos/demo2',
+              isSelected: false,
+            },
+          ],
         },
         {
-          icon: 'https://images.vexels.com/media/users/3/138225/isolated/preview/ccae03070531014e6e972cb68bd512e7-icono-de-transporte-de-logistica-de-envio.png',
-          name: 'Logística',
-          route: '/demos/demo2',
+          icon: 'https://www.secoin.com.uy/sites/default/files/motor-electrico.png',
+          name: 'Variadores',
+          route: '#',
           isSelected: false,
+          submenus: [
+            {
+              icon: 'https://cdn-icons-png.flaticon.com/512/6900/6900514.png',
+              name: 'Mantenimiento',
+              route: '/mantenimiento',
+              isSelected: false,
+            },
+
+            {
+              icon: 'https://cdn-icons-png.flaticon.com/512/4363/4363708.png',
+              name: 'Logística',
+              route: '/demos/demo2',
+              isSelected: false,
+            },
+          ],
         },
-      
       ],
     },
     {
@@ -72,7 +103,7 @@ export class SidebarComponent {
       icon: 'https://cdn-icons-png.flaticon.com/512/5674/5674015.png',
       name: 'Reportes',
       route: '#',
-      isOpen: false,
+      isSelected: false,
       submenus: [
         {
           icon: 'https://cdn-icons-png.flaticon.com/512/5674/5674015.png',
@@ -82,51 +113,46 @@ export class SidebarComponent {
         },
       ],
     },
-   
     {
       id: 4,
       icon: 'https://cdn-icons-png.flaticon.com/512/2767/2767694.png',
-      name: 'Mantenimiento',
+      name: 'Configuración',
       route: '/mantenimiento',
-      isOpen: false,
+      isSelected: false,
     },
   ];
-  menuSelected: any; // Variable para almacenar el valor seleccionado
-  menuSelectedSubscription: Subscription; // Para mantener una referencia a la suscripción
 
   ngOnInit(): void {
-    this.menuSelectedSubscription =
-      this.menuSelectedService.selectedItem$.subscribe((selectedItem) => {
-        this.menuSelected = selectedItem;
-        if (this.menuSelected) {
-          this.handleSelectedItemChange(this.menuSelected);
-        }
-      });
-    this.verifySelectedMenu();
+    this.verificarMenuSeleccionado();
   }
+  verificarMenuSeleccionado() {
+    const menu1 = localStorage.getItem(SELECTED_MENU);
+    const menu2 = localStorage.getItem(SELECTED_SUBMENU);
+    const menu3 = localStorage.getItem(SELECTED_SUBSUBMENU);
 
-  async toggleMenu(item: any) {
-    if (!item.isOpen) {
-      this.closeMenu();
-      if (this.verifyExistSubMenu()) {
-        await this.delay(800);
-      } else {
-        this.menuSelectedService.setSelectedItem('sidebar');
-        localStorage.removeItem(SELECTED_MENU);
-      }
-      item.isOpen = true;
-      if (!item.submenus) this.changeStatusNav();
+    if (menu1) {
+      const menu = this.convertDataService.convertirStringAJson(menu1);
       this.menu.forEach((menuItem) => {
-        if (menuItem !== item) {
-          menuItem.isOpen = false;
+        if (menuItem.name === menu.name) {
+          menuItem.isSelected = true;
+        }
+        if (menuItem.submenus) {
+          menuItem.submenus.forEach((submenuItem) => {
+            if (submenuItem.name === menu2) {
+              submenuItem.isSelected = true;
+            }
+            if (submenuItem.submenus) {
+              submenuItem.submenus.forEach((subsubmenuItem) => {
+                if (subsubmenuItem.name === menu3) {
+                  subsubmenuItem.isSelected = true;
+                }
+              });
+            }
+          });
         }
       });
-
-      await this.delay(100);
-      localStorage.setItem(
-        SELECTED_MENU,
-        this.convertDataService.convertirJsonAString(item)
-      );
+    } else {
+      this.menu[0].isSelected = true;
     }
   }
 
@@ -148,7 +174,86 @@ export class SidebarComponent {
   delay(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
+
+  goToPage(route: string) {
+    console.log(route)
+    if (route === '#') return;
+    this.router.navigate([route]);
+  }
+  async toggleMenu(item: any) {
+    if (!item.isSelected) {
+      localStorage.setItem(SELECTED_MENU, item.name);
+      this.closeMenu();
+      if (this.verifyExistSubMenu()) {
+        await this.delay(800);
+      } else {
+        this.menuSelectedService.setSelectedItem('sidebar');
+        localStorage.removeItem(SELECTED_MENU);
+      }
+      item.isSelected = true;
+      if (!item.submenus) this.changeStatusNav();
+      this.menu.forEach((menuItem) => {
+        if (menuItem !== item) {
+          menuItem.isSelected = false;
+        }
+      });
+
+      await this.delay(100);
+      localStorage.setItem(
+        SELECTED_MENU,
+        this.convertDataService.convertirJsonAString(item)
+      );
+    } else {
+      this.closeMenu();
+      this.menu.forEach((menuItem) => {
+        if (menuItem === item) {
+          menuItem.isSelected = false;
+        }
+      });
+    }
+  }
+  changeStatusNav() {
+    if (window.innerWidth <= 800) {
+      this.sideNavStatus = !this.sideNavStatus;
+      this.sideNavStatusChange.emit(this.sideNavStatus);
+    }
+  }
+  closeMenu() {
+    try {
+      const subMenu = document.querySelector('.sub-menu-item')!;
+      subMenu.classList.add('fade-out-animation');
+      this.menu.forEach((menuItem) => {
+        if (menuItem.submenus) {
+          menuItem.submenus.forEach((submenuItem) => {
+            submenuItem.isSelected = false;
+            if (submenuItem.submenus) {
+              submenuItem.submenus.forEach((subsubmenuItem) => {
+                subsubmenuItem.isSelected = false;
+              });
+            }
+          });
+        }
+      });
+    } catch (error) {}
+  }
   async selectedSubMenu(submenu: any) {
+    localStorage.setItem(SELECTED_SUBMENU, submenu.name);
+if(submenu.route!=='#'){
+  //Retear el menu de nivel 3
+  localStorage.removeItem(SELECTED_SUBSUBMENU);
+  //Resetear del arreglo
+  this.menu.forEach((menuItem) => {
+    if (menuItem.submenus) {
+      menuItem.submenus.forEach((submenuItem) => {
+        if (submenuItem.submenus) {
+          submenuItem.submenus.forEach((subsubmenuItem) => {
+            subsubmenuItem.isSelected = false;
+          });
+        }
+      });
+    }
+  });
+}
     this.menu.forEach((menuItem) => {
       if (menuItem.submenus) {
         menuItem.submenus.forEach((submenuItem) => {
@@ -160,89 +265,23 @@ export class SidebarComponent {
         });
       }
     });
-
-    this.changeStatusNav();
-    await this.delay(100);
-    localStorage.removeItem(SELECTED_SUBMENU);
-    localStorage.setItem(
-      SELECTED_SUBMENU,
-      this.convertDataService.convertirJsonAString(submenu)
-    );
-    this.menuSelectedService.setSelectedItem('sidebar');
   }
-  changeStatusNav() {
-    if (window.innerWidth <= 800) {
-      this.sideNavStatus = !this.sideNavStatus;
-      this.sideNavStatusChange.emit(this.sideNavStatus);
-    }
-  }
-  public resetMenu() {
+  async selectedSubSubMenu(subsubmenu: any) {
+    localStorage.setItem(SELECTED_SUBSUBMENU, subsubmenu.name);
     this.menu.forEach((menuItem) => {
-      menuItem.isOpen = false;
       if (menuItem.submenus) {
         menuItem.submenus.forEach((submenuItem) => {
-          submenuItem.isSelected = false;
-        });
-      }
-    });
-  }
-
-  closeMenu() {
-    try {
-      const subMenu = document.querySelector('.sub-menu-item')!;
-      subMenu.classList.add('fade-out-animation');
-      this.menu.forEach((menuItem) => {
-        if (menuItem.submenus) {
-          menuItem.submenus.forEach((submenuItem) => {
-            submenuItem.isSelected = false;
-          });
-        }
-      });
-    } catch (error) {}
-  }
-  logOutShowMessage() {
-    this.logOutStatus = !this.logOutStatus;
-    this.logOutMessage.emit(this.logOutStatus);
-    this.logOutStatus = !this.logOutStatus;
-  }
-  goToPage(route: string) {
-    if (route === '#') return;
-    this.router.navigate([route]);
-  }
-  verifySelectedMenu() {
-    try {
-      const selectedMenu = this.convertDataService.convertirStringAJson(
-        localStorage.getItem(SELECTED_MENU) || ''
-      );
-      const selectedSubMenu = this.convertDataService.convertirStringAJson(
-        localStorage.getItem(SELECTED_SUBMENU) || ''
-      );
-
-      if (selectedMenu) {
-        this.menu.forEach((menuItem) => {
-          if (menuItem.id !== selectedMenu.id) {
-            menuItem.isOpen = false;
-          } else {
-            menuItem.isOpen = true;
-            if (menuItem.submenus) {
-              menuItem.submenus.forEach((submenuItem) => {
-                if (submenuItem.name !== selectedSubMenu.name) {
-                  submenuItem.isSelected = false;
-                } else {
-                  submenuItem.isSelected = true;
-                }
-              });
-            }
+          if (submenuItem.submenus) {
+            submenuItem.submenus.forEach((subsubmenuItem) => {
+              if (subsubmenuItem !== subsubmenu) {
+                subsubmenuItem.isSelected = false;
+              } else {
+                subsubmenuItem.isSelected = true;
+              }
+            });
           }
         });
       }
-    } catch (error) {}
-  }
-  handleSelectedItemChange(selectedItem: any) {
-    if (selectedItem === 'navbar') {
-      this.resetMenu();
-      localStorage.removeItem(SELECTED_MENU);
-      localStorage.removeItem(SELECTED_SUBMENU);
-    }
+    });
   }
 }

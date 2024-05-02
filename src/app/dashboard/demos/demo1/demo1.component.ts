@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import Chart, { ScriptableLineSegmentContext } from 'chart.js/auto';
 
 
@@ -10,8 +10,22 @@ import Chart, { ScriptableLineSegmentContext } from 'chart.js/auto';
   templateUrl: './demo1.component.html',
   styleUrl: './demo1.component.scss',
 })
-export class Demo1Component implements AfterViewInit, OnDestroy {
-  constructor() {}
+export class Demo1Component implements AfterViewInit, OnDestroy,OnInit {
+  constructor() {
+
+  }
+  ngOnInit(): void {
+    this.intervall1 = setInterval(() => {
+      this.updateChart();
+    }, 5000);
+    this.intervall2 = setInterval(() => {
+      this.hrs = Number((this.hrs + 0.01).toFixed(2));
+    }, 1000);
+    setTimeout(() => {
+      this.createChart();
+    }, 1000);
+    
+  }
   compresor = true;
   eventos = false;
   title: string = 'COMPRESOR XYZ';
@@ -91,8 +105,8 @@ export class Demo1Component implements AfterViewInit, OnDestroy {
   ];
 
   hrs: any = 1000.91;
-  rpm: any ;
-  kw: any ;
+  rpm: any = undefined ;
+  kw: any = undefined ;
   temperatura: any = 30;
   intervall1: any;
   intervall2: any;
@@ -101,13 +115,8 @@ export class Demo1Component implements AfterViewInit, OnDestroy {
     //clearInterval(this.intervall2);
   }
   ngAfterViewInit(): void {
-    this.createChart();
-    this.intervall1 = setInterval(() => {
-      this.updateChart();
-    }, 5000);
-    this.intervall2 = setInterval(() => {
-      this.hrs = Number((this.hrs + 0.01).toFixed(2));
-    }, 1000);
+    
+   
   }
   chart1: any;
   createChart() {

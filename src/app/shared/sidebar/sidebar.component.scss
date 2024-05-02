@@ -16,7 +16,7 @@
     margin-bottom: 0%;
     margin-left: 15px;
     overflow-y: auto;
-    max-height: calc(100vh - 10.5rem);
+    max-height: calc(100vh - 1rem);
   }
   .nav-list-item-header {
    
@@ -87,31 +87,35 @@
       opacity: 0.5;
       max-height: 0;
       animation: fade-in 1.5s ease-in-out forwards;
-      li {
-        margin-left: 15px;
-        list-style: none;
-        display: flex;
-        flex-direction: row;
-        justify-content: flex-start;
-        align-items: center;
-        width: 95%;
-        font-size: 14px;
-        gap: 1rem;
-        font-weight: 700;
-        color: #535353;
-        height: 40px;
-        border-radius: 10px;
-        padding: 4px;
-        &:hover {
-          background-color: #f5f5f5;
-          cursor: pointer;
-        }
-        label {
+      li{
+        .container-sub-menu{
+          margin-left: 10px;
+          list-style: none;
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+          width: 95%;
+          font-size: 14px;
+          gap: 1rem;
+          font-weight: 700;
+          color: #535353;
+          height: 40px;
+          border-radius: 10px;
+          padding: 4px;
+          
           &:hover {
+            background-color: #f5f5f5;
             cursor: pointer;
+          }
+          label {
+            &:hover {
+              cursor: pointer;
+            }
           }
         }
       }
+
     }
   }
   
@@ -257,4 +261,47 @@
 
   .logo1{
     width: 200px;
+  }
+  .arrow {
+    width: 20px;
+    height: 20px;
+  }
+
+  .sub-sub-menu-item {
+    display: flex;
+    flex-direction: column;
+    padding: 8px;
+    overflow: hidden;
+    opacity: 0.5;
+    max-height: 0;
+    animation: fade-in 1.5s ease-in-out forwards;
+   
+    li{
+        margin-left: 35px;
+        list-style: none;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        width: 80%;
+        font-size: 14px;
+        gap: 1rem;
+        font-weight: 700;
+        color: #535353;
+        height: 40px;
+        border-radius: 10px;
+        padding: 4px;
+        margin-bottom: 2px;
+        &:hover {
+          background-color: #f5f5f5;
+          cursor: pointer;
+        }
+        label {
+          &:hover {
+            cursor: pointer;
+          }
+        }
+      
+    }
+
   }

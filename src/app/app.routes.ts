@@ -5,9 +5,12 @@ import { ReportsComponent } from './dashboard/reports/reports.component';
 import { MaintenanceComponent } from './dashboard/maintenance/maintenance.component';
 import { Demo1Component } from './dashboard/demos/demo1/demo1.component';
 import { Demo2Component } from './dashboard/demos/demo2/demo2.component';
+import { InicioComponent } from './portal/inicio/inicio.component';
+import { AlarmasComponent } from './portal/alarmas/alarmas.component';
+import { DashboardComponent } from './portal/dashboard/dashboard.component';
+import { PortalComponent } from './portal/portal.component';
 
 export const routes: Routes = [
- 
   {
     path: 'login',
     title: 'Login',
@@ -18,53 +21,53 @@ export const routes: Routes = [
     path: '',
     component: LayoutUserComponent,
     children: [
-    
       {
         path: '',
-        title:'Panel de control',
-        component:HomeComponent
+        title: 'Portal',
+        component: PortalComponent,
+        children: [
+          {
+            path: 'home',
+            title: 'Inicio',
+            component: InicioComponent,
+          },
+          {
+            path: 'alarmas',
+            title: 'Alarmas',
+            component: AlarmasComponent,
+          },
+          {
+            path: 'dashboard',
+            title: 'Dashboard',
+            component: DashboardComponent,
+          },
+          {
+            path: '',
+            redirectTo: 'home',
+            pathMatch: 'full' // Esto asegura que solo redirija cuando la URL es exactamente vacía
+          },
+        ],
       },
       {
         path: 'reportes',
-        title:'Reportes',
-       component:ReportsComponent
+        title: 'Reportes',
+        component: ReportsComponent,
       },
       {
         path: 'mantenimiento',
-        title:'Mantenimiento',
-        component:MaintenanceComponent
+        title: 'Mantenimiento',
+        component: MaintenanceComponent,
       },
       {
-        path:'demos/demo1',
-        title:'Compresor',
-        component:Demo1Component
+        path: 'demos/demo1',
+        title: 'Compresor',
+        component: Demo1Component,
       },
       {
-        path:'demos/demo2',
-        title:'Logística',
-        component:Demo2Component
-      },
-   
-    
-    ],
-  },
-  {
-    path: '',
-    children: [
-      {
-        path: '',
-        title: 'Inicio',
-        loadComponent: () =>
-          import('./dashboard/home/home.component').then(
-            (m) => m.HomeComponent
-          ),
+        path: 'demos/demo2',
+        title: 'Logística',
+        component: Demo2Component,
       },
     ],
   },
-  {
-    path: '**',
-    redirectTo: 'login',
-  },
- 
-
 ];

@@ -1,0 +1,47 @@
+.card {
+    
+  .card-body {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: row;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding: .5rem;
+    .item {
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      padding: 10px 0;
+      flex-direction: row;
+      width: 100%;
+      max-width: 10rem;
+      &:hover {
+        background-color: #7fb8f1;
+        cursor: pointer;
+      }
+
+      img {
+        width: 40px;
+        height: 40px;
+        &:hover {
+            
+            cursor: pointer;
+          }
+      }
+      label {
+        &:hover {
+           
+            cursor: pointer;
+          }
+      }
+    }
+  }
+}
+.selected-menu {
+    background-color: #6aabec !important;
+    border-radius: 10px;
+    label {
+      color: #fff !important;
+    }
+  }
