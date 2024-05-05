@@ -52,7 +52,10 @@ export class MenuPrincipalComponent implements OnInit {
   seleccionarMenu(nombre: any) {
     this.menu.forEach((element: any) => {
       element.isSelected = element.nombre === nombre;
+
+      if(element.isSelected) this.router.navigate([element.url]);
+
     });
-    console.log(this.menu);
+    
   }
 }

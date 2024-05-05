@@ -1,0 +1,32 @@
+.chart-general-presion-estado {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  height: 50vh;
+  margin: 1rem 0rem;
+  #myChart2,#myChart3 {
+    max-width: 500px;
+    height: 500px;
+  }
+}
+@media (max-width: 600px) {
+  .chart-general-presion-estado {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    margin: 1rem 0rem;
+    #myChart2{
+        max-width: 450px;
+      max-height: 450px;
+    }
+    #myChart3 {
+      max-width: 300px;
+      max-height: 450px;
+    }
+  }
+}
