@@ -1,1 +1,40 @@
-<p>inicio works!</p>
+
+
+<div class="map-container" *ngIf="screen1" >
+  <div id="map" class="map"></div>
+  <div id="geocoder" class="geocoder"></div>
+</div>
+<div class="card" *ngIf="screen2">
+  <div class="card-body">
+    <div class="title">
+      <h3> <i class="fa fa-arrow-left" aria-hidden="true" (click)="cambiarScreen(1)" style="margin-right: 1rem;"></i> Lista de equipos</h3>
+      <hr />
+    </div>
+    <div class="listado">
+      <div class="card" style="width: 100%; max-width: 23rem;">
+        <div class="card-body">
+          <div class="img">
+            <img src="assets/demos/CompresorDePistonDeDosPasos.gif" alt="" style="width: 300px; height: 200px;" />
+          </div>
+          <div class="info">
+            <h4>COMPRESOR XYZ</h4>
+            <a class="btn btn-primary" [routerLink]="['/demos/demo1']" routerLinkActive="router-link-active" 
+              >Revisar</a
+            >
+          </div>
+        </div>
+      </div>
+      <!--      <div class="card" *ngFor="let item of arrayReportes">
+        <div class="card-body">
+          <div class="img">
+            <img [src]="item.image" alt="" />
+          </div>
+          <div class="info">
+            <h4>{{ item.name }}</h4>
+            <a class="btn btn-primary">Revisar</a>
+          </div>
+        </div>
+      </div> -->
+    </div>
+  </div>
+</div>
