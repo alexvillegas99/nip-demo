@@ -9,10 +9,7 @@ import { ToastrService } from '../../services/toas.service';
   styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent implements AfterViewInit {
-
-  constructor(private readonly toastService:ToastrService){
-   
-  }
+  constructor(private readonly toastService: ToastrService) {}
 
   ngAfterViewInit(): void {
     this.createChart();
@@ -36,40 +33,49 @@ export class DashboardComponent implements AfterViewInit {
             data: [],
             borderColor: 'rgba(255, 99, 132, 1)',
             borderWidth: 1,
-            pointRadius: 3, // Tamaño de los puntos
+            pointRadius: 0, // Tamaño de los puntos
             pointHoverRadius: 5, // Tamaño de los puntos al pasar el ratón
             fill: false, // No rellenar el área bajo la línea
+            cubicInterpolationMode: 'monotone',
+            tension: 0.1,
           },
           {
             label: 'Compresor 2',
             data: [],
             borderColor: 'rgba(54, 162, 235, 1)',
             borderWidth: 1,
-            pointRadius: 3,
+            pointRadius: 0,
             pointHoverRadius: 5,
             fill: false,
+            cubicInterpolationMode: 'monotone',
+            tension: 0.1,
           },
           {
             label: 'Compresor 3',
             data: [],
             borderColor: 'rgba(255, 206, 86, 1)',
             borderWidth: 1,
-            pointRadius: 3,
+            pointRadius: 0,
             pointHoverRadius: 5,
             fill: false,
+            cubicInterpolationMode: 'monotone',
+            tension: 0.1,
           },
           {
             label: 'Compresor 4',
             data: [],
             borderColor: 'rgba(75, 12, 192, 1)',
             borderWidth: 1,
-            pointRadius: 3,
+            pointRadius: 0,
             pointHoverRadius: 5,
             fill: false,
+            cubicInterpolationMode: 'monotone',
+            tension: 0.1,
           },
         ],
       },
       options: {
+        responsive: true,
         plugins: {
           title: {
             display: true,
@@ -87,18 +93,31 @@ export class DashboardComponent implements AfterViewInit {
             intersect: false, // No mostrar tooltips en la intersección de puntos
           },
         },
+        interaction: {
+          intersect: false,
+        },
         scales: {
+          x: {
+            display: true,
+            title: {
+              display: true,
+            },
+          },
           y: {
-            beginAtZero: false,
+            display: true,
+            title: {
+              display: true,
+              text: 'Value',
+            },
           },
         },
       },
     });
 
-      // Agregar evento de clic al gráfico
- 
+    // Agregar evento de clic al gráfico
+
     // Generar 8 valores iniciales
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 11; i++) {
       // Obtener la fecha actual del sistema
       const currentDate = new Date();
       const currentTime = currentDate.toLocaleTimeString(); // Obtener la hora actual
@@ -139,12 +158,17 @@ export class DashboardComponent implements AfterViewInit {
       // Actualizar el gráfico
       this.chart1.update();
     }, 5000); // Ejecutar cada 5 segundos
-    this.chart1.canvas.addEventListener('click', (event:any) => {
-      const bar = this.chart1.getElementsAtEventForMode(event, 'nearest', { intersect: true }, true)[0];
+    this.chart1.canvas.addEventListener('click', (event: any) => {
+      const bar = this.chart1.getElementsAtEventForMode(
+        event,
+        'nearest',
+        { intersect: true },
+        true
+      )[0];
       if (bar) {
         const dataIndex = bar.index;
         const datasetIndex = bar.datasetIndex;
-        const label =this.chart1.data.datasets[datasetIndex].label;
+        const label = this.chart1.data.datasets[datasetIndex].label;
         const value = this.chart1.data.datasets[datasetIndex].data[dataIndex];
         this.toastService.showInfo(`Click en: ${label} con el valor: ${value}`);
       }
@@ -168,7 +192,7 @@ export class DashboardComponent implements AfterViewInit {
               'rgba(75, 12, 192, 0.2)',
             ],
             borderColor: [
-              'rgba(255, 99, 132, 1)',
+              '#E1B5BE',
               'rgba(54, 162, 235, 1)',
               'rgba(255, 206, 86, 1)',
               'rgba(75, 12, 192, 1)',
@@ -199,17 +223,15 @@ export class DashboardComponent implements AfterViewInit {
         responsive: true,
         scales: {
           x: {
-            
             stacked: true,
           },
           y: {
-            stacked: true
-          }
-        }
+            stacked: true,
+          },
+        },
       },
     });
 
- 
     // Función para actualizar el gráfico cada 5 segundos
     setInterval(() => {
       const numbers = this.generateRandomNumbers(4, 80, 120);
@@ -219,8 +241,13 @@ export class DashboardComponent implements AfterViewInit {
       this.chart2.update();
     }, 5000); // Ejecutar cada 5 segundos
 
-    this.chart2.canvas.addEventListener('click', (event:any) => {
-      const bar = this.chart2.getElementsAtEventForMode(event, 'nearest', { intersect: true }, true)[0];
+    this.chart2.canvas.addEventListener('click', (event: any) => {
+      const bar = this.chart2.getElementsAtEventForMode(
+        event,
+        'nearest',
+        { intersect: true },
+        true
+      )[0];
       if (bar) {
         const dataIndex = bar.index;
         const datasetIndex = bar.datasetIndex;
@@ -291,8 +318,13 @@ export class DashboardComponent implements AfterViewInit {
         },
       },
     });
-    this.chart3.canvas.addEventListener('click', (event:any) => {
-      const bar = this.chart3.getElementsAtEventForMode(event, 'nearest', { intersect: true }, true)[0];
+    this.chart3.canvas.addEventListener('click', (event: any) => {
+      const bar = this.chart3.getElementsAtEventForMode(
+        event,
+        'nearest',
+        { intersect: true },
+        true
+      )[0];
       if (bar) {
         const dataIndex = bar.index;
         const datasetIndex = bar.datasetIndex;
@@ -315,36 +347,44 @@ export class DashboardComponent implements AfterViewInit {
             data: [],
             borderColor: 'rgba(255, 99, 132, 1)',
             borderWidth: 1,
-            pointRadius: 3, // Tamaño de los puntos
+            pointRadius: 0, // Tamaño de los puntos
             pointHoverRadius: 5, // Tamaño de los puntos al pasar el ratón
             fill: false, // No rellenar el área bajo la línea
+            cubicInterpolationMode: 'monotone',
+            tension: 0.1,
           },
           {
             label: 'Compresor 2',
             data: [],
             borderColor: 'rgba(54, 162, 235, 1)',
             borderWidth: 1,
-            pointRadius: 3,
+            pointRadius: 0,
             pointHoverRadius: 5,
             fill: false,
+            cubicInterpolationMode: 'monotone',
+            tension: 0.1,
           },
           {
             label: 'Compresor 3',
             data: [],
             borderColor: 'rgba(255, 206, 86, 1)',
             borderWidth: 1,
-            pointRadius: 3,
+            pointRadius: 0,
             pointHoverRadius: 5,
             fill: false,
+            cubicInterpolationMode: 'monotone',
+            tension: 0.1,
           },
           {
             label: 'Compresor 4',
             data: [],
             borderColor: 'rgba(75, 12, 192, 1)',
             borderWidth: 1,
-            pointRadius: 3,
+            pointRadius: 0,
             pointHoverRadius: 5,
             fill: false,
+            cubicInterpolationMode: 'monotone',
+            tension: 0.1,
           },
         ],
       },
@@ -375,7 +415,7 @@ export class DashboardComponent implements AfterViewInit {
     });
 
     // Generar 8 valores iniciales
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 10; i++) {
       // Obtener la fecha actual del sistema
       const currentDate = new Date();
       const currentTime = currentDate.toLocaleTimeString(); // Obtener la hora actual
@@ -402,7 +442,6 @@ export class DashboardComponent implements AfterViewInit {
       for (let i = 0; i < 4; i++) {
         const newConsumo = Math.floor(Math.random() * (150 - 50 + 1)) + 50; // Generar un consumo aleatorio entre 50 y 150 kWh
 
-
         this.chart4.data.datasets[i].data.push(newConsumo);
       }
 
@@ -418,16 +457,20 @@ export class DashboardComponent implements AfterViewInit {
       this.chart4.update();
     }, 5000); // Ejecutar cada 5 segundos
 
-    this.chart4.canvas.addEventListener('click', (event:any) => {
-      const bar = this.chart4.getElementsAtEventForMode(event, 'nearest', { intersect: true }, true)[0];
+    this.chart4.canvas.addEventListener('click', (event: any) => {
+      const bar = this.chart4.getElementsAtEventForMode(
+        event,
+        'nearest',
+        { intersect: true },
+        true
+      )[0];
       if (bar) {
         const dataIndex = bar.index;
         const datasetIndex = bar.datasetIndex;
-        const label =this.chart4.data.datasets[datasetIndex].label;
+        const label = this.chart4.data.datasets[datasetIndex].label;
         const value = this.chart4.data.datasets[datasetIndex].data[dataIndex];
         this.toastService.showInfo(`Click en: ${label} con el valor: ${value}`);
       }
     });
   }
-  
 }

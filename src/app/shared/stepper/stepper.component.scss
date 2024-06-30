@@ -1,0 +1,72 @@
+.stepper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  position: relative;
+
+  .step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    position: relative;
+
+    .circle {
+      width: 60px;
+      height: 60px;
+      border: 2px solid #ccc;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      background-color: white;
+      z-index: 1;
+
+      &.completed {
+        background-color: var(--primary);
+        color: white;
+        border-color: var(--primary);
+      }
+
+      &.active {
+        border-color:  var(--primary);
+        
+        .inner-circle {
+          width: 20px;
+          height: 20px;
+          background-color:  var(--primary);
+          border-radius: 50%;
+        }
+      }
+
+      i {
+        font-size: 25px;
+      }
+    }
+
+    .line {
+      position: absolute;
+      top: 25%;
+      transform: translateX(50%);
+      height: 2px;
+      background-color: #ccc;
+      width: 100%;
+      z-index: 0;
+    }
+
+    .title {
+      text-align: center;
+      margin-top: 10px;
+    }
+  }
+
+  .step:not(:last-child) .line {
+    display: block;
+  }
+
+  .step:last-child .line {
+    display: none;
+  }
+}

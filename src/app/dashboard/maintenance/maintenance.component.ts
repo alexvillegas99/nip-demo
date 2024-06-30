@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-maintenance',
@@ -10,6 +11,9 @@ import { RouterModule } from '@angular/router';
   styleUrl: './maintenance.component.scss',
 })
 export class MaintenanceComponent {
+
+
+
   screen1 = true;
   screen2 = false;
   screen3 = false;
@@ -405,4 +409,5 @@ export class MaintenanceComponent {
     this.mantenimientoSeleccionado = data;
     this.cambiarPantalla(3);
   }
+
 }

@@ -3,12 +3,15 @@
     width: 300px;
    
   }
+  .leyenda{
+    font-size: 13px;
+  }
   .card {
     box-shadow: 0px 2px 2px 2px rgba(0, 0, 0, 0.1) !important;
   }
   .card-body {
-    border-top-right-radius: 10px !important;
-    border-top-left-radius: 10px !important;
+    border-top-right-radius: 0px !important;
+    border-top-left-radius: 0px !important;
   }
   .nav-list {
     width: 90%;
@@ -20,7 +23,7 @@
   }
   .nav-list-item-header {
    
-    border-radius: 10px;
+    border-radius: 0px;
     font-weight: 600;
     color: white;
     font-size: 14px;
@@ -38,7 +41,7 @@
   
   .nav-list-item {
     margin-top: 1rem;
-    border-radius: 10px;
+    border-radius: 0px;
     .menu {
       display: flex;
       flex-direction: row;
@@ -72,8 +75,8 @@
       }
       .arrow {
         margin-right: 25px;
-        width: 20px;
-        height: 20px;
+        width: 30px;
+        height: 30px;
         &:hover {
           cursor: pointer;
         }
@@ -101,7 +104,7 @@
           font-weight: 700;
           color: #535353;
           height: 40px;
-          border-radius: 10px;
+          border-radius: 0px;
           padding: 4px;
           
           &:hover {
@@ -120,17 +123,17 @@
   }
   
   .selected-menu {
-    background-color: #c2c2c2 !important;
-    border-radius: 10px;
+    background-color: #f1f1f3 !important;
+    border-radius: 0px;
     label {
-      color: #fff !important;
+      color: #004494 !important;
     }
   }
   
   .selected-submenu {
-    background-color: #c2c2c2 !important;
+    background-color: #f1f1f3 !important;
     label {
-      color: #fff !important;
+      color: #004494 !important;
     }
   }
   @keyframes fade-in {
@@ -190,7 +193,7 @@
   
   @media (max-width: 800px) {
     .leyenda{
-      font-size: 11px !important;
+      font-size: 10px !important;
   }
     .nav-list{
       margin-left: 5px;
@@ -222,8 +225,8 @@
             font-size: 12px;
           }
           .arrow {
-            width: 20px;
-            height: 20px;
+            width: 30px;
+            height: 30px;
           }
         }
       }
@@ -252,7 +255,7 @@
 
   @media (max-width: 474px){
     .leyenda{
-        font-size: 10px !important;
+        font-size: 9px !important;
     }
     .logo1{
         width: 200px !important;
@@ -263,8 +266,8 @@
     width: 200px;
   }
   .arrow {
-    width: 20px;
-    height: 20px;
+    width: 30px;
+    height: 30px;
   }
 
   .sub-sub-menu-item {
@@ -289,7 +292,7 @@
         font-weight: 700;
         color: #535353;
         height: 40px;
-        border-radius: 10px;
+        border-radius: 0px;
         padding: 4px;
         margin-bottom: 2px;
         &:hover {
@@ -304,4 +307,8 @@
       
     }
 
+  }
+
+  li{
+    list-style: none;
   }

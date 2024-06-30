@@ -1,11 +1,11 @@
 .card {
-    
+    border: none;
   .card-body {
     display: flex;
-    justify-content: space-around;
+    justify-content: flex-start;
     align-items: center;
     flex-direction: row;
-    gap: 1rem;
+    gap: 1.5rem;
     flex-wrap: wrap;
     padding: .5rem;
     .item {
@@ -16,8 +16,9 @@
       flex-direction: row;
       width: 100%;
       max-width: 10rem;
+      background-color: #e5e5e6;
       &:hover {
-        background-color: #7fb8f1;
+        background-color: #c0e0ff;
         cursor: pointer;
       }
 
@@ -45,3 +46,56 @@
       color: #fff !important;
     }
   }
+
+  @media (max-width: 400px) {
+    .container-navbar {
+      .navbar {
+        height: 3rem !important;
+      }
+    }
+    .name {
+      display: none;
+    }
+  }
+  
+
+  @media (max-width: 410px) {
+    .card {
+      
+    .card-body {
+    
+      justify-content: center;
+     
+      .item {
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        padding: 10px 0;
+        flex-direction: row;
+        width: 100%;
+        max-width: 100%;
+        background-color: #e5e5e6;
+        &:hover {
+          background-color: #c0e0ff;
+          cursor: pointer;
+        }
+  
+        img {
+          width: 40px;
+          height: 40px;
+          &:hover {
+              
+              cursor: pointer;
+            }
+        }
+        label {
+          &:hover {
+             
+              cursor: pointer;
+            }
+        }
+      }
+    }
+  }
+  }
+  

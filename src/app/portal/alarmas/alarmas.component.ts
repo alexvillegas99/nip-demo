@@ -1,45 +1,102 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  Component,
+  ElementRef,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+} from '@angular/core';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { ToastrService } from '../../services/toas.service';
+import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
+import { TimepickerModule } from 'ngx-bootstrap/timepicker';
 
 @Component({
   selector: 'app-alarmas',
   standalone: true,
-  imports: [CommonModule,ReactiveFormsModule,FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule,TimepickerModule],
   templateUrl: './alarmas.component.html',
   styleUrl: './alarmas.component.scss',
 })
 export class AlarmasComponent implements OnInit {
-filtrar() {
-  const estado = this.filterForm.controls.estado.value;
-  console.log(estado)
+  reconocerAlarmar() {
+    this.toastService.showSuccess('Alarma reconocida correctamente', 'Alarma');
+    this.modalRef?.hide();
+  }
+  aplazarAlarma() {
+    this.toastService.showSuccess('Alarma aplazada correctamente', 'Alarma');
+    this.modalRef?.hide();
+  }
+  isMeridian = false;
+  showSpinners = true;
+  myTime: Date = new Date();
+  closeModal() {
+    this.modalRef?.hide();
+  }
+  configModal = {
+    backdrop: true,
+    ignoreBackdropClick: true,
+    class: 'modal-dialog-centered modal-lg',
+  };
 
-  if(estado==="" || estado==="3"){
-    this.valoresCopia = this.valores;
-    return;
+  filtroModel: string = '';
+  modalRef?: BsModalRef;
+  openModal(template: TemplateRef<void>) {
+    this.modalRef = this.modalService.show(template, this.configModal);
   }
 
-  if(estado==="1"){
-    this.valoresCopia=this.valores.filter((x:any)=>x.estado==="Atendido");
-  }else if(estado==="2"){
-    this.valoresCopia=this.valores.filter((x:any)=>x.estado==="Pendiente");
-  }
+  filtrar() {
+    const valor = this.filterForm.controls.valorInpiut
+      .value!.toUpperCase()
+      .trim();
+    const estado = this.filterForm.controls.estado.value;
 
+    // Inicialmente, trabajamos con una copia de los valores originales.
+    let resultadosFiltrados = this.valores;
 
-}
-  constructor(private readonly fb:FormBuilder){
-
-  }
-  ngOnInit(): void {
-    this.valoresCopia=this.valores;
-  }
-   filterForm= this.fb.group(
-    {
-      evento:[''],
-      estado: [''],
-     
+    // Filtra por estado primero
+    if (estado !== '' && estado !== '3') {
+      if (estado === '1') {
+        resultadosFiltrados = resultadosFiltrados.filter(
+          (x: any) => x.estado === 'Atendido'
+        );
+      } else if (estado === '2') {
+        resultadosFiltrados = resultadosFiltrados.filter(
+          (x: any) => x.estado === 'Pendiente'
+        );
+      }
     }
-  )
+
+    // Luego filtra por el valor del input, si no está vacío
+    if (valor !== '') {
+      resultadosFiltrados = resultadosFiltrados.filter(
+        (x: any) =>
+          x.condicion.toUpperCase().trim().includes(valor) ||
+          x.evento.toUpperCase().trim().includes(valor) ||
+          x.valor.toUpperCase().trim().includes(valor) ||
+          x.usuario.toUpperCase().trim().includes(valor)
+      );
+    }
+
+    // Asigna los resultados filtrados a valoresCopia
+    this.valoresCopia = resultadosFiltrados;
+  }
+
+  constructor(
+    private readonly fb: FormBuilder,
+    private modalService: BsModalService,
+    private readonly toastService: ToastrService
+  ) {}
+  ngOnInit(): void {
+    this.valoresCopia = this.valores;
+  }
+
+  filterForm = this.fb.group({
+    evento: [''],
+    estado: [''],
+    valorInpiut: [''],
+  });
   ngAfterViewInit() {}
   headers = [
     'Código',
@@ -52,8 +109,8 @@ filtrar() {
     'Aplazamiento',
     'Reconocimiento',
   ];
-valoresCopia:any;
-valores = [
+  valoresCopia: any;
+  valores = [
     {
       codigo: '601',
       tiempo: '10/01/2022 10:00',
@@ -128,33 +185,6 @@ valores = [
     },
     {
       codigo: '601',
-      tiempo: '10/01/2022 10:00',
-      condicion: 'Temperatura',
-      evento: 'Temperatura alta',
-      estado: 'Atendido',
-      valor: '20',
-      usuario: 'Usuario 1',
-    },
-    {
-      codigo: '600',
-      tiempo: '10/01/2022 10:00',
-      condicion: 'Temperatura',
-      evento: 'Temperatura alta',
-      estado: 'Atendido',
-      valor: '20',
-      usuario: 'Usuario 1',
-    },
-    {
-      codigo: '601',
-      tiempo: '10/01/2022 10:00',
-      condicion: 'Temperatura',
-      evento: 'Temperatura alta',
-      estado: 'Pendiente',
-      valor: '20',
-      usuario: 'Usuario 1',
-    },
-    {
-      codigo: '600',
       tiempo: '10/01/2022 10:00',
       condicion: 'Temperatura',
       evento: 'Temperatura alta',
@@ -179,12 +209,12 @@ valores = [
     },
   ];
 
-  eventos=[
+  eventos = [
     {
-      nombre:"Se a detectado una caida de presion critica"
+      nombre: 'Se a detectado una caida de presion critica',
     },
     {
-      nombre:"Temperatura alta"
-    }
-  ]
+      nombre: 'Temperatura alta',
+    },
+  ];
 }

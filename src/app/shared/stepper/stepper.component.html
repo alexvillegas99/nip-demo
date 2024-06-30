@@ -1,0 +1,11 @@
+<div class="stepper">
+  <div *ngFor="let step of steps; let i = index" class="step">
+    <div class="circle" [ngClass]="{'completed': i < currentStep, 'active': i === currentStep}">
+      <i *ngIf="i < currentStep" [class]="step.icon"></i>
+      <div *ngIf="i === currentStep" class="inner-circle"></div>
+    </div>
+    <div class="title">{{ step.title }}</div>
+    <div class="title">{{ step.fecha }}</div>
+    <div *ngIf="i < steps.length - 1" class="line"></div>
+  </div>
+</div>

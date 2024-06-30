@@ -1,8 +1,25 @@
 
 
-<div class="map-container" *ngIf="screen1" >
-  <div id="map" class="map"></div>
-  <div id="geocoder" class="geocoder"></div>
+<div class="screen1" *ngIf="screen1" >
+  <div class="map-container" >
+    <div id="map" class="map"></div>
+    <!-- <div id="geocoder" class="geocoder"></div> -->
+  </div>
+  <div class="card-list">
+    <div class="card" *ngFor="let item of arrayCompresores">
+      <div class="card-body">
+        <div class="img">
+          <img src="assets/imgs/Compresor.png" alt="" />
+        </div>
+        <div class="info">
+          <h4>Nombre del equipo: </h4>
+          <h4>{{ item.nombre }}</h4>
+          <p><i class="fa-solid fa-location-dot"></i> {{item.ubicacion}}</p>
+          <p>{{item.tipo}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 <div class="card" *ngIf="screen2">
   <div class="card-body">

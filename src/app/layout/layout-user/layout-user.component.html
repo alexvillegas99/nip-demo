@@ -1,9 +1,4 @@
-
-<div class="animate__animated animate__fadeIn" >
-  <app-header
-  (sideNavToggled)="sideNavStatus = $event"
-  [sideNavStatus]="sideNavStatus"
-  ></app-header>
+<div class="animate__animated animate__fadeIn">
   <main>
     <app-sidebar
       [sideNavStatus]="sideNavStatus"
@@ -13,9 +8,14 @@
       class="animate__animated animate__fadeIn scroll"
     ></app-sidebar>
     <div
-    class="display-area p-3 scroll"
-    [ngClass]="{ 'display-area-shrink': sideNavStatus }"
+      class="display-area p-3 scroll"
+      [ngClass]="{ 'display-area-shrink': sideNavStatus }"
+      style="display: flex; flex-direction: column;"
     >
+      <app-header
+        (sideNavToggled)="sideNavStatus = $event"
+        [sideNavStatus]="sideNavStatus"
+      ></app-header>
       <router-outlet></router-outlet>
     </div>
   </main>

@@ -31,23 +31,24 @@ export class MenuPrincipalComponent implements OnInit {
 
   menu: any = [
     {
-      nombre: 'Inicio',
+      nombre: 'INICIO',
       url: '/home',
       icono: 'assets/imgs/icons/home.png',
       isSelected: false,
     },
     {
-      nombre: 'Alarmas',
-      url: '/alarmas',
-      icono: 'assets/imgs/icons/alarmas.png',
-      isSelected: false,
-    },
-    {
-      nombre: 'Dashboard',
+      nombre: 'ESTADÍSTICAS',
       url: '/dashboard',
       icono: 'assets/imgs/icons/dashboard.png',
       isSelected: false,
     },
+    {
+      nombre: 'ALARMA',
+      url: '/alarmas',
+      icono: 'assets/imgs/icons/alarmas.png',
+      isSelected: false,
+    },
+   
   ];
   seleccionarMenu(nombre: any) {
     this.menu.forEach((element: any) => {

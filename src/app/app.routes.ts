@@ -9,6 +9,8 @@ import { InicioComponent } from './portal/inicio/inicio.component';
 import { AlarmasComponent } from './portal/alarmas/alarmas.component';
 import { DashboardComponent } from './portal/dashboard/dashboard.component';
 import { PortalComponent } from './portal/portal.component';
+import { LogisticaComponent } from './equipo-industrial/logistica/logistica.component';
+import { MantenimientoComponent } from './equipo-industrial/mantenimiento/mantenimiento.component';
 
 export const routes: Routes = [
   {
@@ -56,7 +58,7 @@ export const routes: Routes = [
       {
         path: 'mantenimiento',
         title: 'Mantenimiento',
-        component: MaintenanceComponent,
+        component: MantenimientoComponent,
       },
       {
         path: 'demos/demo1',
@@ -68,6 +70,11 @@ export const routes: Routes = [
         title: 'Logística',
         component: Demo2Component,
       },
+      {
+        path: 'gestion',
+        title: 'Gestión',
+        component: LogisticaComponent,
+      }
     ],
   },
 ];

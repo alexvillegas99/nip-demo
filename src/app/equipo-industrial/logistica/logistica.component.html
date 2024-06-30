@@ -1,1 +1,627 @@
-<p>logistica works!</p>
+<div class="container">
+  <div class="card" style="width: 100%; padding-bottom: 1rem">
+   
+    <div class="title">
+      <h3>Gestión de Mantenimiento</h3>
+      <hr />
+    </div>
+    <div class="menu">
+      <ul class="nav nav-pills nav-fill">
+        @for (item of menu; track $index) {
+
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            aria-current="page"
+            [class.active]="item.active"
+            (click)="cambiarMenu($index)"
+            >{{ item.name }}</a
+          >
+        </li>
+        }
+      </ul>
+    </div>
+    @if (menu[1].active) {
+      <div class="card card-pedidos">
+        <div class="card-body">
+         
+          <div class="button" style="display: flex; justify-content: space-between; align-items: center;  margin: .5rem;">
+            <label style="color: #666e7d; font-weight: 400; font-size: 1.4rem;" >
+              Lista de pedidos
+            </label>
+            <button
+          type="button"
+          class="btn btn-primary "
+          (click)="abrirModalPedidos(crear_pedido_modal)"
+        >
+          <i class="fa fa-plus" aria-hidden="true"></i> Crear nuevo pedido
+        </button>
+          </div>
+          <div class="table-responsive">
+          <table class="table align-middle table-bordered table-bordered-sides">
+            <thead>
+              <tr>
+                @for (item of headers_pedidos; track $index) {
+                <th>{{ item }}</th>
+                }
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of pedidos; track $index) {
+              <tr>
+                <td>{{ item.detalle }}</td>
+                <td>{{ item.usuario }}</td>
+                <td>{{ item.proveedor }}</td>
+                <td>{{ item.producto }}</td>
+                <td>{{ item.fecha_creacion }}</td>
+                <td [ngClass]="{entregado: item.estado==='Entregado', proceso: item.estado==='En proceso' ,envio:  item.estado==='Envió'}" >{{ item.estado }}</td>
+                <td style="display: flex; flex-direction: row; gap: .5rem; justify-content: center;">
+                  
+                  <button
+                  class="btn btn-cancel"
+                  title="Visualizar"
+                  (click)="verEstadoPedido(item, estado_pedido)"
+                  style="color: black;"
+                >
+                <i class="fa-regular fa-eye"></i>
+                </button>
+                <button
+                  class="btn btn-cancel"
+                  title="Eliminar"
+                  (click)="eliminarPedido($index)"
+                  style="margin: 0px !important; color: red;"
+               
+                >
+                <i class="fa fa-trash" aria-hidden="true"></i>
+                </button>
+                </td>
+              </tr>
+              }
+            </tbody>
+  
+            <tbody></tbody>
+          </table>
+  
+        </div>
+        </div>
+      </div>
+      }
+    @if (menu[0].active) {
+    <div class="card card-tareas">
+      <div class="card-body">
+        <div class="button" style="display: flex; justify-content: space-between; align-items: center;  margin: .5rem;">
+          <label style="color: #666e7d; font-weight: 400; font-size: 1.4rem;" >
+            Lista de tareas
+          </label>
+          <button
+          type="button"
+          class="btn btn-primary "
+          (click)="modalNuevaTarea(content1)"
+        >
+          <i class="fa fa-plus" aria-hidden="true"></i> Crear nueva tarea
+        </button>
+        </div>
+        <div class="table-responsive">
+          <table class="table align-middle table-bordered table-bordered-sides">
+            <thead>
+              <tr>
+                @for (header of headers_tareas; track $index) {
+                <th>{{ header }}</th>
+                }
+              </tr>
+            </thead>
+            <tbody>
+              @for (tarea of tareas; track $index) {
+              <tr>
+                <td>{{ tarea.titulo }}</td>
+                <td>{{ tarea.descripcion }}</td>
+                <td>{{ tarea.tareas_asociadas.length }}</td>
+                <td [ngClass]="{'prioridad-alta': tarea.prioridad==='Alta', 'prioridad-media': tarea.prioridad==='Media' ,'prioridad-baja':  tarea.prioridad==='Baja'}" >{{tarea.prioridad}}</td>
+                <td>{{ tarea.fecha_creacion }}</td>
+                <td style="display: flex; flex-direction: row; align-items: center; justify-content: center; gap: .5rem;">
+                  <button
+                  class="btn btn-cancel"
+                    title="Visualizar"
+                    (click)="seleccionarTarea(tarea, content1)"
+                    style="color: #191D23;"
+                  >
+                    <i class="fa fa-eye" aria-hidden="true"></i>
+                  </button>
+                  <button
+                  class="btn btn-cancel"
+                    title="Eliminar"
+                    (click)="eliminarTarea($index)"
+                    style="color: #191D23;margin-left: 5px"
+                  >
+                    <i class="fa fa-trash-o" aria-hidden="true"></i>
+                  </button>
+                </td>
+              </tr>
+              }
+            </tbody>
+
+          </table>
+        </div>
+
+       
+      </div>
+    </div>
+    } 
+  </div>
+</div>
+
+
+
+
+<ng-template #crear_pedido_modal>
+  <div class="modal-body">
+    <div class="header" style="display: flex; flex-direction: column;">
+      <h4 style="
+      font-size: 22px;
+      font-weight: 400;
+      line-height: 33px;
+      text-align: left;
+      color: #191D23;
+      " >Solicitar Repuesto</h4>
+
+      <p style="color: #64748b; font-weight: 300;">
+        Por favor, rellenar todos los campos para crear el pedido de solicitud de
+        repuesto.
+      </p>
+    </div>
+    
+    <form [formGroup]="formPedidos">
+      <div class="row">
+        <div class="col-12 col-sm-6 form-group">
+          <label for="titulo">Usuario:</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="usuario"
+            
+          />
+        </div>
+        <div class="col-12 col-sm-6 form-group">
+          <label for="titulo">Seleccionar Proveedor:</label>
+          <select
+            class="form-select"
+            aria-label="Default select example"
+            formControlName="proveedor"
+          >
+            <option selected value="">Seleccione...</option>
+            <option value="Proveedor 1">Proveedor 1</option>
+            <option value="Proveedor 2">Proveedor 2</option>
+            <option value="Proveedor 3">Proveedor 3</option>
+            <option value="Proveedor 4">Proveedor 4</option>
+          </select>
+        </div>
+        <div class="col-12 col-sm-6 form-group">
+          <label for="titulo">Seleccionar producto:</label>
+          <select
+            class="form-select"
+            aria-label="Default select example"
+            formControlName="tipo"
+          >
+            <option value="Compresor">Compresor</option>
+          </select>
+        </div>
+        <div class="col-12 col-sm-6 form-group">
+          <label for="titulo">Seleccionar tipo de Producto:</label>
+          <select
+            class="form-select"
+            aria-label="Default select example"
+            formControlName="producto"
+          >
+            <option selected value="">Seleccione...</option>
+            <option value="Filtro de aire">Filtro de aire #1</option>
+            <option value="Rodela #2">Rodela #2</option>
+            <option value="Filtro de aire #12">Filtro de aire #12</option>
+            <option value="Filtro de aire #6">Filtro de aire #6</option>
+          </select>
+        </div>
+        <div class="col-12 form-group">
+          <label for="titulo">Observación:</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="observacion"
+            placeholder="Escribir observaciones o detalles del producto a pedir"
+          />
+        </div>
+      </div>
+
+      <!-- Botón de submit -->
+      <div class="button-contianer" style="text-align: right; margin: 10px 0px">
+        <button
+          type="submit"
+          class="btn btn-cancel"
+          style="margin-right: 10px"
+          (click)="closeModalPedidos()"
+        >
+         Cancelar
+        </button>
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="formPedidos.invalid"
+          (click)="guardarPedido()"
+        >
+           Solicitar Repuesta
+        </button>
+      </div>
+    </form>
+  </div>
+</ng-template>
+
+<ng-template #estado_pedido>
+
+  <div class="modal-body">
+    <div class="header" style="display: flex; flex-direction: column; margin-bottom: 1rem;">
+      <h4 class="modal-title pull-left" style="color: #191D23;">Estado del pedido</h4>
+ 
+      <p class="modal-title pull-left" style="color:#64748B">Información del pedido seleccionado</p>
+    </div>
+    <div class="datos-pedido">
+      <div class="pedido">
+        <p><i class="fas fa-user"></i>Usuario: {{ pedidoSeleccionado?.usuario }}</p>
+        <p><i class="fas fa-truck"></i>Proveedor: {{ pedidoSeleccionado?.proveedor }}</p>
+        <p><i class="fas fa-info-circle"></i>Detalle: {{ pedidoSeleccionado?.detalle }}</p>
+        <p><i class="fas fa-box"></i>Producto: {{ pedidoSeleccionado?.producto }}</p>
+        <p><i class="fas fa-calendar-alt"></i>Fecha: {{ pedidoSeleccionado?.fecha_creacion }}</p>
+        <p><i class="fas fa-hourglass-half"></i>Estado: {{ pedidoSeleccionado?.estado }}</p>
+    
+      </div>
+    </div>
+    <div class="app-container" style="margin: 2rem 0rem; text-align: center;">
+
+
+      <h4 style="margin-bottom: 1rem;">Estado del envió</h4>
+
+      <app-stepper [steps]="steps" [currentStep]="currentStep"></app-stepper>
+    </div>
+  <!--   @if (pedidoSeleccionado?.historico?.length > 0) {
+  
+      <div class="table-responsive">
+        <table class="table align-middle table-bordered table-bordered-sides">
+      <thead>
+        <tr>
+          <th>Observación</th>
+          <th>Estado</th>
+          <th>Fecha</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (historico of pedidoSeleccionado.historico; track $index) {
+        <tr>
+          <td>{{ historico.observacion }}</td>
+          <td>{{ historico.estado }}</td>
+          <td>{{ historico.fecha }}</td>
+        </tr>
+        }
+      </tbody>
+
+      <tbody></tbody>
+    </table>
+    </div>  
+    } @else{
+    <div class="vacio" style="text-align: center; font-size: 1rem">
+      <h3>Aun no se registran cambios en el envió.</h3>
+    </div>
+    } -->
+  </div>
+  <div class="buttons" style="text-align: right; padding: 1rem">
+    <button class="btn btn-primary" style="padding: .7rem 1rem !important; " (click)="closeModalPedidos()">
+      Cerrar
+    </button>
+  </div>
+</ng-template>
+
+<!-- Template para Modal 1 -->
+<ng-template #content1 let-modal>
+  
+  <div class="modal-body">
+    <div class="header" style="display: flex; flex-direction: column;">
+      <h4 class="modal-title pull-left">Crear Tarea</h4>
+      <p>Por favor, rellenar todos los campos para crear tarea correspondiente. </p>
+    </div>
+    <form [formGroup]="formTareas">
+      <div class="row">
+        <!-- Titulo -->
+        <div class="col-12 col-sm-12 form-group">
+          <label for="titulo">Título:</label>
+          <input
+            type="text"
+            id="titulo"
+            class="form-control"
+            formControlName="titulo"
+            [attr.disabled]="tareaSeleccionada ? true : null"
+          />
+        </div>
+
+        <!-- Descripción -->
+        <div class="col-12 col-sm-12 form-group">
+          <label for="descripcion">Descripción:</label>
+          <textarea
+            id="descripcion"
+            class="form-control"
+            formControlName="descripcion"
+            [attr.disabled]="tareaSeleccionada ? true : null"
+          ></textarea>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12 col-sm-6 form-group">
+          <label for="titulo">Usuario Designado:</label>
+          <select
+            class="form-select"
+            aria-label="Default select example"
+            formControlName="usuario_asignado"
+          >
+            <option selected value="">Seleccione...</option>
+            <option value="Alex Villegas">Alex Villegas</option>
+            <option value="Juan Perez">Juan Perez</option>
+            <option value="Anthony Barros">Anthony Barros</option>
+          </select>
+        </div>
+        <div class="col-12 col-sm-6 form-group">
+          <label for="titulo">Prioridad:</label>
+          <select
+            class="form-select"
+            aria-label="Default select example"
+            formControlName="prioridad"
+          >
+            <option selected value="">Seleccione...</option>
+            <option value="Baja">Baja</option>
+            <option value="Media">Media</option>
+            <option value="Alta">Alta</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Botón de submit -->
+      <div class="button-contianer" style="text-align: right; margin: 10px 0px">
+        <button
+        type="submit"
+        class="btn btn-cancel"
+        *ngIf="!tareaSeleccionada"
+        (click)="modal.close()"
+        style="margin-right: 10px;"
+      >
+       Cerrar
+      </button>
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="formTareas.invalid"
+          *ngIf="!tareaSeleccionada"
+          (click)="guardarTarea()"
+        >
+        Guardar
+        </button>
+        <button
+          type="submit"
+          class="btn btn-primary"
+          *ngIf="tareaSeleccionada"
+          (click)="editarTarea()"
+        >
+        Editar
+        </button>
+      </div>
+    </form>
+    @if(tareaSeleccionada) {
+    <div class="card">
+      <div class="card-body">
+        <div class="button" style="margin: 5px 0px">
+          <button class="btn btn-primary" (click)="openModal2(content2)">
+            <i class="fa fa-plus" aria-hidden="true"></i> Agregar actividades
+          </button>
+        </div>
+        <div class="table-responsive">
+         
+          @if(tareaSeleccionada?.tareas_asociadas?.length > 0){
+            <table class="table align-middle table-bordered table-bordered-sides">
+            <thead>
+              <tr>
+                @for (header of headers_tareas_asociadas; track $index) {
+                <th>{{ header }}</th>
+                }
+              </tr>
+            </thead>
+            <tbody>
+              @for (tarea_asociada of tareaSeleccionada?.tareas_asociadas; track
+              $index) {
+              <tr>
+                <td>{{ tarea_asociada.descripcion }}</td>
+                <td>{{ tarea_asociada.tipo_tarea }}</td>
+                <td>{{ tarea_asociada.duracion_estimada }}</td>
+                <td>
+                  <label class="switch">
+                    <input
+                      type="checkbox"
+                      [(ngModel)]="tarea_asociada.estado"
+                    />
+                    <div class="slider">
+                      <div class="circle">
+                        <svg
+                          class="cross"
+                          xml:space="preserve"
+                          style="enable-background: new 0 0 512 512"
+                          viewBox="0 0 365.696 365.696"
+                          y="0"
+                          x="0"
+                          height="6"
+                          width="6"
+                          xmlns:xlink="http://www.w3.org/1999/xlink"
+                          version="1.1"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <g>
+                            <path
+                              data-original="#000000"
+                              fill="currentColor"
+                              d="M243.188 182.86 356.32 69.726c12.5-12.5 12.5-32.766 0-45.247L341.238 9.398c-12.504-12.503-32.77-12.503-45.25 0L182.86 122.528 69.727 9.374c-12.5-12.5-32.766-12.5-45.247 0L9.375 24.457c-12.5 12.504-12.5 32.77 0 45.25l113.152 113.152L9.398 295.99c-12.503 12.503-12.503 32.769 0 45.25L24.48 356.32c12.5 12.5 32.766 12.5 45.247 0l113.132-113.132L295.99 356.32c12.503 12.5 32.769 12.5 45.25 0l15.081-15.082c12.5-12.504 12.5-32.77 0-45.25zm0 0"
+                            ></path>
+                          </g>
+                        </svg>
+                        <svg
+                          class="checkmark"
+                          xml:space="preserve"
+                          style="enable-background: new 0 0 512 512"
+                          viewBox="0 0 24 24"
+                          y="0"
+                          x="0"
+                          height="10"
+                          width="10"
+                          xmlns:xlink="http://www.w3.org/1999/xlink"
+                          version="1.1"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <g>
+                            <path
+                              class=""
+                              data-original="#000000"
+                              fill="currentColor"
+                              d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z"
+                            ></path>
+                          </g>
+                        </svg>
+                      </div>
+                    </div>
+                  </label>
+                </td>
+                <td
+                  style="
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: center;
+                    align-items: center;
+                    gap: 0.5rem;
+                  "
+                >
+                  <button
+                    type="button"
+                    class="btn btn-danger"
+                    title="Eliminar tarea"
+                    (click)="eliminarSubTarea($index)"
+                  >
+                    <i class="fa fa-trash" aria-hidden="true"></i>
+                  </button>
+                  <button
+                    class="btn btn-primary"
+                    title="Editar"
+                    (click)="openModal2(content2,tarea_asociada, $index ); modal.close()
+           
+                    "
+                  >
+                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                  </button>
+                </td>
+              </tr>
+              }
+            </tbody>
+
+            <tbody></tbody>
+          </table>
+          }
+        </div>
+        
+      </div>
+    </div>
+    }
+  </div>
+  <div class="buttons" style="padding: 1rem ; text-align: right;">
+    <button
+    type="submit"
+    class="btn btn-cancel"
+    *ngIf="tareaSeleccionada"
+    (click)="modal.close()"
+    style="margin-right: 10px;"
+  >
+   Cerrar
+  </button>
+  </div>
+ 
+</ng-template>
+
+<!-- Template para Modal 2 -->
+<ng-template #content2 let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Actividad</h4>
+    <button
+      type="button"
+      class="btn-close close pull-right"
+      aria-label="Close"
+      (click)="closeModalHijo()"
+    >
+      <span aria-hidden="true" class="visually-hidden">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="formActividades">
+      <div class="row">
+        <div class="col-12 col-sm-12 form-group">
+          <label for="titulo">Descripción:</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="descripcion"
+          />
+        </div>
+      
+        <div class="col-12 col-sm-6 form-group">
+          <label for="titulo">Tipo Tarea:</label>
+          <select
+            class="form-select"
+            aria-label="Default select example"
+            formControlName="tipo_tarea"
+          >
+            <option selected value="">Seleccione...</option>
+            <option value="Mantenimiento">Mantenimiento</option>
+            <option value="Mecánica">Mecánica</option>
+            <option value="Revision">Revision</option>
+          </select>
+        </div>
+       
+        <div class="col-12 col-sm-6 form-group">
+          <label for="titulo">Duración estimada:</label>
+          <ngb-timepicker formControlName="duracion_estimada" [meridian]="false" [spinners]="false" ></ngb-timepicker>
+       
+        </div>
+        
+      </div>
+
+      <!-- Botón de submit -->
+      <div class="button-contianer" style="text-align: right; margin: 10px 0px">
+        <button
+          type="submit"
+          class="btn btn-danger"
+          style="margin-right: 10px"
+          (click)="modal.close();this.subTareaSeleccionada = null;formActividades.reset();"
+        >
+          <i class="fa fa-trash" aria-hidden="true"></i> Cancelar
+        </button>
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="formActividades.invalid"
+          (click)="guardarSubTarea()"
+          *ngIf="!subTareaSeleccionada"
+        >
+          <i class="fa fa-floppy-o" aria-hidden="true"></i> Guardar
+        </button>
+
+        <button
+          class="btn btn-primary"
+          title="Editar"
+          (click)="guardarSubTareaEditada(); this.subTareaSeleccionada = null;"
+          *ngIf="subTareaSeleccionada"
+          [disabled]="formActividades.invalid"
+        >
+          <i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar
+        </button>
+      </div>
+    </form>
+  </div>
+</ng-template>
+

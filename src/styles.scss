@@ -8,8 +8,15 @@
   /** primary **/
   --header: #0059b7;
   --primary: #0059b7;
+  --primary-degradado: rgba(0, 89, 183,.1);
 }
 
+.btn-cancel{
+  background-color: #E7EAEE !important;
+  color: #0059b7;
+  padding: .6rem .8rem;
+
+}
 @font-face {
     font-family: Roboto;
     src: url("assets/fonts/Roboto-Medium.ttf") format("opentype");
@@ -22,10 +29,10 @@
   color: white;
   border: none;
   border-radius: 0.5rem;
-  padding: 0.5rem 1rem;
+  padding: .6rem .8rem;
   cursor: pointer;
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: 300;
   transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 body {
@@ -33,6 +40,9 @@ body {
 }
 .scroll::-webkit-scrollbar {
   width: 0px !important; /* Oculta la barra de desplazamiento en navegadores webkit (Chrome, Safari, etc.) */
+}
+.scroll2::-webkit-scrollbar {
+  width: 5px !important; /* Oculta la barra de desplazamiento en navegadores webkit (Chrome, Safari, etc.) */
 }
 
 
@@ -102,4 +112,199 @@ input:valid ~ label,
   text-align: center;
   width: 1.2rem;
   cursor: pointer;
+}
+
+//
+.switch {
+  /* switch */
+  --switch-width: 46px;
+  --switch-height: 24px;
+  --switch-bg: rgb(131, 131, 131);
+  --switch-checked-bg: rgb(0, 218, 80);
+  --switch-offset: calc((var(--switch-height) - var(--circle-diameter)) / 2);
+  --switch-transition: all .2s cubic-bezier(0.27, 0.2, 0.25, 1.51);
+  /* circle */
+  --circle-diameter: 18px;
+  --circle-bg: #fff;
+  --circle-shadow: 1px 1px 2px rgba(146, 146, 146, 0.45);
+  --circle-checked-shadow: -1px 1px 2px rgba(163, 163, 163, 0.45);
+  --circle-transition: var(--switch-transition);
+  /* icon */
+  --icon-transition: all .2s cubic-bezier(0.27, 0.2, 0.25, 1.51);
+  --icon-cross-color: var(--switch-bg);
+  --icon-cross-size: 6px;
+  --icon-checkmark-color: var(--switch-checked-bg);
+  --icon-checkmark-size: 10px;
+  /* effect line */
+  --effect-width: calc(var(--circle-diameter) / 2);
+  --effect-height: calc(var(--effect-width) / 2 - 1px);
+  --effect-bg: var(--circle-bg);
+  --effect-border-radius: 1px;
+  --effect-transition: all .2s ease-in-out;
+}
+
+.switch input {
+  display: none;
+}
+
+.switch {
+  display: inline-block;
+}
+
+.switch svg {
+  -webkit-transition: var(--icon-transition);
+  -o-transition: var(--icon-transition);
+  transition: var(--icon-transition);
+  position: absolute;
+  height: auto;
+}
+
+.switch .checkmark {
+  width: var(--icon-checkmark-size);
+  color: var(--icon-checkmark-color);
+  -webkit-transform: scale(0);
+  -ms-transform: scale(0);
+  transform: scale(0);
+}
+
+.switch .cross {
+  width: var(--icon-cross-size);
+  color: var(--icon-cross-color);
+}
+
+.slider {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  width: var(--switch-width);
+  height: var(--switch-height);
+  background: var(--switch-bg);
+  border-radius: 999px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  position: relative;
+  -webkit-transition: var(--switch-transition);
+  -o-transition: var(--switch-transition);
+  transition: var(--switch-transition);
+  cursor: pointer;
+}
+
+.circle {
+  width: var(--circle-diameter);
+  height: var(--circle-diameter);
+  background: var(--circle-bg);
+  border-radius: inherit;
+  -webkit-box-shadow: var(--circle-shadow);
+  box-shadow: var(--circle-shadow);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-transition: var(--circle-transition);
+  -o-transition: var(--circle-transition);
+  transition: var(--circle-transition);
+  z-index: 1;
+  position: absolute;
+  left: var(--switch-offset);
+}
+
+.slider::before {
+  content: "";
+  position: absolute;
+  width: var(--effect-width);
+  height: var(--effect-height);
+  left: calc(var(--switch-offset) + (var(--effect-width) / 2));
+  background: var(--effect-bg);
+  border-radius: var(--effect-border-radius);
+  -webkit-transition: var(--effect-transition);
+  -o-transition: var(--effect-transition);
+  transition: var(--effect-transition);
+}
+
+/* actions */
+
+.switch input:checked+.slider {
+  background: var(--switch-checked-bg);
+}
+
+.switch input:checked+.slider .checkmark {
+  -webkit-transform: scale(1);
+  -ms-transform: scale(1);
+  transform: scale(1);
+}
+
+.switch input:checked+.slider .cross {
+  -webkit-transform: scale(0);
+  -ms-transform: scale(0);
+  transform: scale(0);
+}
+
+.switch input:checked+.slider::before {
+  left: calc(100% - var(--effect-width) - (var(--effect-width) / 2) - var(--switch-offset));
+}
+
+.switch input:checked+.slider .circle {
+  left: calc(100% - var(--circle-diameter) - var(--switch-offset));
+  -webkit-box-shadow: var(--circle-checked-shadow);
+  box-shadow: var(--circle-checked-shadow);
+}
+
+/* Personaliza la barra de desplazamiento para navegadores webkit (Chrome, Safari) */
+.card-list::-webkit-scrollbar {
+  width: 8px; /* Ajusta el ancho del scrollbar */
+}
+
+.card-list::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Color del fondo del track del scrollbar */
+  border-radius: 10px; /* Bordes redondeados del track */
+}
+
+.card-list::-webkit-scrollbar-thumb {
+  background: #888; /* Color del pulgar del scrollbar */
+  border-radius: 10px; /* Bordes redondeados del pulgar */
+}
+
+.card-list::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Color del pulgar del scrollbar al pasar el mouse por encima */
+}
+
+thead {
+  th {
+    background-color: #f4f4f4 !important;
+    font-weight: 300;
+  }
+}
+tbody{
+  tr{
+    td{
+      font-weight: 200;
+      color: #666E7D;
+    }
+  }
+}
+
+.table-bordered-sides {
+  border-left: 1px solid #dee2e6;
+  border-right: 1px solid #dee2e6;
+}
+.table-bordered-sides th,
+.table-bordered-sides td {
+  border-left: none;
+  border-right: none;
+}
+.table-bordered-sides tr:first-child th,
+.table-bordered-sides tr:first-child td {
+  border-top: none;
+}
+.table-bordered-sides tr:last-child th,
+.table-bordered-sides tr:last-child td {
+  border-bottom: none;
 }

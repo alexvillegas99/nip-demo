@@ -500,11 +500,4 @@ export class HomeComponent implements AfterViewInit {
     return newData;
   }
 }
-function skipped(ctx: ScriptableLineSegmentContext, arg1: string): import("chart.js/auto").Color | undefined {
-  throw new Error('Function not implemented.');
-}
-
-function down(ctx: ScriptableLineSegmentContext, arg1: string): import("chart.js/auto").Color | undefined {
-  throw new Error('Function not implemented.');
-}
 

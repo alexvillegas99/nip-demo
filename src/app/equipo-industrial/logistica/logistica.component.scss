@@ -1,0 +1,119 @@
+.container {
+  min-height: 80vh;
+  .card {
+    .menu {
+      padding: 0.5rem;
+    }
+    ul {
+      -webkit-box-shadow: -2px 3px 5px 0px rgba(0, 0, 0, 0.75);
+      -moz-box-shadow: -2px 3px 5px 0px rgba(0, 0, 0, 0.75);
+      box-shadow: -2px 3px 5px 0px rgba(0, 0, 0, 0.75);
+      border-radius: 10px;
+      &:hover {
+        cursor: pointer;
+        background-color: var(--primary-degradado) !important;
+      }
+      li {
+        a {
+          color: var(--primary);
+        }
+      }
+    }
+    .active {
+      background-color: var(--primary) !important;
+      color: white !important;
+    }
+
+    .title {
+      padding: 1rem;
+      padding-bottom: 0px;
+      hr {
+        margin: 0px;
+      }
+    }
+    .card-pedidos {
+      min-height: 70vh;
+      margin: 1rem;
+      .card-body {
+        position: relative;
+        .floating-btn {
+          position: absolute;
+          bottom: 20px; /* Ajusta la distancia desde la parte inferior */
+          right: 20px; /* Ajusta la distancia desde la derecha */
+          /* Estilos adicionales según sea necesario */
+        }
+      }
+    }
+    .card-tareas {
+      min-height: 70vh;
+      margin: 1rem;
+      .card-body {
+        position: relative;
+        .floating-btn {
+          position: absolute;
+          bottom: 20px; /* Ajusta la distancia desde la parte inferior */
+          right: 20px; /* Ajusta la distancia desde la derecha */
+          /* Estilos adicionales según sea necesario */
+        }
+      }
+    }
+  }
+}
+
+.prioridad-alta {
+  background-color: #ffcdd2;
+  color: #d32f2f;
+}
+.prioridad-media {
+  background-color: #ffecb3;
+  color: #f57f17;
+}
+.prioridad-baja {
+  background-color: #c8e6c9;
+  color: #388e3c;
+}
+
+.entregado {
+  background-color: #c9f5c8;
+  color: #666e7d;
+}
+.proceso {
+  background-color: #f5fbff;
+  color: #666e7d;
+}
+.envio {
+  background-color: #fff3b5;
+  color: #666e7d;
+}
+
+
+.form-group{
+  margin-top: 1rem;
+  label{
+      margin-bottom: .5rem;
+  }
+}
+.datos-pedido {
+  
+  .pedido {
+    display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+   
+    
+    p {
+      display: flex;
+      align-items: center;
+      color: #4B4B4B;
+      
+      i {
+        margin-right: 10px;
+      }
+    }
+    @media (max-width: 600px) {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+ 
+}

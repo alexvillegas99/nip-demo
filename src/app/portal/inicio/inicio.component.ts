@@ -34,56 +34,109 @@ export class InicioComponent implements OnInit {
       lat: -0.280185,
       title: 'Compresor 532',
       description: 'Compresor de aire 123',
-      icono: 'compresor1',
+      icono: 'equipo1',
     },
     {
       lng: -79.010628,
       lat: -2.889603,
       title: 'Compreso XYZ',
       description: 'Compresor de aire xyz',
-      icono: 'compresor2',
+      icono: 'equipo1',
     },
     {
       lng: -80.019348,
       lat: -4.08137,
       title: 'Compresor 532',
       description: 'Compresor de aire 123',
-      icono: 'compresor3',
+      icono: 'equipo1',
     },
     {
       lng: -78.601154,
       lat: -3.878762,
       title: 'Compreso XYZ',
       description: 'Compresor de aire xyz',
-      icono: 'compresor1',
+      icono: 'equipo1',
     },
     {
       lng: -76.528239,
       lat: -0.76438,
       title: 'Compresor 532',
       description: 'Compresor de aire 123',
-      icono: 'compresor2',
+      icono: 'equipo1',
     },
     {
       lng: -78.819907,
       lat: -1.231867,
       title: 'Compresor 532',
       description: 'Compresor de aire 123',
-      icono: 'compresor3',
+      icono: 'equipo1',
     },
     {
       lng: -79.940999,
       lat: -2.180744,
       title: 'Compreso XYZ',
       description: 'Compresor de aire xyz',
-      icono: 'compresor1',
+      icono: 'equipo1',
     },
     {
       lng: -78.467853,
       lat: 0.985788,
       title: 'Compresor 532',
       description: 'Compresor de aire 123',
-      icono: 'compresor2',
+      icono: 'equipo1',
+    },
+  ];
+  arrayCompresores: any[] = [
+    {
+      nombre: 'Compresor 532',
+      ubicacion: 'Quito',
+      tipo:'Compresor'
+    },
+    {
+      nombre: 'Compresor XYZ',
+      ubicacion: 'Guayaquil',
+      tipo:'Compresor'
+
+    },
+    {
+      nombre: 'Compresor 123',
+      ubicacion: 'Cuenca',
+      tipo:'Compresor'
+    },
+    {
+      nombre: 'Compresor 456',
+      ubicacion: 'Manta',
+       tipo:'Compresor'
+    },
+    {
+      nombre: 'Compresor 789',
+      ubicacion: 'Loja',
+       tipo:'Compresor'
+    },
+    {
+      nombre: 'Compresor 532',
+      ubicacion: 'Quito',
+       tipo:'Compresor'
+    },
+    {
+      nombre: 'Compresor XYZ',
+      ubicacion: 'Guayaquil',
+       tipo:'Compresor'
+    },
+    {
+      nombre: 'Compresor 123',
+      ubicacion: 'Cuenca',
+       tipo:'Compresor'
+    },
+    {
+      nombre: 'Compresor 456',
+      ubicacion: 'Manta',
+       tipo:'Compresor'
+    },
+    {
+      nombre: 'Compresor 789',
+      ubicacion: 'Loja',
+       tipo:'Compresor'
     },
   ];
 
@@ -92,15 +145,9 @@ export class InicioComponent implements OnInit {
   }
 
   seleccionarIcono(icono: string): string {
-    if (icono === 'compresor1') {
-      return './assets/imgs/icons/compresor.png';
-    } else if (icono === 'compresor2') {
-      return './assets/imgs/icons/compresor2.png';
-    } else if (icono === 'compresor3') {
-      return './assets/imgs/icons/compresor3.png';
-    } else {
-      return './assets/imgs/icons/compresor.png';
-    }
+
+      return './assets/imgs/equipo.png';
+    
   }
 
   initMap() {
@@ -109,7 +156,7 @@ export class InicioComponent implements OnInit {
         container: 'map',
         style: environment.map.mapbox_style,
         center: [-78.606495, -1.572575], // Centro del ecuador
-        zoom: 5.8, // Nivel de zoom inicial
+        zoom: 6.2, // Nivel de zoom inicial
         accessToken: environment.map.api_key_mapbox,
       });
 
@@ -119,8 +166,8 @@ export class InicioComponent implements OnInit {
         customMarkerElement.style.backgroundImage = `url(${this.seleccionarIcono(
           marker.icono
         )})`; // Coloca la imagen del marcador
-        customMarkerElement.style.width = '30px';
-        customMarkerElement.style.height = '30px';
+        customMarkerElement.style.width = '40px';
+        customMarkerElement.style.height = '40px';
         customMarkerElement.style.backgroundSize = 'contain'; // Ajusta el tamaño de la imagen
         customMarkerElement.style.backgroundPosition = 'center'; // Centra la imagen
         customMarkerElement.style.backgroundRepeat = 'no-repeat'; // Evita la repetición
@@ -157,7 +204,7 @@ export class InicioComponent implements OnInit {
       });
 
       // Configura el control geocoder para que no agregue automáticamente un marcador
-      const geocoder = new MapboxGeocoder({
+ /*      const geocoder = new MapboxGeocoder({
         accessToken: environment.map.api_key_mapbox,
         placeholder: 'Ingrese una dirección',
         mapboxgl: mapboxgl,
@@ -170,7 +217,7 @@ export class InicioComponent implements OnInit {
         this.addMarker(lng, lat);
       });
 
-      this.map.addControl(geocoder);
+      this.map.addControl(geocoder); */
     }, 1000);
   }
 

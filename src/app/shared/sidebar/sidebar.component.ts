@@ -69,8 +69,8 @@ export class SidebarComponent {
 
             {
               icon: 'https://cdn-icons-png.flaticon.com/512/4363/4363708.png',
-              name: 'Logística',
-              route: '/demos/demo2',
+              name: 'Gestión',
+              route: '/gestion',
               isSelected: false,
             },
           ],
@@ -90,8 +90,8 @@ export class SidebarComponent {
 
             {
               icon: 'https://cdn-icons-png.flaticon.com/512/4363/4363708.png',
-              name: 'Logística',
-              route: '/demos/demo2',
+              name: 'Gestión',
+              route: '/gestion',
               isSelected: false,
             },
           ],
