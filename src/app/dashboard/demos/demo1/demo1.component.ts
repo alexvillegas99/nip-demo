@@ -11,6 +11,8 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import Chart, { ScriptableLineSegmentContext } from 'chart.js/auto';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from '../../../services/toas.service';
+import { firstValueFrom } from 'rxjs';
+import { DataPlcService } from '../../../services/data-plc.service';
 
 @Component({
   selector: 'app-demo1',
@@ -24,8 +26,18 @@ export class Demo1Component implements AfterViewInit, OnDestroy, OnInit {
     private readonly fb: FormBuilder,
     private readonly toastService: ToastrService,
     private modalService: BsModalService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private readonly dataPlc: DataPlcService
   ) {}
+  async getDataPLC() {
+    try {
+      const data = await firstValueFrom(this.dataPlc.getData());
+      return data;
+    } catch (error) {
+   
+      throw error; // Esto es opcional, dependiendo de si quieres manejar el error más arriba en la cadena de llamadas.
+    }
+  }
   ngOnInit(): void {}
   compresor = true;
   eventos = false;
@@ -112,29 +124,110 @@ export class Demo1Component implements AfterViewInit, OnDestroy, OnInit {
   intervall1: any;
   intervall2: any;
   ngOnDestroy(): void {
-    // clearInterval(this.intervall1);
-    //clearInterval(this.intervall2);
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+      console.log('Intervalo cancelado.');
+    }
   }
   ngAfterViewInit(): void {
-    this.intervall1 = setInterval(() => {
+ /*    this.intervall1 = setInterval(() => {
       this.updateChart();
-    }, 5000);
+    }, 5000); */
     this.intervall2 = setInterval(() => {
       this.hrs = Number((this.hrs + 0.01).toFixed(2));
       this.cdr.detectChanges();
     }, 1000);
-    setTimeout(() => {
-      this.createChart();
-    }, 1000);
+/*     setTimeout(() => {
+     
+    }, 1000); */
+    this.createChart();
     this.createChart2();
     this.createChart3();
     this.createChart4();
+    this.actualizarGraficos();
   }
   chart1: any;
   chart2: any;
   chart3: any;
   chart4: any;
   createChart() {
+    const ctx = document.getElementById('myChart') as HTMLCanvasElement; // Afirmación de tipo
+    this.chart1 = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: [
+        ],
+        datasets: [
+          {
+            label: 'rpm',
+            data: [],
+            backgroundColor: [
+              'rgba(255, 99, 132, 1)',
+              'rgba(54, 162, 235, 1)',
+              'rgba(255, 206, 86, 1)',
+              'rgba(75, 192, 192, 1)',
+              'rgba(153, 102, 255, 1)',
+              'rgba(255, 159, 64, 1)',
+            ],
+            borderColor: [
+              'rgba(255, 99, 132, 1)',
+              'rgba(54, 162, 235, 1)',
+              'rgba(255, 206, 86, 1)',
+              'rgba(75, 192, 192, 1)',
+              'rgba(153, 102, 255, 1)',
+              'rgba(255, 159, 64, 1)',
+            ],
+            borderWidth: 1,
+            cubicInterpolationMode: 'monotone',
+            tension: 0.1,
+          },
+          {
+            label: 'Potencia',
+            data: [],
+            backgroundColor: [
+              'rgba(54, 162, 235, 1)',
+              'rgba(255, 99, 132, 1)',
+
+              'rgba(255, 206, 86, 1)',
+              'rgba(75, 192, 192, 1)',
+              'rgba(153, 102, 255, 1)',
+              'rgba(255, 159, 64, 1)',
+            ],
+            borderColor: [
+              'rgba(54, 162, 235, 1)',
+              'rgba(255, 99, 132, 1)',
+
+              'rgba(255, 206, 86, 1)',
+              'rgba(75, 192, 192, 1)',
+              'rgba(153, 102, 255, 1)',
+              'rgba(255, 159, 64, 1)',
+            ],
+            borderWidth: 1,
+            cubicInterpolationMode: 'monotone',
+            tension: 0.1,
+            pointRadius: 0,
+          },
+        ],
+      },
+      options: {
+        plugins: {
+          title: {
+            text: 'Central eléctrica',
+            font: {
+              size: 20,
+            },
+          },
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+          },
+        },
+      },
+    });
+   
+  }
+ /*  createChart() {
     const ctx = document.getElementById('myChart') as HTMLCanvasElement; // Afirmación de tipo
     this.chart1 = new Chart(ctx, {
       type: 'line',
@@ -216,24 +309,19 @@ export class Demo1Component implements AfterViewInit, OnDestroy, OnInit {
       },
     });
     this.updateChart();
-  }
+  } */
   createChart2() {
     const ctx = document.getElementById('myChart2') as HTMLCanvasElement; // Afirmación de tipo
     this.chart2 = new Chart(ctx, {
       type: 'line',
       data: {
         labels: [
-          '17:48:20',
-          '17:48:30',
-          '17:48:40',
-          '17:48:50',
-          '17:48:00',
-          '17:49:10',
+          
         ],
         datasets: [
           {
             label: 'rpm',
-            data: [1000, 1200, 1100, 1500, 2000, 1500, 1000, 1200, 1100, 1500],
+            data: [],
             backgroundColor: [
               'rgba(255, 206, 86, 1)',
               'rgba(255, 99, 132, 1)',
@@ -275,15 +363,7 @@ export class Demo1Component implements AfterViewInit, OnDestroy, OnInit {
         },
       },
     });
-    setInterval(() => {
-      const rpm = Math.floor(Math.random() * (2000 - 1000 + 1)) + 1000;
-      //Elimina los ultimos datos
-      this.chart2.data.datasets[0].data.shift();
-      this.chart2.data.labels.shift();
-      this.chart2.data.datasets[0].data.push(rpm);
-      this.chart2.data.labels.push(new Date().toTimeString().split(' ')[0]);
-      this.chart2.update();
-    }, 5000);
+
   }
 
   createChart3() {
@@ -292,17 +372,12 @@ export class Demo1Component implements AfterViewInit, OnDestroy, OnInit {
       type: 'line',
       data: {
         labels: [
-          '17:48:20',
-          '17:48:30',
-          '17:48:40',
-          '17:48:50',
-          '17:48:00',
-          '17:49:10',
+         
         ],
         datasets: [
           {
-            label: 'Potencia',
-            data: [1000, 1200, 1100, 1500, 2000, 1500, 1000, 1200, 1100, 1500],
+            label: 'Voltaje',
+            data: [],
             backgroundColor: [
               'rgba(153, 102, 255, 1)',
               'rgba(255, 99, 132, 1)',
@@ -343,15 +418,7 @@ export class Demo1Component implements AfterViewInit, OnDestroy, OnInit {
         },
       },
     });
-    setInterval(() => {
-      const rpm = Math.floor(Math.random() * (2000 - 1000 + 1)) + 1000;
-      //Elimina los ultimos datos
-      this.chart3.data.datasets[0].data.shift();
-      this.chart3.data.labels.shift();
-      this.chart3.data.datasets[0].data.push(rpm);
-      this.chart3.data.labels.push(new Date().toTimeString().split(' ')[0]);
-      this.chart3.update();
-    }, 5000);
+   
   }
   createChart4() {
     const ctx = document.getElementById('myChart4') as HTMLCanvasElement; // Afirmación de tipo
@@ -359,17 +426,12 @@ export class Demo1Component implements AfterViewInit, OnDestroy, OnInit {
       type: 'line',
       data: {
         labels: [
-          '17:48:20',
-          '17:48:30',
-          '17:48:40',
-          '17:48:50',
-          '17:48:00',
-          '17:49:10',
+        
         ],
         datasets: [
           {
             label: 'Temperatura',
-            data: [30, 40, 35, 30, 25, 20],
+            data: [],
             backgroundColor: [
               'rgba(255, 159, 64, 1)',
               'rgba(255, 99, 132, 1)',
@@ -410,15 +472,7 @@ export class Demo1Component implements AfterViewInit, OnDestroy, OnInit {
         },
       },
     });
-    setInterval(() => {
-      const rpm = Math.floor(Math.random() * (40 - 20 + 1)) + 20;
-      //Elimina los ultimos datos
-      this.chart4.data.datasets[0].data.shift();
-      this.chart4.data.labels.shift();
-      this.chart4.data.datasets[0].data.push(rpm);
-      this.chart4.data.labels.push(new Date().toTimeString().split(' ')[0]);
-      this.chart4.update();
-    }, 5000);
+   
   }
 
   updateChart() {
@@ -479,4 +533,54 @@ export class Demo1Component implements AfterViewInit, OnDestroy, OnInit {
     ignoreBackdropClick: true,
     class: 'modal-dialog-centered modal-xl',
   };
+
+intervalId:any;
+  async actualizarGraficos() {
+    const data = await this.getDataPLC();
+    console.log(data);
+
+    const st_vdfArray = data.map((item: any) => item.st_vdf);
+    const potenciaArray = data.map((item: any) => item.potencia);
+    const corrienteArray = data.map((item: any) => item.corriente);
+    const temperaturaArray = data.map((item: any) => item.temperatura);
+    const voltajeArray = data.map((item: any) => item.voltaje);
+    const rpmArray = data.map((item: any) => item.rpm);
+    const createdAtArray = data.map(
+      (item: any) =>
+        item.createdAt.split('T')[0] +
+        ' ' +
+        item.createdAt.split('T')[1].split('.')[0]
+    );
+    console.log(temperaturaArray);
+
+    //chart1
+    this.chart1.data.labels = createdAtArray;
+
+    this.chart1.data.datasets[0].data = temperaturaArray;
+    this.chart1.data.datasets[1].data = potenciaArray;
+
+    //chart2
+    this.chart2.data.labels = createdAtArray;
+
+    this.chart2.data.datasets[0].data = rpmArray;
+
+    //chart3
+    this.chart3.data.labels = createdAtArray;
+    this.chart3.data.datasets[0].data = voltajeArray;
+
+    //chart4
+    this.chart4.data.labels = createdAtArray;
+
+    this.chart4.data.datasets[0].data = temperaturaArray;
+
+    this.chart1.update();
+    this.chart2.update();
+    this.chart3.update();
+    this.chart4.update();
+   /* 
+    this.chart4.update(); */
+    this.intervalId =  setInterval(async () => {
+      this.actualizarGraficos();
+    }, 10000); // Ejecutar cada 5 segundos
+  }
 }

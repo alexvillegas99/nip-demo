@@ -1,6 +1,8 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 import Chart from 'chart.js/auto';
 import { ToastrService } from '../../services/toas.service';
+import { DataPlcService } from '../../services/data-plc.service';
+import { firstValueFrom, Subscription } from 'rxjs';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -8,20 +10,91 @@ import { ToastrService } from '../../services/toas.service';
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
-export class DashboardComponent implements AfterViewInit {
-  constructor(private readonly toastService: ToastrService) {}
+export class DashboardComponent implements AfterViewInit,OnDestroy {
+  constructor(
+    private readonly toastService: ToastrService,
+    private readonly dataPlc: DataPlcService
+  ) {
+    this.getDataPLC();
+  }
+  private intervalId: any;
+  ngOnDestroy(): void {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+      console.log('Intervalo cancelado.');
+    }
+  }
+  async getDataPLC() {
+    try {
+      const data = await firstValueFrom(this.dataPlc.getData());
+      return data;
+    } catch (error) {
+     
+      throw error; // Esto es opcional, dependiendo de si quieres manejar el error más arriba en la cadena de llamadas.
+    }
+  }
 
   ngAfterViewInit(): void {
     this.createChart();
     this.createEnergyConsumptionChart();
     this.createPressureChart();
     this.createStatusChart();
+    this.actualizarGraficos();
   }
   chart1: any;
   chart2: any;
   chart3: any;
   chart4: any;
-  createChart() {
+  async actualizarGraficos() {
+    const data = await this.getDataPLC();
+    console.log(data);
+
+    const st_vdfArray = data.map((item: any) => item.st_vdf);
+    const potenciaArray = data.map((item: any) => item.potencia);
+    const corrienteArray = data.map((item: any) => item.corriente);
+    const temperaturaArray = data.map((item: any) => item.temperatura);
+    const voltajeArray = data.map((item: any) => item.voltaje);
+    const rpmArray = data.map((item: any) => item.rpm);
+    const createdAtArray = data.map(
+      (item: any) =>
+        item.createdAt.split('T')[0] +
+        ' ' +
+        item.createdAt.split('T')[1].split('.')[0]
+    );
+    console.log(temperaturaArray);
+
+    //chart1
+    this.chart1.data.labels = createdAtArray;
+
+    this.chart1.data.datasets[0].data = temperaturaArray;
+
+    //chart2
+    const numeros = potenciaArray.map((cadena: any) => parseFloat(cadena));
+
+    // Especificar los tipos para el acumulador y el valorActual
+    const suma = numeros.reduce(
+      (acumulador: number, valorActual: number) => acumulador + valorActual,
+      0
+    );
+
+    const promedio = suma / numeros.length;
+    console.log(promedio.toFixed(2));
+    this.chart2.data.datasets[0].data = promedio.toFixed(2);
+    // Actualizar el gráfico
+
+    //chart4
+    this.chart4.data.labels = createdAtArray;
+
+    this.chart4.data.datasets[0].data = potenciaArray;
+
+    this.chart1.update();
+    this.chart2.update();
+    this.chart4.update();
+    this.intervalId =  setInterval(async () => {
+      this.actualizarGraficos();
+    }, 10000); // Ejecutar cada 5 segundos
+  }
+  /*   createChart() {
     const ctx = document.getElementById('myChart') as HTMLCanvasElement;
     this.chart1 = new Chart(ctx, {
       type: 'line',
@@ -173,9 +246,79 @@ export class DashboardComponent implements AfterViewInit {
         this.toastService.showInfo(`Click en: ${label} con el valor: ${value}`);
       }
     });
-  }
+  } */
 
-  createPressureChart() {
+  createChart() {
+    const ctx = document.getElementById('myChart') as HTMLCanvasElement;
+    this.chart1 = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [
+          {
+            label: 'Compresor 1',
+            data: [],
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 1,
+            pointRadius: 0, // Tamaño de los puntos
+            pointHoverRadius: 5, // Tamaño de los puntos al pasar el ratón
+            fill: false, // No rellenar el área bajo la línea
+            cubicInterpolationMode: 'monotone',
+            tension: 0.1,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: 'Temperatura de los compresores',
+            font: {
+              size: 20,
+            },
+          },
+          legend: {
+            display: true, // Mostrar leyenda
+            position: 'bottom', // Posición de la leyenda
+          },
+          tooltip: {
+            mode: 'index', // Modo de visualización
+            intersect: false, // No mostrar tooltips en la intersección de puntos
+          },
+        },
+        interaction: {
+          intersect: false,
+        },
+        scales: {
+          x: {
+            display: true,
+            title: {
+              display: true,
+            },
+          },
+         
+        },
+      },
+    });
+
+    this.chart1.canvas.addEventListener('click', (event: any) => {
+      const bar = this.chart1.getElementsAtEventForMode(
+        event,
+        'nearest',
+        { intersect: true },
+        true
+      )[0];
+      if (bar) {
+        const dataIndex = bar.index;
+        const datasetIndex = bar.datasetIndex;
+        const label = this.chart1.data.datasets[datasetIndex].label;
+        const value = this.chart1.data.datasets[datasetIndex].data[dataIndex];
+        this.toastService.showInfo(`Click en: ${label} con el valor: ${value}`);
+      }
+    });
+  }
+  /*   createPressureChart() {
     const ctx = document.getElementById('myChart2') as HTMLCanvasElement;
     this.chart2 = new Chart(ctx, {
       type: 'bar',
@@ -240,6 +383,81 @@ export class DashboardComponent implements AfterViewInit {
       // Actualizar el gráfico
       this.chart2.update();
     }, 5000); // Ejecutar cada 5 segundos
+
+    this.chart2.canvas.addEventListener('click', (event: any) => {
+      const bar = this.chart2.getElementsAtEventForMode(
+        event,
+        'nearest',
+        { intersect: true },
+        true
+      )[0];
+      if (bar) {
+        const dataIndex = bar.index;
+        const datasetIndex = bar.datasetIndex;
+        const label = this.chart2.data.labels[dataIndex];
+        const value = this.chart2.data.datasets[datasetIndex].data[dataIndex];
+        this.toastService.showInfo(`Click en: ${label} con el valor: ${value}`);
+      }
+    });
+  }
+ */
+
+  createPressureChart() {
+    const ctx = document.getElementById('myChart2') as HTMLCanvasElement;
+    this.chart2 = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Compresor 1'],
+        datasets: [
+          {
+            label: 'Presión (psi)',
+            data: [],
+            backgroundColor: [
+              'rgba(255, 99, 132, 0.2)',
+              'rgba(54, 162, 235, 0.2)',
+              'rgba(255, 206, 86, 0.2)',
+              'rgba(75, 12, 192, 0.2)',
+            ],
+            borderColor: [
+              '#E1B5BE',
+              'rgba(54, 162, 235, 1)',
+              'rgba(255, 206, 86, 1)',
+              'rgba(75, 12, 192, 1)',
+            ],
+            borderWidth: 1,
+          },
+        ],
+      },
+
+      options: {
+        plugins: {
+          title: {
+            display: true,
+            text: 'Presión de los compresores',
+            font: {
+              size: 20,
+            },
+          },
+          legend: {
+            display: true, // Mostrar leyenda
+            position: 'bottom', // Posición de la leyenda
+          },
+          tooltip: {
+            mode: 'index', // Modo de visualización
+            intersect: false, // No mostrar tooltips en la intersección de puntos
+          },
+        },
+        responsive: true,
+        scales: {
+          x: {
+            stacked: true,
+          },
+          y: {
+            stacked: true,
+          },
+        },
+      },
+    });
 
     this.chart2.canvas.addEventListener('click', (event: any) => {
       const bar = this.chart2.getElementsAtEventForMode(
@@ -335,7 +553,7 @@ export class DashboardComponent implements AfterViewInit {
     });
   }
 
-  createEnergyConsumptionChart() {
+  /*   createEnergyConsumptionChart() {
     const ctx = document.getElementById('myChart4') as HTMLCanvasElement;
     this.chart4 = new Chart(ctx, {
       type: 'line',
@@ -456,6 +674,68 @@ export class DashboardComponent implements AfterViewInit {
       // Actualizar el gráfico
       this.chart4.update();
     }, 5000); // Ejecutar cada 5 segundos
+
+    this.chart4.canvas.addEventListener('click', (event: any) => {
+      const bar = this.chart4.getElementsAtEventForMode(
+        event,
+        'nearest',
+        { intersect: true },
+        true
+      )[0];
+      if (bar) {
+        const dataIndex = bar.index;
+        const datasetIndex = bar.datasetIndex;
+        const label = this.chart4.data.datasets[datasetIndex].label;
+        const value = this.chart4.data.datasets[datasetIndex].data[dataIndex];
+        this.toastService.showInfo(`Click en: ${label} con el valor: ${value}`);
+      }
+    });
+  } */
+  createEnergyConsumptionChart() {
+    const ctx = document.getElementById('myChart4') as HTMLCanvasElement;
+    this.chart4 = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [
+          {
+            label: 'Compresor 1',
+            data: [],
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 1,
+            pointRadius: 0, // Tamaño de los puntos
+            pointHoverRadius: 5, // Tamaño de los puntos al pasar el ratón
+            fill: false, // No rellenar el área bajo la línea
+            cubicInterpolationMode: 'monotone',
+            tension: 0.1,
+          },
+        ],
+      },
+      options: {
+        plugins: {
+          title: {
+            display: true,
+            text: 'Potencia de los compresores',
+            font: {
+              size: 20,
+            },
+          },
+          legend: {
+            display: true, // Mostrar leyenda
+            position: 'bottom', // Posición de la leyenda
+          },
+          tooltip: {
+            mode: 'index', // Modo de visualización
+            intersect: false, // No mostrar tooltips en la intersección de puntos
+          },
+        },
+        scales: {
+          y: {
+            beginAtZero: false,
+          },
+        },
+      },
+    });
 
     this.chart4.canvas.addEventListener('click', (event: any) => {
       const bar = this.chart4.getElementsAtEventForMode(
