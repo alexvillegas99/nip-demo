@@ -1,12 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
-  declarations: [],
+  declarations: [
+  ],
   imports: [
     CommonModule,
-    RouterOutlet
+    RouterModule
   ]
 })
-export class LayoutUserModule { }
+export class WebsiteModule { }

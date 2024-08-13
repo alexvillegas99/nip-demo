@@ -8,23 +8,45 @@
   /** primary **/
   --header: #0059b7;
   --primary: #0059b7;
-  --primary-degradado: rgba(0, 89, 183,.1);
+  --primary-degradado: rgba(0, 89, 183, .1);
 }
 
-.btn-cancel{
+.btn-cancel {
   background-color: #E7EAEE !important;
   color: #0059b7;
   padding: .6rem .8rem;
 
 }
+
 @font-face {
-    font-family: Roboto;
-    src: url("assets/fonts/Roboto-Medium.ttf") format("opentype");
-  }
-* {
   font-family: Roboto;
+  src: url("assets/fonts/Roboto-Medium.ttf") format("opentype");
 }
-.btn-primary{
+
+@font-face {
+  font-family: Poppins;
+  src: url(assets/fonts/Poppins-Regular.ttf) format("opentype");
+}
+
+
+* {
+  font-family: Poppins;
+}
+
+/*TODO: COLORES COOPE*/
+$color-1: #090912;
+$color-2: #0059B7;
+$color-3: #D9D9D9;
+$color-texto: #5B6877;
+$color-borde: #EEF5F9;
+$color-borde-icono: #D6DCE5;
+$color-hover: #F8F8F9;
+
+$tamano-fuente-1: 18px;
+$tamano-fuente-2: 16px;
+$tamano-fuente-3: 14px;
+
+.btn-primary {
   background-color: var(--primary) !important;
   color: white;
   border: none;
@@ -35,14 +57,19 @@
   font-weight: 300;
   transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
+
 body {
   margin: 0px;
 }
+
 .scroll::-webkit-scrollbar {
-  width: 0px !important; /* Oculta la barra de desplazamiento en navegadores webkit (Chrome, Safari, etc.) */
+  width: 0px !important;
+  /* Oculta la barra de desplazamiento en navegadores webkit (Chrome, Safari, etc.) */
 }
+
 .scroll2::-webkit-scrollbar {
-  width: 5px !important; /* Oculta la barra de desplazamiento en navegadores webkit (Chrome, Safari, etc.) */
+  width: 5px !important;
+  /* Oculta la barra de desplazamiento en navegadores webkit (Chrome, Safari, etc.) */
 }
 
 
@@ -90,9 +117,9 @@ input:valid {
   border: 1.5px solid black;
 }
 
-.input:focus ~ label,
-input:valid ~ label,
-.input:read-only ~ label {
+.input:focus~label,
+input:valid~label,
+.input:read-only~label {
   transform: translateY(-50%) scale(0.8);
   background-color: white;
   padding: 0 0.2em;
@@ -102,6 +129,7 @@ input:valid ~ label,
   -ms-transform: translateY(-50%) scale(0.8);
   -o-transform: translateY(-50%) scale(0.8);
 }
+
 .icon-input {
   position: absolute;
   right: 0.5rem;
@@ -259,21 +287,27 @@ input:valid ~ label,
 
 /* Personaliza la barra de desplazamiento para navegadores webkit (Chrome, Safari) */
 .card-list::-webkit-scrollbar {
-  width: 8px; /* Ajusta el ancho del scrollbar */
+  width: 8px;
+  /* Ajusta el ancho del scrollbar */
 }
 
 .card-list::-webkit-scrollbar-track {
-  background: #f1f1f1; /* Color del fondo del track del scrollbar */
-  border-radius: 10px; /* Bordes redondeados del track */
+  background: #f1f1f1;
+  /* Color del fondo del track del scrollbar */
+  border-radius: 10px;
+  /* Bordes redondeados del track */
 }
 
 .card-list::-webkit-scrollbar-thumb {
-  background: #888; /* Color del pulgar del scrollbar */
-  border-radius: 10px; /* Bordes redondeados del pulgar */
+  background: #888;
+  /* Color del pulgar del scrollbar */
+  border-radius: 10px;
+  /* Bordes redondeados del pulgar */
 }
 
 .card-list::-webkit-scrollbar-thumb:hover {
-  background: #555; /* Color del pulgar del scrollbar al pasar el mouse por encima */
+  background: #555;
+  /* Color del pulgar del scrollbar al pasar el mouse por encima */
 }
 
 thead {
@@ -282,9 +316,10 @@ thead {
     font-weight: 300;
   }
 }
-tbody{
-  tr{
-    td{
+
+tbody {
+  tr {
+    td {
       font-weight: 200;
       color: #666E7D;
     }
@@ -295,16 +330,55 @@ tbody{
   border-left: 1px solid #dee2e6;
   border-right: 1px solid #dee2e6;
 }
+
 .table-bordered-sides th,
 .table-bordered-sides td {
   border-left: none;
   border-right: none;
 }
+
 .table-bordered-sides tr:first-child th,
 .table-bordered-sides tr:first-child td {
   border-top: none;
 }
+
 .table-bordered-sides tr:last-child th,
 .table-bordered-sides tr:last-child td {
   border-bottom: none;
 }
+
+/** SEARCH **/
+.search-container {
+  display: flex;
+  align-items: center;
+}
+
+.search-container input {
+  flex: 1;
+  padding: 8px;
+  padding-left: 1rem;
+  background-color: transparent;
+  border-top: 2px solid #EEF5F9;
+  border-right: 2px solid #EEF5F9;
+  border-bottom: 2px solid #EEF5F9;
+  border-left: none;
+  border-radius: 0px 12px 12px 0px;
+  font-size: 16px;
+  height: 50px;
+}
+
+.search-container button {
+  background-color: #fff;
+  border-top: 2px solid #EEF5F9;
+  border-right: none;
+  border-bottom: 2px solid #EEF5F9;
+  border-left: 2px solid #EEF5F9;
+  padding: 8px 12px;
+  border-radius: 12px 0px 0px 12px;
+  cursor: pointer;
+  height: 50px;
+}
+
+// .search-container button:hover {
+//   background-color: $color-1;
+// }

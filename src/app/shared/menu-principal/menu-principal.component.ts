@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { Route, Router, RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { MENU_PORTAL } from '../../core/constants/local-store.constants';
 
 @Component({

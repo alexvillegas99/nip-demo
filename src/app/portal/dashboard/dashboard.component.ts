@@ -11,19 +11,26 @@ import { firstValueFrom, Subscription } from 'rxjs';
   styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent implements AfterViewInit,OnDestroy {
+  private intervalId: any;
+  chart1!: any;
+  chart2!: any;
+  chart3!: any;
+  chart4!: any;
+
   constructor(
     private readonly toastService: ToastrService,
     private readonly dataPlc: DataPlcService
   ) {
     this.getDataPLC();
   }
-  private intervalId: any;
+  
   ngOnDestroy(): void {
     if (this.intervalId) {
       clearInterval(this.intervalId);
       console.log('Intervalo cancelado.');
     }
   }
+
   async getDataPLC() {
     try {
       const data = await firstValueFrom(this.dataPlc.getData());
@@ -41,13 +48,10 @@ export class DashboardComponent implements AfterViewInit,OnDestroy {
     this.createStatusChart();
     this.actualizarGraficos();
   }
-  chart1: any;
-  chart2: any;
-  chart3: any;
-  chart4: any;
+
   async actualizarGraficos() {
     const data = await this.getDataPLC();
-    console.log(data);
+    // console.log(data, 'data dashboard...');
 
     const st_vdfArray = data.map((item: any) => item.st_vdf);
     const potenciaArray = data.map((item: any) => item.potencia);

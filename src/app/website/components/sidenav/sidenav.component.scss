@@ -1,0 +1,161 @@
+@import "./../../../../styles.scss";
+
+.sidenav {
+    transition: all .5s ease;
+    height: 100vh;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    border-top: 2px solid $color-borde;
+    border-right: 2px solid $color-borde;
+    border-bottom: 2px solid $color-borde;
+    border-left: none;
+    background: #fff;
+    box-shadow: 0.063rem 0 1.25rem 0 $color-borde;
+
+    .logo-container {
+        display: flex;
+        align-items: center;
+        padding: 0.938rem;
+        width: 100%;
+        border-bottom: 2px solid $color-borde;
+
+
+        .logo {
+            text-align: center;
+            width: 3.5rem;
+            padding: 0.313rem;
+            font-size: 24px;
+            font-weight: 900;
+            cursor: pointer;
+            border: 2px solid $color-borde-icono;
+            border-radius: 50%;
+        }
+
+        .logo-text {
+            padding-left: 0.5rem;
+            padding-right: 1.5rem;
+            font-size: 18px;
+            font-weight: 500;
+            line-height: 27px;
+            text-align: left;            
+        }
+
+        .btn-close {
+            width: 3.5rem;
+            background-color: transparent;
+        }
+    }
+}
+
+.sidenav-collapsed {
+    // width: 16.5625rem;
+    width: 20rem;
+}
+
+.sidenav-nav {
+    list-style: none;
+    padding-inline: 0.9rem;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+
+    .sidenav-nav-item {
+        width: 100%;
+        padding-block: 0.3rem;
+        border-bottom: 2px solid $color-borde;
+
+        .sidenav-nav-link {
+            display: flex;
+            align-items: center;
+            height: 2.6rem;
+            color: #000;
+            text-decoration: none;
+            border-radius: 0.625rem;
+            transition: all .3s ease;
+
+            .sidenav-link-icon {
+                width: 1.8rem;
+                min-width: 1.5rem;
+                margin-left: 1rem;
+                text-align: center
+            }
+
+            .sidenav-link-text {
+                margin-left: 1rem;
+                color: #000;
+                font-family: Poppins;
+                font-size: 18px;
+                font-weight: 500;
+                line-height: 27px;
+                text-align: left;
+            }
+        }
+
+        .sidenav-nav-link:hover {
+            background-color: $color-hover;
+
+            .sidenav-link-text {
+                margin-left: 1rem;
+                color: #000;
+            }
+        }
+    }
+
+    .sidenav-nav-item:hover {
+        background-color: $color-hover;
+    }
+}
+
+.active {
+    background-color: $color-hover;
+
+    .menu-collapse-icon,
+    .sidenav-link-icon,
+    .sidenav-link-text {
+        color: #000;
+    }
+}
+
+//scrollbar and visibility on hover and focus
+.scrollwrap {
+    overflow-y: auto;
+    visibility: hidden;
+    height: calc(100% - 3.65rem);
+}
+
+.sidenav-nav,
+.scrollwrap:hover,
+.scrollwrap:focus {
+    visibility: visible;
+}
+
+.scrollwrap_delayed {
+    transition: visibility 0.5s 0.2s;
+}
+
+.scrollwrap_delayed:hover {
+    transition: visibility 0.2s 0.2s;
+}
+
+// works on chrome, edge and safari
+.scrollwrap::-webkit-scrollbar {
+    width: 10px;
+}
+
+.scrollwrap::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.scrollwrap::-webkit-scrollbar-thumb {
+    background-color: #556268;
+    border-radius: 20px;
+}
+
+// works on firefox
+.scrollwrap {
+    scrollbar-width: thin;
+    scrollbar-color: #556268 transparent;
+}
