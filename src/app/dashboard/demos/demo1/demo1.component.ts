@@ -29,6 +29,7 @@ export class Demo1Component implements AfterViewInit, OnDestroy, OnInit {
     private cdr: ChangeDetectorRef,
     private readonly dataPlc: DataPlcService
   ) {}
+  tablaDeDatos: any;
   async getDataPLC() {
     try {
       const data = await firstValueFrom(this.dataPlc.getData());
@@ -38,7 +39,9 @@ export class Demo1Component implements AfterViewInit, OnDestroy, OnInit {
       throw error; // Esto es opcional, dependiendo de si quieres manejar el error más arriba en la cadena de llamadas.
     }
   }
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.getTablaDatos();
+  }
   compresor = true;
   eventos = false;
   title: string = 'COMPRESOR XYZ';
@@ -124,11 +127,35 @@ export class Demo1Component implements AfterViewInit, OnDestroy, OnInit {
   intervall1: any;
   intervall2: any;
   ngOnDestroy(): void {
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
-      console.log('Intervalo cancelado.');
-    }
+    clearInterval(this.intervalId);
+    clearInterval(this.intervall2);
+    clearInterval(this.interval3);
+    console.log('Intervalos cancelados.');
   }
+
+  getTablaDatos() {
+    this.dataPlc.getDataUltimo().subscribe({
+      next: (data) => {
+        data = Object.entries(data.data).map(([dato, valor]) => ({ dato, valor }));
+        this.tablaDeDatos = data;
+        console.log(this.tablaDeDatos);
+        this.setupInterval();
+      },
+      error: (error) => {
+        console.error(error);
+        this.setupInterval();
+      },
+      
+    });
+  }
+
+  setupInterval() {
+    this.interval3 = setInterval(() => {
+      this.getTablaDatos();
+    }, 10000);
+  }
+
+  interval3: any;
   ngAfterViewInit(): void {
  /*    this.intervall1 = setInterval(() => {
       this.updateChart();
@@ -136,7 +163,11 @@ export class Demo1Component implements AfterViewInit, OnDestroy, OnInit {
     this.intervall2 = setInterval(() => {
       this.hrs = Number((this.hrs + 0.01).toFixed(2));
       this.cdr.detectChanges();
-    }, 1000);
+    }, 10000);
+
+    this.getTablaDatos();
+
+
 /*     setTimeout(() => {
      
     }, 1000); */
@@ -146,6 +177,7 @@ export class Demo1Component implements AfterViewInit, OnDestroy, OnInit {
     this.createChart4();
     this.actualizarGraficos();
   }
+  
   chart1: any;
   chart2: any;
   chart3: any;
@@ -579,8 +611,8 @@ intervalId:any;
     this.chart4.update();
    /* 
     this.chart4.update(); */
-    this.intervalId =  setInterval(async () => {
+   /*  this.intervalId =  setInterval(async () => {
       this.actualizarGraficos();
-    }, 10000); // Ejecutar cada 5 segundos
+    }, 10000);  */// Ejecutar cada 5 segundos
   }
 }
