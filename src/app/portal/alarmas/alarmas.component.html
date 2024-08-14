@@ -1,67 +1,19 @@
 <div class="filters" [formGroup]="filterForm">
   <div class="item">
-    <label>Buscar</label>
-    <div class="input-group mb-3" style="width: 20rem">
-      <input
-        type="text"
-        class="form-control"
-        placeholder="Buscar..."
-        formControlName="valorInpiut"
-        (input)="filtrar()"
-      />
-    </div>
+    <app-busqueda [label]="'Buscar Alarma'" (searchText)="textoFiltrado($event)"></app-busqueda>
   </div>
-  <!--  <div class="item">
-    <div class="custom-select" style="margin-top: 7.5px">
-      <label>EVENTO</label>
-      <select
-        class="form-select"
-        style="border: 1px solid black"
-        formControlName="evento"
-      >
-        <option value="">Seleccione...</option>
-        <option *ngFor="let item of eventos" [value]="item.nombre">
-          {{ item.nombre }}
-        </option>
-      </select>
-    </div>
-  </div> -->
   <div class="item">
-    <div class="custom-select" style="margin-top: 7.5px">
-      <label>ESTADO</label>
-      <select
-        class="form-select"
-        style="border: 1px solid black"
-        formControlName="estado"
-      >
-        <option value="">Seleccione...</option>
-        <option *ngFor="let item of estadoAlarma" [value]="item.code">
-          {{ item.nombre }}
-        </option>
-      </select>
-    </div>
+    <app-select [labelDisabled]="'Seleccione...'" [lista]="estadoAlarma"
+      (opcionEvent)="opcionSeleccionada($event)"></app-select>
   </div>
-
-  <button
-    class="btn"
-    style="
-      height: 2.7rem;
-      margin-top: 7px;
-      background-color: #6aabec;
-      color: white;
-    "
-    (click)="filtrar()"
-  >
-    <!--   <i class="fa fa-search" aria-hidden="true"></i> -->
-    Buscar
-  </button>
 </div>
+
 <div class="table-responsive">
   <table class="table align-middle table-bordered table-bordered-sides">
     <thead>
       <tr>
         @for (item of headers; track $index) {
-        <th>{{ item }}</th>
+        <th>{{ item | uppercase }}</th>
         }
       </tr>
     </thead>
@@ -77,16 +29,19 @@
         <td>
           {{ item.condicion }}
         </td>
-        <td
-          [ngClass]="{
+        <td [ngClass]="{
             'alarma-danger': item.estado === 'Pendiente',
             'alarma-success': item.estado === 'Atendido'
-          }"
-        >
+          }">
           {{ item.evento }}
         </td>
         <td>
-          {{ item.estado }}
+          <p [ngClass]="{
+            'alarma-pendiente': item.estado === 'Pendiente',
+            'alarma-atentido': item.estado === 'Atendido'
+            }">
+            {{ item.estado | uppercase }}
+          </p>
         </td>
         <td>
           {{ item.valor }}
@@ -95,28 +50,17 @@
           {{ item.usuario }}
         </td>
         <td style="text-align: center">
-          <button
-            [disabled]="item.estado === 'Atendido'"
-            type="button"
-            class="btn btn-warning"
-            style="margin-right: 5px; color: white"
-            title="Aplazar"
-            (click)="openModal(aplazar_modal)"
-          >
-            Aplazar
+          <button [disabled]="item.estado === 'Atendido'" type="button" class="btn" title="Aplazar"
+            (click)="openModal(aplazar_modal)">
+            <img src="assets/imgs/icons/aplazar.svg" alt="img_notificacion">
           </button>
         </td>
         <td>
-          <button
-            class="btn"
-            [disabled]="item.estado === 'Atendido'"
-            [ngClass]="{
-              'btn-secondary': item.estado === 'Atendido',
+          <button class="btn" [disabled]="item.estado === 'Atendido'" [ngClass]="{
+              'btn-2': item.estado === 'Atendido',
               'btn-1': item.estado === 'Pendiente'
-            }"
-            (click)="openModal(reconocer_modal)"
-          >
-            {{ item.estado === "Atendido" ? "Reconocida" : "Reconocer" }}
+            }" (click)="openModal(reconocer_modal)">
+            {{ (item.estado === "Atendido" ? "Reconocida" : "Reconocer") | uppercase }}
           </button>
         </td>
       </tr>
@@ -128,12 +72,7 @@
 <ng-template #reconocer_modal>
   <div class="modal-header">
     <h4 class="modal-title pull-left">Reconocer Alarma</h4>
-    <button
-      type="button"
-      class="btn-close close pull-right"
-      aria-label="Close"
-      (click)="closeModal()"
-    >
+    <button type="button" class="btn-close close pull-right" aria-label="Close" (click)="closeModal()">
       <span aria-hidden="true" class="visually-hidden">&times;</span>
     </button>
   </div>
@@ -148,67 +87,42 @@
 
       <!-- Botón de submit -->
       <div class="button-contianer" style="text-align: right; margin: 10px 0px">
-        <button
-          type="submit"
-          class="btn btn-secondary"
-          style="margin-right: 10px"
-          (click)="closeModal()"
-        >
+        <button type="submit" class="btn btn-secondary" style="margin-right: 10px" (click)="closeModal()">
           Cancelar
         </button>
-        <button
-          type="submit"
-          class="btn btn-primary"
-          (click)="reconocerAlarmar()"
-        >
+        <button type="submit" class="btn btn-primary" (click)="reconocerAlarmar()">
           Guardar
         </button>
       </div>
     </form>
   </div>
 </ng-template>
+
 <ng-template #aplazar_modal>
   <div class="modal-header">
     <h4 class="modal-title pull-left">Aplazar alarma</h4>
-    <button
-      type="button"
-      class="btn-close close pull-right"
-      aria-label="Close"
-      (click)="closeModal()"
-    >
+    <button type="button" class="btn-close close pull-right" aria-label="Close" (click)="closeModal()">
       <span aria-hidden="true" class="visually-hidden">&times;</span>
     </button>
   </div>
   <div class="modal-body">
     <form>
       <div class="row">
-        <div
-          class="col-12 form-group"
-          style="
+        <div class="col-12 form-group" style="
             display: flex;
             flex-direction: row;
             justify-content: flex-start;
             align-items: center;
             gap: 1rem;
-          "
-        >
+          ">
           <label for="titulo">Aplazar durante:</label>
-          <timepicker
-            [(ngModel)]="myTime"
-            [showMeridian]="isMeridian"
-            [showSpinners]="showSpinners"
-          ></timepicker>
+          <timepicker [(ngModel)]="myTime" [showMeridian]="isMeridian" [showSpinners]="showSpinners"></timepicker>
         </div>
       </div>
 
       <!-- Botón de submit -->
       <div class="button-contianer" style="text-align: right; margin: 10px 0px">
-        <button
-          type="submit"
-          class="btn btn-secondary"
-          style="margin-right: 10px"
-          (click)="closeModal()"
-        >
+        <button type="submit" class="btn btn-secondary" style="margin-right: 10px" (click)="closeModal()">
           Cancelar
         </button>
         <button type="submit" class="btn btn-primary" (click)="aplazarAlarma()">

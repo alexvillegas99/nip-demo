@@ -1,8 +1,6 @@
 /*Importación de bootstrap*/
 @import 'bootstrap/dist/css/bootstrap.min.css';
 
-
-
 /* You can add global styles to this file, and also import other style files */
 :root {
   /** primary **/
@@ -41,6 +39,8 @@ $color-texto: #5B6877;
 $color-borde: #EEF5F9;
 $color-borde-icono: #D6DCE5;
 $color-hover: #F8F8F9;
+$color-letra-header: #666E7D;
+$color-letra-row: #4B4B4B;
 
 $tamano-fuente-1: 18px;
 $tamano-fuente-2: 16px;
@@ -310,20 +310,14 @@ input:valid~label,
   /* Color del pulgar del scrollbar al pasar el mouse por encima */
 }
 
-thead {
-  th {
-    background-color: #f4f4f4 !important;
-    font-weight: 300;
-  }
+thead th {
+  background-color: $color-hover !important;
+  font-weight: 400;
 }
 
-tbody {
-  tr {
-    td {
-      font-weight: 200;
-      color: #666E7D;
-    }
-  }
+tbody tr td{
+  font-weight: 200;
+  color: #666E7D;
 }
 
 .table-bordered-sides {
@@ -346,39 +340,3 @@ tbody {
 .table-bordered-sides tr:last-child td {
   border-bottom: none;
 }
-
-/** SEARCH **/
-.search-container {
-  display: flex;
-  align-items: center;
-}
-
-.search-container input {
-  flex: 1;
-  padding: 8px;
-  padding-left: 1rem;
-  background-color: transparent;
-  border-top: 2px solid #EEF5F9;
-  border-right: 2px solid #EEF5F9;
-  border-bottom: 2px solid #EEF5F9;
-  border-left: none;
-  border-radius: 0px 12px 12px 0px;
-  font-size: 16px;
-  height: 50px;
-}
-
-.search-container button {
-  background-color: #fff;
-  border-top: 2px solid #EEF5F9;
-  border-right: none;
-  border-bottom: 2px solid #EEF5F9;
-  border-left: 2px solid #EEF5F9;
-  padding: 8px 12px;
-  border-radius: 12px 0px 0px 12px;
-  cursor: pointer;
-  height: 50px;
-}
-
-// .search-container button:hover {
-//   background-color: $color-1;
-// }

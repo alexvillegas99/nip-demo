@@ -24,8 +24,11 @@
                         <i *ngIf="collapsed" class="menu-collapse-icon"
                             [ngClass]="!item.expanded ? 'fa fa-angle-right' : 'fa fa-angle-down'"></i>
                     </a>
-                    <app-sublevel-menu *ngIf="collapsed" [nivel]="2" [data]="item" [collapsed]="collapsed" [multiple]="multiple"
-                        [expanded]="item.expanded"></app-sublevel-menu>
+                    <div class="sublevel" style="padding-left: 1rem;">
+                        <app-sublevel-menu *ngIf="collapsed" [nivel]="2" [data]="item" [collapsed]="collapsed" [multiple]="multiple"
+                            [expanded]="item.expanded">
+                        </app-sublevel-menu>
+                    </div>
                 </ng-container>
                 <ng-template #noItems>
                     <a class="sublevel-nav-link" [routerLink]="[item.routeLink]" routerLinkActive="active-sublevel"

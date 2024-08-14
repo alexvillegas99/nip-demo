@@ -99,30 +99,31 @@
                 padding-right: 1rem;
             }
         }
-        
 
         .sidenav-nav-link:hover {
             background-color: $color-hover;
 
             .sidenav-link-text {
                 margin-left: 1rem;
-                color: #000;
+                color: $color-1;
             }
         }
     }
 
     .sidenav-nav-item:hover {
         background-color: $color-hover;
+        color: $color-1;
     }
 }
 
 .active {
     background-color: $color-hover;
+    color: $color-1;
 
     .menu-collapse-icon,
     .sidenav-link-icon,
     .sidenav-link-text {
-        color: #000;
+        color: $color-1;
     }
 }
 
@@ -167,7 +168,7 @@
     scrollbar-color: #556268 transparent;
 }
 
-
+/** Sublevel style */
 .sublevel-nav {
     list-style: none;
     padding-inline: 0;
@@ -228,14 +229,13 @@
             .menu-collapse-icon,
             .sidenav-link-icon,
             .sublevel-link-text {
-                color: #000;
+                color: $color-1;
             }
         }
     }
 
     .sublevel-nav-item:hover {
         background-color: $color-hover;
+        color: $color-1;
     }
 }
-
-// Aquí se puede agregar el estilo para el componente `app-sublevel-menu` si es necesario.

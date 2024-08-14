@@ -1,11 +1,6 @@
 <div class="container-header">
     <div class="search">
-        <form [formGroup]="formularioBusqueda">
-            <div class="search-container">
-                <button readonly><img src="assets/imgs/header/search.svg" alt="search"></button>
-                <input formControlName="search" type="text" placeholder="Buscar">
-            </div>
-        </form>
+        <app-busqueda [label]="'Buscar'" (searchText)="busqueda($event)"></app-busqueda>
     </div>
     <div class="options">
         <div class="avatar">

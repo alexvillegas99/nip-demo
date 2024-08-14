@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import * as mapboxgl from 'mapbox-gl';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import { environment } from '../../env/env';
@@ -11,6 +11,7 @@ import { CommonModule } from '@angular/common';
   imports: [RouterModule, CommonModule],
   templateUrl: './inicio.component.html',
   styleUrls: ['./inicio.component.scss'],
+  encapsulation: ViewEncapsulation.None // Para desactivar el encapsulamiento
 })
 export class InicioComponent implements OnInit {
   map: mapboxgl.Map;
@@ -86,6 +87,7 @@ export class InicioComponent implements OnInit {
       icono: 'equipo1',
     },
   ];
+  
   arrayCompresores: any[] = [
     {
       nombre: 'Compresor 532',
