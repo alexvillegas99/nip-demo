@@ -1,4 +1,4 @@
-@import "./../../../../styles.scss";
+@import "../../../../styles.scss";
 
 .sidenav {
     transition: all .5s ease;
@@ -75,14 +75,14 @@
             text-decoration: none;
             border-radius: 0.625rem;
             transition: all .3s ease;
-
+        
             .sidenav-link-icon {
                 width: 1.8rem;
                 min-width: 1.5rem;
                 margin-left: 1rem;
-                text-align: center
+                text-align: center;
             }
-
+        
             .sidenav-link-text {
                 margin-left: 1rem;
                 color: #000;
@@ -92,7 +92,14 @@
                 line-height: 27px;
                 text-align: left;
             }
+        
+            .menu-collapse-icon {
+                font-size: 25px;
+                margin-left: auto;
+                padding-right: 1rem;
+            }
         }
+        
 
         .sidenav-nav-link:hover {
             background-color: $color-hover;
@@ -159,3 +166,76 @@
     scrollbar-width: thin;
     scrollbar-color: #556268 transparent;
 }
+
+
+.sublevel-nav {
+    list-style: none;
+    padding-inline: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; // Ajustar si deseas alinear a la izquierda
+
+    .sublevel-nav-item {
+        width: 100%;
+        padding-block: 0.3rem;
+        border-bottom: 2px solid $color-borde;
+
+        .sublevel-nav-link {
+            display: flex;
+            align-items: center;
+            height: 2.6rem;
+            color: #000;
+            text-decoration: none;
+            border-radius: 0.625rem;
+            transition: all .3s ease;
+            padding-left: 1rem;
+
+            .sidenav-link-icon {
+                width: 1.8rem;
+                min-width: 1.5rem;
+                margin-left: 1rem;
+                text-align: center;
+            }
+
+            .sublevel-link-text {
+                margin-left: 1rem;
+                color: #000;
+                font-family: Poppins;
+                font-size: 18px;
+                font-weight: 500;
+                line-height: 27px;
+                text-align: left;
+            }
+
+            .menu-collapse-icon {
+                font-size: 25px;
+                margin-left: auto;
+                padding-right: 1rem;
+            }
+        }
+
+        .sublevel-nav-link:hover {
+            background-color: $color-hover;
+            .sublevel-link-text {
+                color: #000;
+            }
+        }
+
+        .active-sublevel {
+            background-color: $color-hover;
+
+            .menu-collapse-icon,
+            .sidenav-link-icon,
+            .sublevel-link-text {
+                color: #000;
+            }
+        }
+    }
+
+    .sublevel-nav-item:hover {
+        background-color: $color-hover;
+    }
+}
+
+// Aquí se puede agregar el estilo para el componente `app-sublevel-menu` si es necesario.

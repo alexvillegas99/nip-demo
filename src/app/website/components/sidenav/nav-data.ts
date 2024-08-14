@@ -15,7 +15,7 @@ export const NAVBARDATA: INavbarData[] = [
         // roles: ['ADMIN']
     },
     {
-        routeLink: './configuracion/gestion-documentos',
+        routeLink: '',
         icon: 'assets/imgs/navbar/equipos-d.svg',
         label: 'Equipo Industrial',
         items: [
@@ -25,14 +25,16 @@ export const NAVBARDATA: INavbarData[] = [
                 icon: 'assets/imgs/navbar/medidor-d.svg',
                 items: [
                     {
-                        routeLink: '',
+                        routeLink: './mantenimiento',
                         label: 'Mantenimiento',
                         icon: 'assets/imgs/navbar/mantenimiento-d.svg',
+                        items: []
                     },
                     {
-                        routeLink: '',
+                        routeLink: './gestion',
                         label: 'Gestión',
                         icon: 'assets/imgs/navbar/reportes-d.svg',
+                        items: []
                     }
                 ]
             },
@@ -42,12 +44,12 @@ export const NAVBARDATA: INavbarData[] = [
                 icon: 'assets/imgs/navbar/medidor-d.svg',
                 items: [
                     {
-                        routeLink: '',
+                        routeLink: './mantenimiento',
                         label: 'Mantenimiento',
                         icon: 'assets/imgs/navbar/mantenimiento-d.svg',
                     },
                     {
-                        routeLink: '',
+                        routeLink: './gestion',
                         label: 'Gestión',
                         icon: 'assets/imgs/navbar/reportes-d.svg',
                     }
@@ -56,25 +58,25 @@ export const NAVBARDATA: INavbarData[] = [
         ],
         // roles: ['ADMIN', 'BASIC']
     },
+    // {
+    //     routeLink: '',
+    //     icon: 'assets/imgs/navbar/consumo-energetico-d.svg',
+    //     label: 'Consumo Energético',
+    //     items: [
+    //         // {
+    //         //     routeLink: '',
+    //         //     label: 'Módulos',
+    //         // },
+    //     ],
+    //     // roles: ['ADMIN', 'BASIC']
+    // },
     {
-        routeLink: './configuracion/gestion-documentos',
-        icon: 'assets/imgs/navbar/consumo-energetico-d.svg',
-        label: 'Consumo Energético',
-        items: [
-            // {
-            //     routeLink: './configuracion/gestion-nivel-1',
-            //     label: 'Módulos',
-            // },
-        ],
-        // roles: ['ADMIN', 'BASIC']
-    },
-    {
-        routeLink: './configuracion/gestion-documentos',
+        routeLink: '',
         icon: 'assets/imgs/navbar/reporteria-d.svg',
         label: 'Reportes',
         items: [
             {
-                routeLink: './configuracion/gestion-nivel-1',
+                routeLink: './reportes',
                 label: 'Reporte Incidentes',
                 icon: 'assets/imgs/navbar/reporte-incidente-d.svg',
             },

@@ -6,6 +6,7 @@ import {
   Input,
   OnInit,
   Output,
+  ViewEncapsulation,
 } from '@angular/core';
 import { fadeInOut, INavbarData } from './helper';
 import {
@@ -45,6 +46,7 @@ interface SideNavToggle {
   ],
   standalone: true,
   imports: [RouterModule, RouterOutlet, CommonModule, SublevelMenuComponent],
+  encapsulation: ViewEncapsulation.None // Para desactivar el encapsulamiento
 })
 export class SidenavComponent implements OnInit {
   @Input() navDatas: any;
@@ -106,8 +108,6 @@ export class SidenavComponent implements OnInit {
   shrinkItems(item: INavbarData): void {
     console.log(item, 'shrinkItems');
     console.log(!this.multiple, 'multiple');
-    
-    
     if (!this.multiple) {
       for (let modelItem of this.navData) {
         console.log(item !== modelItem && modelItem.expanded, 'item !== modelItem && modelItem.expanded....');

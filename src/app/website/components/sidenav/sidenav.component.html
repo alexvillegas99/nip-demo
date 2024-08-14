@@ -33,8 +33,13 @@
                 }
 
                 @if (collapsed && data.items && data.items.length > 0) {
-                    <app-sublevel-menu (toggleEvent)="closeSidenav()" [data]="data" [collapsed]="collapsed"
-                    [multiple]="multiple" [expanded]="data.expanded"></app-sublevel-menu>
+                    <app-sublevel-menu 
+                        [nivel]="1"
+                        [data]="data"
+                        [collapsed]="collapsed"
+                        [multiple]="multiple"
+                        [expanded]="data.expanded">
+                    </app-sublevel-menu>
                 }
             </li>
             }

@@ -12,6 +12,7 @@ import {
   Input,
   OnInit,
   Output,
+  ViewEncapsulation,
 } from '@angular/core';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { fadeInOut, INavbarData } from './helper';
@@ -21,73 +22,8 @@ import { SidenavComponent } from './sidenav.component';
 @Component({
   selector: 'app-sublevel-menu',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterModule, SidenavComponent],
-  template: `
-    <ul
-      *ngIf="collapsed && data.items && data.items.length > 0"
-      [@submenu]="
-        expanded
-          ? {
-              value: 'visible',
-              params: {
-                transitionParams: '400ms cubic-bezier(0.86, 0, 0.07, 1)',
-                height: '*'
-              }
-            }
-          : {
-              value: 'hidden',
-              params: {
-                transitionParams: '400ms cubic-bezier(0.86, 0, 0.07, 1)',
-                height: '0'
-              }
-            }
-      "
-      class="sublevel-nav"
-    >
-      <li *ngFor="let item of data.items" class="sublevel-nav-item">
-        <a
-          class="sublevel-nav-link"
-          (click)="handleClick(item)"
-          *ngIf="item.items && item.items.length > 0"
-          [ngClass]="getActiveClass(item)"
-        >
-            <img class="sidenav-link-icon" [src]="data.icon" width="14px" alt="icono_subleve">
-            <span class="sublevel-link-text" @fadeInOut *ngIf="collapsed">{{
-            item.label
-          }}</span>
-          <i
-            *ngIf="item.items && collapsed"
-            class="menu-collapse-icon"
-            [ngClass]="
-              !item.expanded ? 'fal fa-angle-right' : 'fal fa-angle-down'
-            "
-          ></i>
-        </a>
-        
-        <a
-          class="sublevel-nav-link"
-          *ngIf="!item.items || (item.items && item.items.length === 0)"
-          [routerLink]="[item.routeLink]"
-          routerLinkActive="active-sublevel"
-          [routerLinkActiveOptions]="{ exact: true }"
-          (click)="navegate(item)"
-        >
-          <img class="sidenav-link-icon" [src]="data.icon" width="14px" alt="icono_subleve">
-          <span class="sidenav-link-text" @fadeInOut *ngIf="collapsed">{{data.label}}</span>
-        </a>
-
-        <div *ngIf="item.items && item.items.length > 0">
-          <app-sublevel-menu
-            *ngFor="let item of item.items"
-            [data]="item"
-            [collapsed]="collapsed"
-            [multiple]="multiple"
-            [expanded]="item.expanded"
-          ></app-sublevel-menu>
-        </div>
-      </li>
-    </ul>
-  `,
+  imports: [CommonModule, RouterOutlet, RouterModule],
+  templateUrl: './sublevel-menu.component.html',
   styleUrls: ['./sidenav.component.scss'],
   animations: [
     fadeInOut,
@@ -112,10 +48,10 @@ import { SidenavComponent } from './sidenav.component';
       transition('void => *', animate(0)),
     ]),
   ],
+  encapsulation: ViewEncapsulation.None, // Para desactivar el encapsulamiento
 })
 export class SublevelMenuComponent implements OnInit {
-  private _router = inject(Router);
-
+  @Input() nivel!: number;
   @Output() toggleEvent = new EventEmitter<boolean>();
   @Input() data: INavbarData | any = {
     routeLink: '',
@@ -130,7 +66,10 @@ export class SublevelMenuComponent implements OnInit {
 
   constructor(public router: Router) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    console.log(this.data, 'data...', this.nivel);
+    console.log(this.collapsed, this.animating, this.expanded, this.multiple);
+  }
 
   handleClick(item: any): void {
     if (!this.multiple) {
@@ -151,8 +90,7 @@ export class SublevelMenuComponent implements OnInit {
       : '';
   }
 
-  navegate(item: INavbarData): void {
-    console.log(item, 'item...');
-    
+  trackByFn(index: number, item: any): any {
+    return item.id; // O cualquier identificador único para tus datos
   }
 }
