@@ -36,6 +36,7 @@ $color-1: #090912;
 $color-2: #0059B7;
 $color-3: #D9D9D9;
 $color-texto: #5B6877;
+$color-texto-2: #2A2F35;
 $color-borde: #EEF5F9;
 $color-borde-icono: #D6DCE5;
 $color-hover: #F8F8F9;
@@ -45,6 +46,29 @@ $color-letra-row: #4B4B4B;
 $tamano-fuente-1: 18px;
 $tamano-fuente-2: 16px;
 $tamano-fuente-3: 14px;
+
+.boton-1 {
+  background-color: $color-2 !important;
+  border-radius: 6px;
+  color: #fff;
+}
+
+.boton-1:active, .boton-1:hover, .boton-1:focus {
+  color: #fff;
+}
+
+.boton-2 {
+  border: solid 2px $color-borde;
+  background-color: #fff;
+  border-radius: 6px;
+  color: $color-texto-2;
+}
+
+.boton2:active, .boton-2:hover, .boton-2:focus {
+  color: $color-texto-2;
+  background-color: #fff;
+  border: solid 2px $color-borde;
+}
 
 .btn-primary {
   background-color: var(--primary) !important;

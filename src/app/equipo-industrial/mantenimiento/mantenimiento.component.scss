@@ -1,68 +1,166 @@
-.listado {
-    display: flex;
-    gap: 1rem;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
-    flex-wrap: wrap;
-  .card {
-    max-width: 25rem;
-    width: 100%;
-    min-height: 175px;
-    
-    border-radius: 5px;
-    .card-body {
-        display: flex;
-        gap: 1rem;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        
-      .img {
-        img {
-          width: 125px;
-          height: 125px;
-        }
-      }
-      .info {
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
-        align-items: flex-end;
-        h3{
-          color: #909498;
-          font-size: 20px;
-        }
-        h4 {
-          font-size: 1.5rem;
-          font-weight: bold;
-          font-size: 20px;
-        }
-        span {
-          font-size: 1rem;
-          font-weight: 400;
-        }
-        p{
-            text-align: right;
-            color: #909498;
-            font-size: 15px;
-            i{
-              margin-right: 10px;
-            }
-        }
+@import './../../../styles.scss';
 
+.flex-container {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+  align-content: flex-end;
+  overflow: auto;
+  flex-direction: row;
+  border-bottom: 2px solid $color-borde;
+  margin-left: -1rem;
+  padding-inline: 2rem;
 
+  .item {
+    button {
+      img {
+        width: 14px;
       }
     }
   }
+
+  .item:first-child {
+    margin: 5px;
+
+    h1 {
+      margin-top: 0.5rem;
+      font-size: 18px;
+      font-weight: 400;
+      line-height: 27px;
+      text-align: left;
+      color: $color-texto-2;
+    }
+
+    h2 {
+      margin-top: 0.5rem;
+      font-family: Poppins;
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 27px;
+      text-align: left;
+      color: $color-texto-2;
+    }
+  }
+
 }
 
-.title-link{
-    color: #000;
-    text-decoration: none;
-    &:hover{
-        color: #000;
-        text-decoration: underline;
-        cursor: pointer;
+.container-titulo {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+  align-content: flex-end;
+  flex-direction: row;
+  border-bottom: 2px solid $color-borde;
+  margin-left: -1rem;
+  padding-left: 1rem;
+
+
+  .item-0 {
+    align-self: center;
+    justify-content: space-between;
+
+    h1 {
+      margin-top: 0.5rem;
+      font-size: 18px;
+      font-weight: 400;
+      line-height: 27px;
+      text-align: left;
+      color: $color-texto-2;
     }
-} 
+
+    h2 {
+      margin-top: 0.5rem;
+      font-family: Poppins;
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 27px;
+      text-align: left;
+      color: $color-texto-2;
+    }
+  }
+
+  .item-1 {
+    flex-grow: 1;
+    align-self: center;
+  }
+}
+
+.listado {
+  display: flex;
+  gap: 1rem;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+
+  .card-mantenimiento {
+    background-color: #fff;
+    width: 400px;
+    margin-top: 1rem;
+    padding: 1rem;
+    border: solid 2px $color-borde;
+    border-radius: 8px;
+    display: grid;
+    grid-template-columns: .8fr 1fr;
+    grid-template-rows: 1fr;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    grid-template-areas:
+      "imagen texto";
+
+    .imagen {
+      justify-self: center;
+      align-self: center;
+      grid-area: imagen;
+
+      img {
+        width: 80%;
+      }
+    }
+
+    .texto {
+      justify-self: stretch;
+      align-self: center;
+      grid-area: texto;
+
+      h3 {
+        font-size: 15px;
+        font-weight: 400;
+        line-height: 24px;
+        text-align: left;
+        color: #909498;
+        margin-bottom: 0px;
+      }
+
+      h4 {
+        font-size: 18px;
+        font-weight: 600;
+        line-height: 27px;
+        text-align: left;
+        color: #2A2F35;
+      }
+
+      p {
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 24px;
+        text-align: left;
+        color: #727272;
+      }
+    }
+  }
+
+}
+
+.title-link {
+  color: #000;
+  text-decoration: none;
+
+  &:hover {
+    color: #000;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}
