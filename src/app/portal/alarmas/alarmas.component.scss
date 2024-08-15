@@ -141,9 +141,10 @@ input:valid~label,
 }
 
 .table-responsive {
-  padding-top: 1rem;
+  padding-top: 1.5rem;
   background-color: $color-hover;
-  padding-inline: 1rem;
+  margin-inline: -1rem;
+  padding-inline: 2rem;
 }
 
 .table-wrapper {

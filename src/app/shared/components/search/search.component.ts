@@ -10,7 +10,7 @@ import {
 import { debounceTime } from 'rxjs';
 
 @Component({
-  selector: 'app-busqueda',
+  selector: 'app-search',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './search.component.html',

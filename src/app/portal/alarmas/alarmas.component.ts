@@ -160,12 +160,6 @@ export class AlarmasComponent implements OnInit {
   valorFiltrado = '';
   estadoFiltrado = '';
 
-  filterForm = this.fb.group({
-    evento: [''],
-    estado: [''],
-    valorInpiut: [''],
-  });
-
   constructor(
     private readonly fb: FormBuilder,
     private modalService: BsModalService,

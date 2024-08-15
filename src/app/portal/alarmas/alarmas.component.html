@@ -1,6 +1,6 @@
-<div class="filters" [formGroup]="filterForm">
+<div class="filters">
   <div class="item">
-    <app-busqueda [label]="'Buscar Alarma'" (searchText)="textoFiltrado($event)"></app-busqueda>
+    <app-search [label]="'Buscar Alarma'" (searchText)="textoFiltrado($event)"></app-search>
   </div>
   <div class="item">
     <app-select [labelDisabled]="'Seleccione...'" [lista]="estadoAlarma"
