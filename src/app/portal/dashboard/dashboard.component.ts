@@ -1,4 +1,9 @@
-import { AfterViewInit, Component, OnDestroy } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  OnDestroy,
+  ViewEncapsulation,
+} from '@angular/core';
 import Chart from 'chart.js/auto';
 import { ToastrService } from '../../services/toas.service';
 import { DataPlcService } from '../../services/data-plc.service';
@@ -9,27 +14,34 @@ import { firstValueFrom, Subscription } from 'rxjs';
   imports: [],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
+  encapsulation: ViewEncapsulation.None,
 })
-export class DashboardComponent implements AfterViewInit,OnDestroy {
+export class DashboardComponent implements AfterViewInit, OnDestroy {
+  private intervalId: any;
+  chart1!: any;
+  chart2!: any;
+  chart3!: any;
+  chart4!: any;
+
   constructor(
     private readonly toastService: ToastrService,
     private readonly dataPlc: DataPlcService
   ) {
     this.getDataPLC();
   }
-  private intervalId: any;
+
   ngOnDestroy(): void {
     if (this.intervalId) {
       clearInterval(this.intervalId);
       console.log('Intervalo cancelado.');
     }
   }
+
   async getDataPLC() {
     try {
       const data = await firstValueFrom(this.dataPlc.getData());
       return data;
     } catch (error) {
-     
       throw error; // Esto es opcional, dependiendo de si quieres manejar el error más arriba en la cadena de llamadas.
     }
   }
@@ -41,13 +53,10 @@ export class DashboardComponent implements AfterViewInit,OnDestroy {
     this.createStatusChart();
     this.actualizarGraficos();
   }
-  chart1: any;
-  chart2: any;
-  chart3: any;
-  chart4: any;
+
   async actualizarGraficos() {
     const data = await this.getDataPLC();
-    console.log(data);
+    // console.log(data, 'data dashboard...');
 
     const st_vdfArray = data.map((item: any) => item.st_vdf);
     const potenciaArray = data.map((item: any) => item.potencia);
@@ -90,10 +99,11 @@ export class DashboardComponent implements AfterViewInit,OnDestroy {
     this.chart1.update();
     this.chart2.update();
     this.chart4.update();
-    this.intervalId =  setInterval(async () => {
+    this.intervalId = setInterval(async () => {
       this.actualizarGraficos();
     }, 10000); // Ejecutar cada 5 segundos
   }
+
   /*   createChart() {
     const ctx = document.getElementById('myChart') as HTMLCanvasElement;
     this.chart1 = new Chart(ctx, {
@@ -297,7 +307,6 @@ export class DashboardComponent implements AfterViewInit,OnDestroy {
               display: true,
             },
           },
-         
         },
       },
     });
@@ -318,6 +327,7 @@ export class DashboardComponent implements AfterViewInit,OnDestroy {
       }
     });
   }
+
   /*   createPressureChart() {
     const ctx = document.getElementById('myChart2') as HTMLCanvasElement;
     this.chart2 = new Chart(ctx, {
@@ -691,8 +701,10 @@ export class DashboardComponent implements AfterViewInit,OnDestroy {
       }
     });
   } */
+
   createEnergyConsumptionChart() {
     const ctx = document.getElementById('myChart4') as HTMLCanvasElement;
+    
     this.chart4 = new Chart(ctx, {
       type: 'line',
       data: {

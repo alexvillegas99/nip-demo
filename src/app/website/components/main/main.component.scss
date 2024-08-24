@@ -1,0 +1,26 @@
+.body {
+    // width: calc(100% - 3.5rem);
+    height: 100vh;
+    margin-left: 5rem;
+    z-index: 0;
+    position: relative;
+    top: 0;
+    transition: all .5s ease;
+    overflow-x: hidden; /* Esto evita el desplazamiento horizontal en toda la página */
+}
+
+.body-trimmed {
+    // width: calc(100% - 10.5625rem);
+    width: calc(100% - 4.5625rem);
+    margin-left: 20rem;
+}
+
+.body-md-screen {
+    //width: calc(100% - 2rem);
+    width: calc(100% - 1rem);
+    margin-left: 10rem;
+}
+
+.main {
+    margin-left: 1rem;
+}

@@ -6,15 +6,15 @@ import {
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
-import { HttpClientModule, provideHttpClient } from '@angular/common/http';
-import { SocketIoModule } from 'ngx-socket-io';
-import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideHttpClient } from '@angular/common/http';
+import { BrowserAnimationsModule, provideAnimations } from '@angular/platform-browser/animations';
 
 import { provideToastr } from 'ngx-toastr';
 import { provideServiceWorker } from '@angular/service-worker';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { TimepickerModule } from 'ngx-bootstrap/timepicker';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
@@ -27,8 +27,7 @@ export const appConfig: ApplicationConfig = {
     }),
     importProvidersFrom(ModalModule.forRoot()),
     importProvidersFrom(TimepickerModule.forRoot()),
-    importProvidersFrom(NgbModule)
-
-    
+    importProvidersFrom(NgbModule),
+    importProvidersFrom(BrowserAnimationsModule),
   ],
 };

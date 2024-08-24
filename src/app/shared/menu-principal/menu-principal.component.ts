@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { Route, Router, RouterModule } from '@angular/router';
+import { Component, inject, OnInit } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
 import { MENU_PORTAL } from '../../core/constants/local-store.constants';
 
 @Component({
@@ -11,7 +11,32 @@ import { MENU_PORTAL } from '../../core/constants/local-store.constants';
   styleUrl: './menu-principal.component.scss',
 })
 export class MenuPrincipalComponent implements OnInit {
-  constructor(private readonly router: Router) {}
+  private readonly router = inject(Router);
+
+  menu: any = [
+    {
+      nombre: 'INICIO',
+      url: '/home',
+      icono: 'assets/imgs/icons/home.png',
+      isSelected: false,
+    },
+    {
+      nombre: 'ESTADÍSTICAS',
+      url: '/dashboard',
+      icono: 'assets/imgs/icons/dashboard.png',
+      isSelected: false,
+    },
+    {
+      nombre: 'ALARMAS',
+      url: '/alarmas',
+      icono: 'assets/imgs/icons/alarmas.png',
+      isSelected: false,
+    },
+   
+  ];
+  
+  constructor() {}
+  
   ngOnInit(): void {
     const menu = localStorage.getItem(MENU_PORTAL);
     if (menu) {
@@ -29,27 +54,6 @@ export class MenuPrincipalComponent implements OnInit {
     }
   }
 
-  menu: any = [
-    {
-      nombre: 'INICIO',
-      url: '/home',
-      icono: 'assets/imgs/icons/home.png',
-      isSelected: false,
-    },
-    {
-      nombre: 'ESTADÍSTICAS',
-      url: '/dashboard',
-      icono: 'assets/imgs/icons/dashboard.png',
-      isSelected: false,
-    },
-    {
-      nombre: 'ALARMA',
-      url: '/alarmas',
-      icono: 'assets/imgs/icons/alarmas.png',
-      isSelected: false,
-    },
-   
-  ];
   seleccionarMenu(nombre: any) {
     this.menu.forEach((element: any) => {
       element.isSelected = element.nombre === nombre;

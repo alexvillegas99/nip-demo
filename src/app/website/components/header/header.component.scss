@@ -1,0 +1,66 @@
+@import "./../../../../styles.scss";
+
+.container-header {
+    padding-block: 1rem;
+    padding-left: 1rem;
+    display: grid;
+    grid-template-columns: 1.5fr 2.5fr 0.5fr;
+    grid-template-rows: 1fr;
+    grid-auto-columns: 1fr;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    align-items: center;
+    grid-template-areas:
+        "search . options";
+    border-top: 2px solid $color-borde;
+    border-right: 2px solid $color-borde;
+    border-bottom: 2px solid $color-borde;
+    border-left: none;
+    background: #fff;
+    box-shadow: 0.063rem 0 1.25rem 0 $color-borde;
+    padding: 1.125rem;
+
+    .search {
+        grid-area: search;
+    }
+
+    .options {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: 1fr;
+        gap: 0px 0px;
+        grid-auto-flow: row;
+        align-items: center;
+        grid-template-areas:
+            "avatar notificacion opcion";
+        grid-area: options;
+
+        .avatar {
+            grid-area: avatar;
+        }
+
+        .notificacion {
+            grid-area: notificacion;
+        }
+
+        .opcion {
+            grid-area: opcion;
+        }
+    }
+}
+
+/** IMAGEN */
+.image-button {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.image-button img {
+    display: block;
+    width: 28px;
+    /* Ajusta el tamaño de la imagen según sea necesario */
+    height: 28px;
+    /* Ajusta el tamaño de la imagen según sea necesario */
+}

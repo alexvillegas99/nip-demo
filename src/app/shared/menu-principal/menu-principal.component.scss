@@ -1,5 +1,8 @@
+@import "./../../../styles.scss";
+
 .card {
-    border: none;
+  border: none;
+
   .card-body {
     display: flex;
     justify-content: flex-start;
@@ -8,6 +11,8 @@
     gap: 1.5rem;
     flex-wrap: wrap;
     padding: .5rem;
+    padding-block: 0rem;
+
     .item {
       display: flex;
       justify-content: space-evenly;
@@ -16,56 +21,63 @@
       flex-direction: row;
       width: 100%;
       max-width: 10rem;
-      background-color: #e5e5e6;
+      background-color: #fff;
+
       &:hover {
         background-color: #c0e0ff;
+        border-radius: 0px;
         cursor: pointer;
       }
 
       img {
         width: 40px;
         height: 40px;
+
         &:hover {
-            
-            cursor: pointer;
-          }
+          cursor: pointer;
+        }
       }
+
       label {
         &:hover {
-           
-            cursor: pointer;
-          }
+          cursor: pointer;
+        }
       }
     }
   }
 }
+
 .selected-menu {
-    background-color: #6aabec !important;
-    border-radius: 10px;
-    label {
-      color: #fff !important;
+  background-color: #EEEEEE !important;
+  border-radius: 0px;
+  border-bottom: 2px solid $color-2;
+
+  label {
+    color: $color-2;
+    font-weight: 600;
+  }
+}
+
+@media (max-width: 400px) {
+  .container-navbar {
+    .navbar {
+      height: 3rem !important;
     }
   }
 
-  @media (max-width: 400px) {
-    .container-navbar {
-      .navbar {
-        height: 3rem !important;
-      }
-    }
-    .name {
-      display: none;
-    }
+  .name {
+    display: none;
   }
-  
+}
 
-  @media (max-width: 410px) {
-    .card {
-      
+
+@media (max-width: 410px) {
+  .card {
+
     .card-body {
-    
+
       justify-content: center;
-     
+
       .item {
         display: flex;
         justify-content: space-evenly;
@@ -75,27 +87,29 @@
         width: 100%;
         max-width: 100%;
         background-color: #e5e5e6;
+
         &:hover {
           background-color: #c0e0ff;
           cursor: pointer;
         }
-  
+
         img {
           width: 40px;
           height: 40px;
+
           &:hover {
-              
-              cursor: pointer;
-            }
+
+            cursor: pointer;
+          }
         }
+
         label {
           &:hover {
-             
-              cursor: pointer;
-            }
+
+            cursor: pointer;
+          }
         }
       }
     }
   }
-  }
-  
+}

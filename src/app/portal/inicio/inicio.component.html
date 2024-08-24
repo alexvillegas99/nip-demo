@@ -1,30 +1,38 @@
-
-
-<div class="screen1" *ngIf="screen1" >
-  <div class="map-container" >
+<div class="screen1" *ngIf="screen1">
+  <div class="map-container">
     <div id="map" class="map"></div>
     <!-- <div id="geocoder" class="geocoder"></div> -->
   </div>
-  <div class="card-list">
-    <div class="card" *ngFor="let item of arrayCompresores">
-      <div class="card-body">
-        <div class="img">
+
+  <div class="derecha">
+    <div class="titulo">
+      <h2>Ubicación de Compresores</h2>
+    </div>
+
+    <div class="card-list">
+      @for (item of arrayCompresores; track $index) {
+      <div class="card-body container-card-info">
+        <div class="informacion">
+          <h6>Nombre del equipo:</h6>
+          <h4>{{ item.nombre | uppercase }}</h4>
+        </div>
+        <div class="ubicacion">
+          <p><i class="fa-solid fa-location-dot"></i> {{item.ubicacion}}, Ecuador</p>
+        </div>
+        <div class="imagen">
           <img src="assets/imgs/Compresor.png" alt="" />
         </div>
-        <div class="info">
-          <h4>Nombre del equipo: </h4>
-          <h4>{{ item.nombre }}</h4>
-          <p><i class="fa-solid fa-location-dot"></i> {{item.ubicacion}}</p>
-          <p>{{item.tipo}}</p>
-        </div>
       </div>
+      }
     </div>
   </div>
 </div>
+
 <div class="card" *ngIf="screen2">
   <div class="card-body">
     <div class="title">
-      <h3> <i class="fa fa-arrow-left" aria-hidden="true" (click)="cambiarScreen(1)" style="margin-right: 1rem;"></i> Lista de equipos</h3>
+      <h3> <i class="fa fa-arrow-left" aria-hidden="true" (click)="cambiarScreen(1)" style="margin-right: 1rem;"></i>
+        Lista de equipos</h3>
       <hr />
     </div>
     <div class="listado">
@@ -35,9 +43,7 @@
           </div>
           <div class="info">
             <h4>COMPRESOR XYZ</h4>
-            <a class="btn btn-primary" [routerLink]="['/demos/demo1']" routerLinkActive="router-link-active" 
-              >Revisar</a
-            >
+            <a class="btn btn-primary" [routerLink]="['/demos/demo1']" routerLinkActive="router-link-active">Revisar</a>
           </div>
         </div>
       </div>

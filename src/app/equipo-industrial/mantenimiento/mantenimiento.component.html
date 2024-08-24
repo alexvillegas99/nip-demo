@@ -1,42 +1,52 @@
+<div class="flex-container">
+  <div class="item">
+    <h1>MANTENIMIENTO</h1>
+  </div>
+  <div class="item"></div>
+</div>
+
+<div class="flex-container">
+  <div class="item">
+    <h2>Compresores añadidos</h2>
+  </div>
+  <div class="item">
+    <button class="btn btn-light boton-2" type="button">
+      <img src="assets/imgs/icons/filter.svg" alt="icon_filter">
+      Filtrar por
+    </button>
+  </div>
+</div>
+
 <div class="container">
-    <div class="card" *ngIf="screen1">
-      <div class="card-body">
-        <div class="title">
-          <h3>MANTENIMIENTO</h3>
-          <hr />
-        </div>
-        <div class="listado">
-            @for (item of equipos; track $index) {
-          <div class="card">
-            <div class="card-body">
-              <div class="img">
-                <img src="assets/imgs/Compresor.png" alt="" />
-              </div>
-              <div class="info">
-                <h3 >Equipo:</h3>
-                <h4>{{item.nombre}}</h4>
-                <p><i class="fa-solid fa-location-dot"></i> {{item.ubicacion}}</p>
-                <a class="btn btn-primary" [routerLink]="['/demos/demo1']" routerLinkActive="router-link-active" 
-                  >Revisar Equipo</a
-                >
-              </div>
-            </div>
-          </div>
-        } 
-          <!--      <div class="card" *ngFor="let item of arrayReportes">
-            <div class="card-body">
-              <div class="img">
-                <img [src]="item.image" alt="" />
-              </div>
-              <div class="info">
-                <h4>{{ item.name }}</h4>
-                <a class="btn btn-primary">Revisar</a>
-              </div>
-            </div>
-          </div> -->
-        </div>
+  @if (screen1) {
+  <div class="listado">
+    @for (item of equipos; track $index) {
+    <div class="card-mantenimiento">
+      <div class="imagen">
+        <img src="assets/imgs/Compresor.png" alt="" />
+      </div>
+      <div class="texto">
+        <h3>Equipo:</h3>
+        <h4>{{item.nombre | uppercase}}</h4>
+        <p><i class="fa-solid fa-location-dot"></i> {{item.ubicacion}}, Ecuador</p>
+        <a class="btn btn-primary" [routerLink]="['/demos/demo1']" routerLinkActive="router-link-active">Revisar
+          Equipo</a>
       </div>
     </div>
+    }
+    <!--      <div class="card" *ngFor="let item of arrayReportes">
+          <div class="card-body">
+            <div class="img">
+              <img [src]="item.image" alt="" />
+            </div>
+            <div class="info">
+              <h4>{{ item.name }}</h4>
+              <a class="btn btn-primary">Revisar</a>
+            </div>
+          </div>
+        </div> -->
+  </div>
+  }
   <!--   <div class="card" *ngIf="screen2">
       <div class="card-body">
         <h3>
@@ -104,5 +114,4 @@
         </div>
       </div>
     </div> -->
-  </div>
-  
+</div>

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, TemplateRef } from '@angular/core';
+import { Component, TemplateRef, ViewEncapsulation } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -11,72 +11,65 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { AlertService } from '../../services/alert.service';
 import { ToastrService } from '../../services/toas.service';
 import { StepperComponent } from '../../shared/stepper/stepper.component';
-import { NgbModal, NgbModalRef, NgbTimeStruct, NgbTimepickerModule } from '@ng-bootstrap/ng-bootstrap';
+import {
+  NgbModal,
+  NgbModalRef,
+  NgbTimeStruct,
+  NgbTimepickerModule,
+} from '@ng-bootstrap/ng-bootstrap';
+import { SearchComponent } from '../../shared/components/search/search.component';
+import { SelectComponent } from '../../shared/components/select/select.component';
 
 @Component({
   selector: 'app-logistica',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, CommonModule,StepperComponent,NgbTimepickerModule],
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    CommonModule,
+    StepperComponent,
+    NgbTimepickerModule,
+    SearchComponent,
+    SelectComponent
+  ],
   templateUrl: './logistica.component.html',
   styleUrl: './logistica.component.scss',
+  encapsulation: ViewEncapsulation.None
 })
 export class LogisticaComponent {
-
+  filtrosPedidos = [
+    {
+      nombre: 'Entregado',
+      code: 1,
+    },
+    {
+      nombre: 'En Proceso',
+      code: 2,
+    },
+    {
+      nombre: 'Envio',
+      code: 3,
+    },
+    {
+      nombre: 'Todos',
+      code: 4,
+    },
+  ];
 
   steps = [
-    
-    { title: 'En proceso',icon:'fa-solid fa-cart-shopping',fecha:'2021-10-10' },
-    { title: 'Envió' ,icon:'fa-solid fa-truck-fast',fecha:'2021-10-10'},
-    { title: 'Entregado',icon:'fa-solid fa-truck-ramp-box' ,fecha:'2021-10-10'},
+    {
+      title: 'En proceso',
+      icon: 'fa-solid fa-cart-shopping',
+      fecha: '2021-10-10',
+    },
+    { title: 'Envió', icon: 'fa-solid fa-truck-fast', fecha: '2021-10-10' },
+    {
+      title: 'Entregado',
+      icon: 'fa-solid fa-truck-ramp-box',
+      fecha: '2021-10-10',
+    },
   ];
   currentStep = 2;
-eliminarPedido(_t69: number) {
-    this.alertService
-      .customAlertSweet('warning', '¿Estás seguro de eliminar este pedido?')
-      .then((result) => {
-        if (result) {
-          this.pedidos.splice(_t69, 1);
-        }
-      });
-}
-eliminarTarea(_t33: number) {
-    this.alertService
-      .customAlertSweet('warning', '¿Estás seguro de eliminar esta tarea?')
-      .then((result) => {
-        if (result) {
-          this.tareas.splice(_t33, 1);
-        }
-      });
-  }
-
-  closeModalPedidos() {
-    this.modalRef?.hide();
-    this.formPedidos.reset();
-  }
-  eliminarSubTarea(posicion: number) {
-    this.alertService
-      .customAlertSweet('warning', '¿Estás seguro de eliminar esta tarea?')
-      .then((result) => {
-        if (result) {
-          this.tareaSeleccionada.tareas_asociadas.splice(posicion, 1);
-        }
-      });
-  }
-
-  modalNuevaTarea(_t40: TemplateRef<any>) {
-    this.formTareas.enable();
-    this.formTareas.reset();
-    this.tareaSeleccionada = null;
-    this.openModal1(_t40);
-  }
-  modalRef?: BsModalRef;
-  constructor(
-    private modalService: BsModalService,
-    private fb: FormBuilder,
-    private readonly alertService: AlertService,
-    private readonly toastService: ToastrService,
-    private _modalService: NgbModal
-  ) {}
   formTareas = this.fb.group({
     titulo: ['', Validators.required],
     descripcion: ['', Validators.required],
@@ -87,7 +80,10 @@ eliminarTarea(_t33: number) {
   formActividades = this.fb.group({
     descripcion: ['', Validators.required],
     tipo_tarea: ['', Validators.required],
-    duracion_estimada: [{ hour: 0, minute: 0, second: 0 } as NgbTimeStruct, Validators.required]
+    duracion_estimada: [
+      { hour: 0, minute: 0, second: 0 } as NgbTimeStruct,
+      Validators.required,
+    ],
   });
 
   formPedidos = this.fb.group({
@@ -98,55 +94,30 @@ eliminarTarea(_t33: number) {
     producto: ['', Validators.required],
   });
 
-  submitForm() {
-    if (this.formTareas.valid) {
-      // Aquí puedes enviar los datos del formulario
-      console.log(this.formTareas.value);
-    } else {
-      // Manejar caso en el que el formulario no sea válido
-      console.error('Formulario no válido');
-    }
-  }
-  openModal(template: TemplateRef<void>) {
-    this.modalRef = this.modalService.show(template, this.configModal);
-  }
+  modalRef?: BsModalRef;
 
-  abrirModalPedidos(template: TemplateRef<void>) {
-    this.formPedidos.reset();
-    this.modalRef = this.modalService.show(template, this.configModal);
-    this.formPedidos.patchValue({ usuario: 'Alex Villegas', tipo: '', producto: '',proveedor: ''});
-
-  }
   tareaSeleccionada: any;
+
   menu: any[] = [
-     {
-      name: 'TAREAS',
-      active: true,
+    {
+      active: false,
+      nombre: 'PEDIDOS',
+      isSelected: false,
     },
     {
-      name: 'PEDIDOS',
-      active: false,
+      active: true,
+      nombre: 'TAREAS',
+      isSelected: false,
     },
-   
-    
   ];
-  cambiarMenu(index: number) {
-    this.menu.forEach((item, i) => {
-      if (i === index) {
-        item.active = true;
-      } else {
-        item.active = false;
-      }
-    });
-  }
 
   headers_tareas = [
     'Titulo',
     'Descripción',
     'Tareas Asociadas',
-    'Prioridad',
+    // 'Prioridad',
     'Fecha',
-    'Acciones'
+    'Acciones',
   ];
 
   headers_pedidos = [
@@ -156,8 +127,9 @@ eliminarTarea(_t33: number) {
     'Producto',
     'Creación',
     'Estado',
-    'Acciones'
+    'Acciones',
   ];
+
   tareas = [
     {
       titulo: 'Reemplazar filtro de aire acondicionado',
@@ -205,7 +177,7 @@ eliminarTarea(_t33: number) {
           descripcion: 'Reemplazar filtro de aire acondicionado',
           tipo_tarea: 'Mecánica',
           prioridad: 'Alta',
-          
+
           duracion_estimada: '01:00',
           estado: false,
           tiempo_paro_mantenimiento: '01:30',
@@ -233,9 +205,9 @@ eliminarTarea(_t33: number) {
       fecha_creacion: '2021-10-10',
     },
   ];
+
   pedidos = [
     {
-    
       detalle: 'Detalle del pedido 1',
       usuario: 'Alex Villegas',
       proveedor: 'Proveedor 1',
@@ -262,7 +234,6 @@ eliminarTarea(_t33: number) {
       ],
     },
     {
-    
       detalle: 'Detalle del pedido 2',
       usuario: 'Alex Villegas',
       proveedor: 'Proveedor 1',
@@ -275,7 +246,7 @@ eliminarTarea(_t33: number) {
           fecha: '2021-10-10',
           estado: 'En proceso',
           observacion: 'Observación 1',
-        }
+        },
       ],
     },
     {
@@ -296,7 +267,7 @@ eliminarTarea(_t33: number) {
           fecha: '2021-10-10',
           estado: 'Envió',
           observacion: 'Observación 2',
-        }
+        },
       ],
     },
   ];
@@ -307,19 +278,6 @@ eliminarTarea(_t33: number) {
     class: 'modal-dialog-centered modal-xl',
   };
 
-  seleccionarTarea(tarea: any, template: TemplateRef<any>) {
-    this.formTareas.patchValue({
-      titulo: tarea.titulo,
-      descripcion: tarea.descripcion,
-      usuario_asignado: tarea.usuario_asignado,
-      prioridad: tarea.prioridad,
-      
-    });
-    this.formTareas.disable();
-    this.tareaSeleccionada = tarea;
-    this.openModal1(template);
-  }
-
   headers_tareas_asociadas = [
     'Descripción',
     'Tipo de tarea',
@@ -327,9 +285,114 @@ eliminarTarea(_t33: number) {
     'Estado',
     'Acciones',
   ];
+
+  modalRef1: NgbModalRef;
+  modalRef2: NgbModalRef;
+  modal1Referencia: any;
+  subTareaSeleccionada: any = null;
+  pedidoSeleccionado: any = null;
+
+  constructor(
+    private modalService: BsModalService,
+    private fb: FormBuilder,
+    private readonly alertService: AlertService,
+    private readonly toastService: ToastrService,
+    private _modalService: NgbModal
+  ) {}
+
+  eliminarPedido(_t69: number) {
+    this.alertService
+      .customAlertSweet('warning', '¿Estás seguro de eliminar este pedido?')
+      .then((result) => {
+        if (result) {
+          this.pedidos.splice(_t69, 1);
+        }
+      });
+  }
+
+  eliminarTarea(_t33: number) {
+    this.alertService
+      .customAlertSweet('warning', '¿Estás seguro de eliminar esta tarea?')
+      .then((result) => {
+        if (result) {
+          this.tareas.splice(_t33, 1);
+        }
+      });
+  }
+
+  closeModalPedidos() {
+    this.modalRef?.hide();
+    this.formPedidos.reset();
+  }
+
+  eliminarSubTarea(posicion: number) {
+    this.alertService
+      .customAlertSweet('warning', '¿Estás seguro de eliminar esta tarea?')
+      .then((result) => {
+        if (result) {
+          this.tareaSeleccionada.tareas_asociadas.splice(posicion, 1);
+        }
+      });
+  }
+
+  modalNuevaTarea(_t40: TemplateRef<any>) {
+    this.formTareas.enable();
+    this.formTareas.reset();
+    this.tareaSeleccionada = null;
+    this.openModal1(_t40);
+  }
+
+  submitForm() {
+    if (this.formTareas.valid) {
+      // Aquí puedes enviar los datos del formulario
+      console.log(this.formTareas.value);
+    } else {
+      // Manejar caso en el que el formulario no sea válido
+      console.error('Formulario no válido');
+    }
+  }
+
+  openModal(template: TemplateRef<void>) {
+    this.modalRef = this.modalService.show(template, this.configModal);
+  }
+
+  abrirModalPedidos(template: TemplateRef<void>) {
+    this.formPedidos.reset();
+    this.modalRef = this.modalService.show(template, this.configModal);
+    this.formPedidos.patchValue({
+      usuario: 'Alex Villegas',
+      tipo: '',
+      producto: '',
+      proveedor: '',
+    });
+  }
+
+  cambiarMenu(index: number) {
+    this.menu.forEach((item, i) => {
+      if (i === index) {
+        item.active = true;
+      } else {
+        item.active = false;
+      }
+    });
+  }
+
+  seleccionarTarea(tarea: any, template: TemplateRef<any>) {
+    this.formTareas.patchValue({
+      titulo: tarea.titulo,
+      descripcion: tarea.descripcion,
+      usuario_asignado: tarea.usuario_asignado,
+      prioridad: tarea.prioridad,
+    });
+    this.formTareas.disable();
+    this.tareaSeleccionada = tarea;
+    this.openModal1(template);
+  }
+
   padZero(value: number) {
     return value < 10 ? '0' + value : value.toString();
   }
+
   guardarTarea() {
     const tarea = this.formTareas.value;
     const fechaActual = new Date();
@@ -364,17 +427,16 @@ eliminarTarea(_t33: number) {
   }
 
   openModalHijo(modal_hijo: TemplateRef<any>) {
-   // this.openModal2(modal_hijo);
+    // this.openModal2(modal_hijo);
   }
 
   closeModalHijo() {
     this.formActividades.reset();
-   
   }
 
   guardarSubTarea() {
     const tarea: any = this.formActividades.value;
-    console.log(tarea)
+    console.log(tarea);
     tarea.duracion_estimada = this.formatearFecha(tarea.duracion_estimada);
     tarea.estado = false;
     this.tareaSeleccionada.tareas_asociadas.push(tarea);
@@ -385,18 +447,19 @@ eliminarTarea(_t33: number) {
     );
     this.formActividades.reset();
   }
+
   formatearFecha(duracion: any): any {
     const hours = duracion.hour.toString().padStart(2, '0');
     const minutes = duracion.minute.toString().padStart(2, '0');
     return `${hours}:${minutes}`;
   }
-  subTareaSeleccionada: any = null;
-  pedidoSeleccionado: any = null;
+
   modalEditarSubTarea(tarea: any, index: number, modal_hijo: TemplateRef<any>) {
     this.subTareaSeleccionada = { ...tarea, index };
     this.formActividades.patchValue(tarea);
     this.openModalHijo(modal_hijo);
   }
+
   modalEditarPedido(pedido: any, index: number, modal_hijo: TemplateRef<any>) {
     this.pedidoSeleccionado = { ...pedido, index };
     this.formPedidos.patchValue(pedido);
@@ -444,13 +507,12 @@ eliminarTarea(_t33: number) {
     );
     this.pedidoSeleccionado = null;
   }
+
   verEstadoPedido(pedido: any, template: TemplateRef<any>) {
     this.pedidoSeleccionado = pedido;
     this.openModal(template);
   }
-  modalRef1: NgbModalRef;
-  modalRef2: NgbModalRef;
-  modal1Referencia: any;
+
   openModal1(content1: any): void {
     this.modal1Referencia = content1;
     this.modalRef1 = this._modalService.open(content1, {
@@ -467,18 +529,21 @@ eliminarTarea(_t33: number) {
       }
     );
   }
+
   formatTime(time: string): NgbTimeStruct {
     const [hour, minute] = time.split(':').map(Number);
     return { hour, minute, second: 0 };
   }
-  openModal2(content2: any,tarea?:any,index?:number): void {
 
-    if(tarea){
+  openModal2(content2: any, tarea?: any, index?: number): void {
+    if (tarea) {
       this.subTareaSeleccionada = { ...tarea, index };
       this.formActividades.patchValue(tarea);
       const formattedTime = this.formatTime(tarea.duracion_estimada);
-      this.formActividades.controls['duracion_estimada'].setValue(formattedTime);
-     // this.formActividades.controls.duracion_estimada.setValue()
+      this.formActividades.controls['duracion_estimada'].setValue(
+        formattedTime
+      );
+      // this.formActividades.controls.duracion_estimada.setValue()
     }
 
     if (this.modalRef1) {
@@ -503,5 +568,13 @@ eliminarTarea(_t33: number) {
         }
       }
     );
+  }
+
+  textoFiltrado(event: any) {
+    console.log(event, 'textoFiltrado....'); 
+  }
+
+  opcionSeleccionada(event: any) {
+    console.log(event, 'opcionSeleccionada....'); 
   }
 }

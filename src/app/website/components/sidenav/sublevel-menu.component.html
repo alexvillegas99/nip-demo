@@ -1,0 +1,44 @@
+@if (collapsed && data.items && data.items.length > 0) {
+    <ul [@submenu]="expanded
+    ? {
+        value: 'visible',
+        params: {
+            transitionParams: '400ms cubic-bezier(0.86, 0, 0.07, 1)',
+            height: '*'
+        }
+        }
+    : {
+        value: 'hidden',
+        params: {
+            transitionParams: '400ms cubic-bezier(0.86, 0, 0.07, 1)',
+            height: '0'
+        }
+        }" class="sublevel-nav">
+
+        @for (item of data.items; track $index) {
+            <li class="sublevel-nav-item">
+                <ng-container *ngIf="item.items && item.items.length > 0; else noItems">
+                    <a class="sublevel-nav-link" (click)="handleClick(item)" [ngClass]="getActiveClass(item)">
+                        <img class="sidenav-link-icon" [src]="item.icon" width="14px" alt="icono_subleve" />
+                        <span class="sublevel-link-text" @fadeInOut *ngIf="collapsed">{{ item.label }}</span>
+                        <i *ngIf="collapsed" class="menu-collapse-icon"
+                            [ngClass]="!item.expanded ? 'fa fa-angle-right' : 'fa fa-angle-down'"></i>
+                    </a>
+                    <div class="sublevel" style="padding-left: 1rem;">
+                        <app-sublevel-menu *ngIf="collapsed" [nivel]="2" [data]="item" [collapsed]="collapsed" [multiple]="multiple"
+                            [expanded]="item.expanded">
+                        </app-sublevel-menu>
+                    </div>
+                </ng-container>
+                <ng-template #noItems>
+                    <a class="sublevel-nav-link" [routerLink]="[item.routeLink]" routerLinkActive="active-sublevel"
+                        [routerLinkActiveOptions]="{ exact: true }">
+                        <img class="sidenav-link-icon" [src]="item.icon" width="14px" alt="icono_subleve" />
+                        <span class="sidenav-link-text" @fadeInOut *ngIf="collapsed">{{ item.label }}</span>
+                    </a>
+                </ng-template>
+            </li>
+        }
+    </ul>
+
+}

@@ -1,23 +1,14 @@
 <div class="container">
-  <div
-    class="card card-compresor"
-    style="width: 100%; padding-bottom: 1rem"
-    *ngIf="compresor"
-  >
+  <div class="card card-compresor" style="width: 100%; padding-bottom: 1rem" *ngIf="compresor">
     <div class="title">
       <h3>{{ title }}</h3>
 
-      <div
-        class="buttons"
-        style="text-align: right; margin-right: 1rem; margin-bottom: 1rem"
-      >
-        <div
-          class="button btn btn-primary"
-          (click)="openModal(crear_pedido_modal)"
-        >
+      <div class="buttons" style="text-align: right; margin-right: 1rem; margin-bottom: 1rem">
+        <div class="button btn btn-primary" (click)="openModal(crear_pedido_modal)">
           <i class="fa fa-sun-o" aria-hidden="true"></i> Solicitar Repuestos
         </div>
       </div>
+
       <div class="grafico">
         <div class="grafico1">
           <img src="assets/imgs/Compresor.png" alt="" />
@@ -103,28 +94,23 @@
           </div>
         </div>
       </div>
-      <div
-        class="outputs"
-        style="
+
+      <div class="outputs" style="
           padding: 1rem;
           display: flex;
           flex-direction: column;
           gap: 0.5rem;
-        "
-      >
+        ">
         <div class="names card">
-          <div class="card-body"><h3>Indicadores</h3></div>
-        </div>
-        <div
-          class="item card"
-          style="background-color: #e8f9e8; border-radius: 0px"
-        >
           <div class="card-body">
-            <label
-              >Tiempo de actividad
+            <h3>Indicadores</h3>
+          </div>
+        </div>
+        <div class="item card" style="background-color: #e8f9e8; border-radius: 0px">
+          <div class="card-body">
+            <label>Tiempo de actividad
               <i class="fa-solid fa-clock" style="margin: 0rem 1rem"></i>
-              {{ hrs }} hrs</label
-            >
+              {{ hrs }} hrs</label>
           </div>
         </div>
         <div class="charts">
@@ -141,33 +127,49 @@
       </div>
     </div>
   </div>
- {{data|json}}
-  
-  
+@if(tablaDeDatos){
+
+
+  <div class="table-responsive">
+    <table class="table align-middle table-bordered table-bordered-sides">
+      <thead>
+        <tr>
+          <th>Dato</th>
+          <th>Valor</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of  tablaDeDatos; track $index) {
+        <tr>
+          <td>
+            {{ item.dato }}
+          </td>
+          <td>
+            {{ item.valor |  number:'1.2-2' }}
+          </td>
+         
+          
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}
   <div class="card card-eventos" *ngIf="eventos">
     <div class="card-body">
       <h3>
-        <i
-          class="fa fa-arrow-left"
-          aria-hidden="true"
-          (click)="cambiarScreen(1)"
-        ></i>
+        <i class="fa fa-arrow-left" aria-hidden="true" (click)="cambiarScreen(1)"></i>
         {{ title }}
       </h3>
       <hr />
       <div class="listado">
-        <div
-          *ngFor="let item of listaDeEventosCompresor"
-          [ngClass]="item.clase"
-          role="alert"
-          style="
+        <div *ngFor="let item of listaDeEventosCompresor" [ngClass]="item.clase" role="alert" style="
             display: flex;
             flex-direction: row;
             gap: 1rem;
             justify-content: space-between;
             align-items: center;
-          "
-        >
+          ">
           <label>{{ item.mensaje }}</label>
           <i [ngClass]="item.icon"></i>
         </div>
@@ -185,32 +187,23 @@
       line-height: 33px;
       text-align: left;
       color: #191D23;
-      " >Solicitar Repuesto</h4>
+      ">Solicitar Repuesto</h4>
 
       <p style="color: #64748b; font-weight: 300;">
         Por favor, rellenar todos los campos para crear el pedido de solicitud de
         repuesto.
       </p>
     </div>
-    
+
     <form [formGroup]="formPedidos">
       <div class="row">
         <div class="col-12 col-sm-6 form-group">
           <label for="titulo">Usuario:</label>
-          <input
-            type="text"
-            class="form-control"
-            formControlName="usuario"
-            
-          />
+          <input type="text" class="form-control" formControlName="usuario" />
         </div>
         <div class="col-12 col-sm-6 form-group">
           <label for="titulo">Seleccionar Proveedor:</label>
-          <select
-            class="form-select"
-            aria-label="Default select example"
-            formControlName="proveedor"
-          >
+          <select class="form-select" aria-label="Default select example" formControlName="proveedor">
             <option selected value="">Seleccione...</option>
             <option value="Proveedor 1">Proveedor 1</option>
             <option value="Proveedor 2">Proveedor 2</option>
@@ -220,21 +213,13 @@
         </div>
         <div class="col-12 col-sm-6 form-group">
           <label for="titulo">Seleccionar producto:</label>
-          <select
-            class="form-select"
-            aria-label="Default select example"
-            formControlName="tipo"
-          >
+          <select class="form-select" aria-label="Default select example" formControlName="tipo">
             <option value="Compresor">Compresor</option>
           </select>
         </div>
         <div class="col-12 col-sm-6 form-group">
           <label for="titulo">Seleccionar tipo de Producto:</label>
-          <select
-            class="form-select"
-            aria-label="Default select example"
-            formControlName="producto"
-          >
+          <select class="form-select" aria-label="Default select example" formControlName="producto">
             <option selected value="">Seleccione...</option>
             <option value="Filtro de aire">Filtro de aire #1</option>
             <option value="Rodela #2">Rodela #2</option>
@@ -244,32 +229,18 @@
         </div>
         <div class="col-12 form-group">
           <label for="titulo">Observación:</label>
-          <input
-            type="text"
-            class="form-control"
-            formControlName="observacion"
-            placeholder="Escribir observaciones o detalles del producto a pedir"
-          />
+          <input type="text" class="form-control" formControlName="observacion"
+            placeholder="Escribir observaciones o detalles del producto a pedir" />
         </div>
       </div>
 
       <!-- Botón de submit -->
       <div class="button-contianer" style="text-align: right; margin: 10px 0px">
-        <button
-          type="submit"
-          class="btn btn-cancel"
-          style="margin-right: 10px"
-          (click)="closeModalPedidos()"
-        >
-         Cancelar
+        <button type="submit" class="btn btn-cancel" style="margin-right: 10px" (click)="closeModalPedidos()">
+          Cancelar
         </button>
-        <button
-          type="submit"
-          class="btn btn-primary"
-          [disabled]="formPedidos.invalid"
-          (click)="guardarPedido()"
-        >
-           Solicitar Repuesta
+        <button type="submit" class="btn btn-primary" [disabled]="formPedidos.invalid" (click)="guardarPedido()">
+          Solicitar Repuesta
         </button>
       </div>
     </form>
