@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { Socket, SocketIoConfig } from 'ngx-socket-io';
+import { environment } from '../env/env';
 
 const config: SocketIoConfig = {
-  url: 'ws://localhost:3000', // URL del servidor WebSocket
+  url: environment.wsUrl, // URL del servidor WebSocket
 };
 
 @Injectable({
