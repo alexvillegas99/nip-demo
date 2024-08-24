@@ -1,7 +1,7 @@
 export const environment = {
-    production: false,
-    //apiUrl: 'http://localhost:4000/api',
-    apiUrl: 'https://back.test.nipautomation.com/api',
+    //production: false,
+    apiUrl: 'http://localhost:4043/api',
+    //apiUrl: 'https://back.test.nipautomation.com/api',
     wsUrl: 'ws://localhost:4000',
     map: {
         api_key_mapbox:

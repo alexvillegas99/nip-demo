@@ -7,17 +7,23 @@ import {
   OnInit,
   TemplateRef,
 } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import Chart, { ScriptableLineSegmentContext } from 'chart.js/auto';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from '../../../services/toas.service';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, interval, Subscription } from 'rxjs';
 import { DataPlcService } from '../../../services/data-plc.service';
+import { SocketService } from '../../../services/socket.service';
 
 @Component({
   selector: 'app-demo1',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './demo1.component.html',
   styleUrl: './demo1.component.scss',
 })
@@ -27,20 +33,68 @@ export class Demo1Component implements AfterViewInit, OnDestroy, OnInit {
     private readonly toastService: ToastrService,
     private modalService: BsModalService,
     private cdr: ChangeDetectorRef,
-    private readonly dataPlc: DataPlcService
+    private readonly socketService: SocketService
   ) {}
   tablaDeDatos: any;
-  async getDataPLC() {
-    try {
-      const data = await firstValueFrom(this.dataPlc.getData());
-      return data;
-    } catch (error) {
-   
-      throw error; // Esto es opcional, dependiendo de si quieres manejar el error más arriba en la cadena de llamadas.
-    }
+
+  plcData: any;
+  historicoPlcData: any;
+  private dataSubscription: Subscription;
+  private historicoSubscription: Subscription;
+  private updateSubscription: Subscription;
+
+ 
+
+  ngOnInit() {
+    this.startPeriodicUpdates();
+    this.dataSubscription = this.socketService.receivePlcData().subscribe(
+      (data: any) => {
+        console.log('Datos recibidos del servidor:', data);
+        this.plcData = data;
+      },
+      (error) => {
+        console.error('Error al recibir datos:', error);
+      }
+    );
+
+    this.historicoSubscription = this.socketService.receiveHistoricoPlcData().subscribe(
+      (data: any) => {
+        console.log('Datos históricos recibidos del servidor:', data);
+        this.historicoPlcData = data;
+      },
+      (error) => {
+        console.error('Error al recibir datos históricos:', error);
+      }
+    );
   }
-  ngOnInit(): void {
-    this.getTablaDatos();
+
+  startPeriodicUpdates() {
+    this.updateSubscription = interval(10000).subscribe(() => {
+      this.findPlcData();
+      this.findHistoricoPlcData();
+    });
+  }
+
+  findPlcData() {
+    this.socketService.sendFindPlcData('192.168.100.80');
+  }
+
+  findHistoricoPlcData() {
+    this.socketService.sendFindHistoricoPlcData('192.168.100.80', 10);
+  }
+
+  ngOnDestroy() {
+    // Limpiar suscripciones para evitar fugas de memoria
+    if (this.dataSubscription) {
+      this.dataSubscription.unsubscribe();
+    }
+    if (this.historicoSubscription) {
+      this.historicoSubscription.unsubscribe();
+    }
+    if (this.updateSubscription) {
+      this.updateSubscription.unsubscribe();
+    }
+    console.log('Suscripciones canceladas.');
   }
   compresor = true;
   eventos = false;
@@ -126,38 +180,41 @@ export class Demo1Component implements AfterViewInit, OnDestroy, OnInit {
   temperatura: any = 30;
   intervall1: any;
   intervall2: any;
-  ngOnDestroy(): void {
-    clearInterval(this.intervalId);
-    clearInterval(this.intervall2);
-    clearInterval(this.interval3);
-    console.log('Intervalos cancelados.');
-  }
 
-  getTablaDatos() {
+  data: any;
+  /*   getTablaDatos() {
     this.dataPlc.getDataUltimo().subscribe({
       next: (data) => {
-        data = Object.entries(data.data).map(([dato, valor]) => ({ dato, valor }));
-        this.tablaDeDatos = data;
-        console.log(this.tablaDeDatos);
+        console.log(data);
+       this.data = data;
+
+  let path: string[] = [];
+       this.extractValue(data,path);
         this.setupInterval();
       },
       error: (error) => {
         console.error(error);
         this.setupInterval();
       },
-      
     });
+  } */
+
+  // En el componente TypeScript
+  isObject(value: any): boolean {
+    return value && typeof value === 'object' && !Array.isArray(value);
   }
 
-  setupInterval() {
-    this.interval3 = setInterval(() => {
+  /*   setupInterval() {
+    setTimeout(() => {
       this.getTablaDatos();
-    }, 10000);
+    }, 20000);
+  } */
+  getObjectKeys(obj: any): string[] {
+    return Object.keys(obj);
   }
-
   interval3: any;
   ngAfterViewInit(): void {
- /*    this.intervall1 = setInterval(() => {
+    /*    this.intervall1 = setInterval(() => {
       this.updateChart();
     }, 5000); */
     this.intervall2 = setInterval(() => {
@@ -165,19 +222,18 @@ export class Demo1Component implements AfterViewInit, OnDestroy, OnInit {
       this.cdr.detectChanges();
     }, 10000);
 
-    this.getTablaDatos();
+    //this.getTablaDatos();
 
-
-/*     setTimeout(() => {
+    /*     setTimeout(() => {
      
     }, 1000); */
     this.createChart();
     this.createChart2();
     this.createChart3();
     this.createChart4();
-    this.actualizarGraficos();
+    // this.actualizarGraficos();
   }
-  
+
   chart1: any;
   chart2: any;
   chart3: any;
@@ -187,8 +243,7 @@ export class Demo1Component implements AfterViewInit, OnDestroy, OnInit {
     this.chart1 = new Chart(ctx, {
       type: 'line',
       data: {
-        labels: [
-        ],
+        labels: [],
         datasets: [
           {
             label: 'rpm',
@@ -257,9 +312,8 @@ export class Demo1Component implements AfterViewInit, OnDestroy, OnInit {
         },
       },
     });
-   
   }
- /*  createChart() {
+  /*  createChart() {
     const ctx = document.getElementById('myChart') as HTMLCanvasElement; // Afirmación de tipo
     this.chart1 = new Chart(ctx, {
       type: 'line',
@@ -347,9 +401,7 @@ export class Demo1Component implements AfterViewInit, OnDestroy, OnInit {
     this.chart2 = new Chart(ctx, {
       type: 'line',
       data: {
-        labels: [
-          
-        ],
+        labels: [],
         datasets: [
           {
             label: 'rpm',
@@ -395,7 +447,6 @@ export class Demo1Component implements AfterViewInit, OnDestroy, OnInit {
         },
       },
     });
-
   }
 
   createChart3() {
@@ -403,9 +454,7 @@ export class Demo1Component implements AfterViewInit, OnDestroy, OnInit {
     this.chart3 = new Chart(ctx, {
       type: 'line',
       data: {
-        labels: [
-         
-        ],
+        labels: [],
         datasets: [
           {
             label: 'Voltaje',
@@ -450,16 +499,13 @@ export class Demo1Component implements AfterViewInit, OnDestroy, OnInit {
         },
       },
     });
-   
   }
   createChart4() {
     const ctx = document.getElementById('myChart4') as HTMLCanvasElement; // Afirmación de tipo
     this.chart4 = new Chart(ctx, {
       type: 'line',
       data: {
-        labels: [
-        
-        ],
+        labels: [],
         datasets: [
           {
             label: 'Temperatura',
@@ -504,7 +550,6 @@ export class Demo1Component implements AfterViewInit, OnDestroy, OnInit {
         },
       },
     });
-   
   }
 
   updateChart() {
@@ -566,53 +611,13 @@ export class Demo1Component implements AfterViewInit, OnDestroy, OnInit {
     class: 'modal-dialog-centered modal-xl',
   };
 
-intervalId:any;
-  async actualizarGraficos() {
-    const data = await this.getDataPLC();
-    console.log(data);
+  intervalId: any;
 
-    const st_vdfArray = data.map((item: any) => item.st_vdf);
-    const potenciaArray = data.map((item: any) => item.potencia);
-    const corrienteArray = data.map((item: any) => item.corriente);
-    const temperaturaArray = data.map((item: any) => item.temperatura);
-    const voltajeArray = data.map((item: any) => item.voltaje);
-    const rpmArray = data.map((item: any) => item.rpm);
-    const createdAtArray = data.map(
-      (item: any) =>
-        item.createdAt.split('T')[0] +
-        ' ' +
-        item.createdAt.split('T')[1].split('.')[0]
+  extractValue(data: any, path: string[]): any {
+    const a = path.reduce(
+      (acc, key) => (acc && acc[key] ? acc[key] : null),
+      data
     );
-    console.log(temperaturaArray);
-
-    //chart1
-    this.chart1.data.labels = createdAtArray;
-
-    this.chart1.data.datasets[0].data = temperaturaArray;
-    this.chart1.data.datasets[1].data = potenciaArray;
-
-    //chart2
-    this.chart2.data.labels = createdAtArray;
-
-    this.chart2.data.datasets[0].data = rpmArray;
-
-    //chart3
-    this.chart3.data.labels = createdAtArray;
-    this.chart3.data.datasets[0].data = voltajeArray;
-
-    //chart4
-    this.chart4.data.labels = createdAtArray;
-
-    this.chart4.data.datasets[0].data = temperaturaArray;
-
-    this.chart1.update();
-    this.chart2.update();
-    this.chart3.update();
-    this.chart4.update();
-   /* 
-    this.chart4.update(); */
-   /*  this.intervalId =  setInterval(async () => {
-      this.actualizarGraficos();
-    }, 10000);  */// Ejecutar cada 5 segundos
+    console.log(a);
   }
 }
