@@ -1,5 +1,9 @@
 @import './../../../styles.scss';
 
+.card {
+  border: none;
+}
+
 .flex-container {
   display: flex;
   flex-wrap: nowrap;
@@ -87,116 +91,75 @@
   }
 }
 
-.listado {
-  display: flex;
-  gap: 1rem;
-  flex-direction: row;
-  justify-content: space-around;
-  align-items: center;
-  flex-wrap: wrap;
-  width: 100%;
-
-  .card-mantenimiento {
-    background-color: #fff;
-    width: 400px;
-    margin-top: 1rem;
-    padding: 1rem;
-    border: solid 2px $color-borde;
-    border-radius: 8px;
-    display: grid;
-    grid-template-columns: .8fr 1fr;
-    grid-template-rows: 1fr;
-    gap: 0px 0px;
-    grid-auto-flow: row;
-    grid-template-areas:
-      "imagen texto";
-
-    .imagen {
-      justify-self: center;
-      align-self: center;
-      grid-area: imagen;
-
-      img {
-        width: 80%;
-      }
-    }
-
-    .texto {
-      justify-self: stretch;
-      align-self: center;
-      grid-area: texto;
-
-      h3 {
-        font-size: 15px;
-        font-weight: 400;
-        line-height: 24px;
-        text-align: left;
-        color: #909498;
-        margin-bottom: 0px;
-      }
-
-      h4 {
-        font-size: 18px;
-        font-weight: 600;
-        line-height: 27px;
-        text-align: left;
-        color: #2A2F35;
-      }
-
-      p {
-        font-size: 16px;
-        font-weight: 400;
-        line-height: 24px;
-        text-align: left;
-        color: #727272;
-      }
-    }
-  }
-
-  .card-mantenimiento-1 {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 2fr;
-    grid-template-rows: 1fr;
-    grid-auto-columns: 1fr;
-    grid-auto-rows: 1fr;
-    gap: 0px 0px;
-    grid-auto-flow: row;
-    grid-template-areas:
-      "imagen info-1 info-2 info-3";
-
-    .imagen {
-      justify-self: center;
-      align-self: center;
-      grid-area: imagen;
-    }
-
-    .info-1 {
-      justify-self: stretch;
-      align-self: center;
-      grid-area: info-1;
-    }
-
-    .info-2 {
-      align-self: center;
-      grid-area: info-2;
-    }
-
-    .info-3 {
-      justify-self: start;
-      align-self: center;
-      grid-area: info-3;
-    }
-  }
-
+.compresores {
+  margin-top: 0.2rem;
+  padding-top: 1.25rem;
+  margin-inline-start: -1rem;
+  padding-inline: 1rem;
+  background-color: $color-hover;
 }
 
-.title-link {
-  color: #000;
-  text-decoration: none;
+h1 {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 20.83px;
+  text-align: left;
+  color: #909498;
+}
 
-  &:hover {
-    color: #000;
-    text-decoration: underline;
-    cursor: pointer;
+h2 {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 23.44px;
+  text-align: left;
+  color: #2A2F35;
+}
+
+.p {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 20.83px;
+  text-align: left;
+  color: #727272;
+}
+
+.card-mantenimiento {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: 1fr;
+  grid-auto-columns: 1fr;
+  grid-auto-rows: 1fr;
+  gap: 0px 0px;
+  grid-auto-flow: row;
+  grid-template-areas:
+    "imagen info-1 info-2 info-3 info-4";
+
+  .imagen {
+    justify-self: center;
+    align-self: center;
+    grid-area: imagen;
+  }
+
+  .info-1 {
+    justify-self: stretch;
+    align-self: center;
+    grid-area: info-1;
+  }
+
+  .info-2 {
+    align-self: center;
+    grid-area: info-2;
+  }
+
+  .info-3 {
+    justify-self: start;
+    align-self: center;
+    grid-area: info-3;
+  }
+
+  .info-4 {
+    justify-self: start;
+    align-self: center;
+    grid-area: info-4;
   }
 }

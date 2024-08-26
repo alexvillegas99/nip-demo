@@ -1,23 +1,23 @@
 import { INavbarData } from "./helper";
 
 export const NAVBARDATA: INavbarData[] = [
-    // {
-    //     routeLink: './dashboard',
-    //     icon: 'assets/imgs/navbar/portal-d.svg',
-    //     label: 'Portal',
-    //     items: [
-    //         // {
-    //         //     routeLink: './administracion-usuarios/gestion-usuarios',
-    //         //     label: 'Administradores',
-    //         //     icon: 'assets/imgs/navbar/portal-d.svg',
-    //         // }
-    //     ],
-    //     // roles: ['ADMIN']
-    // },
+    {
+        routeLink: './dashboard',
+        icon: 'assets/imgs/navbar/portal-d.svg',
+        label: 'Portal',
+        items: [
+            // {
+            //     routeLink: './administracion-usuarios/gestion-usuarios',
+            //     label: 'Administradores',
+            //     icon: 'assets/imgs/navbar/portal-d.svg',
+            // }
+        ],
+        // roles: ['ADMIN']
+    },
     {
         routeLink: '',
         icon: 'assets/imgs/navbar/equipos-d.svg',
-        label: 'Equipo Industrial',
+        label: 'Monitoreo',
         items: [
             {
                 routeLink: '',
@@ -35,8 +35,21 @@ export const NAVBARDATA: INavbarData[] = [
                         label: 'Gestión',
                         icon: 'assets/imgs/navbar/reportes-d.svg',
                         items: []
-                    }
+                    },
                 ]
+            },
+            {
+                routeLink: './reportes',
+                icon: 'assets/imgs/navbar/reporteria-d.svg',
+                label: 'Reportes',
+                items: [
+                    // {
+                    //     routeLink: './reportes',
+                    //     label: 'Reporte Incidentes',
+                    //     icon: 'assets/imgs/navbar/reporte-incidente-d.svg',
+                    // },
+                ],
+                // roles: ['ADMIN', 'BASIC']
             },
             // {
             //     routeLink: '',
@@ -67,19 +80,6 @@ export const NAVBARDATA: INavbarData[] = [
             //     routeLink: '',
             //     label: 'Módulos',
             // },
-        ],
-        // roles: ['ADMIN', 'BASIC']
-    },
-    {
-        routeLink: '',
-        icon: 'assets/imgs/navbar/reporteria-d.svg',
-        label: 'Reportes',
-        items: [
-            {
-                routeLink: './reportes',
-                label: 'Reporte Incidentes',
-                icon: 'assets/imgs/navbar/reporte-incidente-d.svg',
-            },
         ],
         // roles: ['ADMIN', 'BASIC']
     },

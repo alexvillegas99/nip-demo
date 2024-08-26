@@ -1,131 +1,79 @@
-<div class="flex-container">
-  <div class="item">
-    <h1>MANTENIMIENTO</h1>
-  </div>
-  <div class="item"></div>
-</div>
+<div class="container-fluid">
 
-<div class="flex-container">
-  <div class="item">
-    <h2>Compresores añadidos</h2>
+  <div class="flex-container">
+    <div class="item">
+      <h1>MANTENIMIENTO</h1>
+    </div>
+    <div class="item"></div>
   </div>
-  <div class="item">
-    <button class="btn btn-light boton-2" type="button">
-      <img src="assets/imgs/icons/filter.svg" alt="icon_filter">
-      Filtrar por
-    </button>
+  
+  <div class="flex-container">
+    <div class="item">
+      <h2>Compresores añadidos</h2>
+    </div>
+    <div class="item">
+      <button class="btn btn-light boton-2" type="button">
+        <img src="assets/imgs/icons/filter.svg" alt="icon_filter">
+        Filtrar por
+      </button>
+    </div>
   </div>
-</div>
+  
+  <div class="flex-container">
+    <div class="item">
+      <h1>Lista de Compresores</h1>
+    </div>
+    <div class="item"></div>
+  </div>
+  
+  <div class="compresores">
+    @if (screen1) {
+    <div class="row">
+      @for (item of equipos; track $index) {
+  
+      <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-6 mb-2">
+        <div class="card">
+          <div class="card-body card-mantenimiento">
+            <div class="imagen">
+              <img src="assets/imgs/compresor.svg" alt="img_comprensor" />
+            </div>
+            <div class="info-1">
+              <h1>Compresor:</h1>
+              <h2>Medidor PM5560</h2>
 
-<div class="container">
-  @if (screen1) {
-  <div class="listado">
-    @for (item of equipos; track $index) {
-    <!-- <div class="card-mantenimiento">
-      <div class="imagen">
-        <img src="assets/imgs/Compresor.png" alt="" />
-      </div>
-      <div class="texto">
-        <h3>Equipo:</h3>
-        <h4>{{item.nombre | uppercase}}</h4>
-        <p><i class="fa-solid fa-location-dot"></i> {{item.ubicacion}}, Ecuador</p>
-        <a class="btn btn-primary" [routerLink]="['/demos/demo1']" routerLinkActive="router-link-active">Revisar
-          Equipo</a>
-      </div>
-    </div> -->
-    <div class="card">
-      <div class="card-body card-mantenimiento-1">
-        <div class="imagen">
-          <img src="assets/imgs/medidor.svg" alt="img_comprensor"/>
+              <p> <img src="assets/imgs/icons/clock.svg" alt="img_clock">01/08/2024  |  09:20:00</p>
+
+              <button class="btn boton-1" [routerLink]="['/demos/demo1']" routerLinkActive="router-link-active">
+                Configurar Compresor
+              </button>
+            </div>
+            <div class="info-2">
+              <h1>Modelo:</h1>
+              <h2>METSEPM5560</h2>
+
+              <p><img src="assets/imgs/icons/current.svg" alt="img_current">Conexión: Remota</p>
+            </div>
+            <div class="info-3">
+              <h1>Número de serie:</h1>
+              <h2>600098804</h2>
+
+              <h1>Nombre Equipo:</h1>
+              <h2>MG 1096</h2>
+            </div>
+            <div class="info-4">
+              <h1>Área:</h1>
+              <h2>#Producción</h2>
+
+              <h1>Responsable:</h1>
+              <h2>Juan Dominguez</h2>
+            </div>
+
+          </div>
         </div>
-        <div class="info-1">
-          <h1>Medidor de Energía:</h1>
-          <h2>Medidor PM5560</h2>
-          <p></p>
-        </div>
-        <div class="info-2"></div>
-        <div class="info-3"></div>
       </div>
+      }
     </div>
     }
-    <!--      <div class="card" *ngFor="let item of arrayReportes">
-          <div class="card-body">
-            <div class="img">
-              <img [src]="item.image" alt="" />
-            </div>
-            <div class="info">
-              <h4>{{ item.name }}</h4>
-              <a class="btn btn-primary">Revisar</a>
-            </div>
-          </div>
-        </div> -->
-  </div>
-  }
-  <!--   <div class="card" *ngIf="screen2">
-      <div class="card-body">
-        <h3>
-          <i
-            class="fa fa-arrow-left"
-            aria-hidden="true"
-            (click)="cambiarPantalla(1)"
-          ></i>
-          COMPRESOR XYZ
-        </h3>
-        <hr />
-        <div
-          class="card"
-          *ngFor="let item of mantenimientos"
-          style="margin-bottom: 0.5rem"
-        >
-          <div class="card-body">
-            <h4 class="title-link" (click)="seleccionarMantenimiento(item)">
-              {{ item.nombre }}
-            </h4>
-            <h5>{{ item.detalle }}</h5>
-            <p style="margin-bottom: 0px">{{ item.funcion }}</p>
-          </div>
-        </div>
-      </div>
     </div>
-    <div class="card" *ngIf="screen3">
-      <div class="card-body">
-        <h3>
-          <i
-            class="fa fa-arrow-left"
-            aria-hidden="true"
-            (click)="cambiarPantalla(2)"
-          ></i>
-          {{ mantenimientoSeleccionado.nombre }}
-        </h3>
-  
-        <hr />
-  
-          <div  style="display: grid; place-items: center;">
-            <img
-              [src]="mantenimientoSeleccionado.detallesAdicionales.imagen"
-              style="width: 100%; max-width: 25rem; min-width: 17rem;"
-            />
-          </div>
-    
-        <h3>Detalle</h3>
-        <p>{{ mantenimientoSeleccionado.detalle }}</p>
-        <h3>Función:</h3>
-        <p>{{ mantenimientoSeleccionado.funcion }}</p>
-        <h3>Descripción</h3>
-        <p>{{ mantenimientoSeleccionado.detallesAdicionales.descripcion }}</p>
-        <h3>Pasos</h3>
-        <div
-          class="card"
-          *ngFor="
-            let item of mantenimientoSeleccionado.detallesAdicionales.pasos;
-            let i = index
-          "
-          style="margin-bottom: 0.5rem"
-        >
-          <div class="card-body">
-            <p style="margin-bottom: 0px">{{ i + 1 }}: {{ item }}</p>
-          </div>
-        </div>
-      </div>
-    </div> -->
+
 </div>

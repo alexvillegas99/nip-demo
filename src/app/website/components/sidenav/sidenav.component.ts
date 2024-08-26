@@ -20,6 +20,7 @@ import { NAVBARDATA } from './nav-data';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { SublevelMenuComponent } from './sublevel-menu.component';
 import { CommonModule } from '@angular/common';
+import { SearchComponent } from '../../../shared/components/search/search.component';
 
 interface SideNavToggle {
   screenWidth: number;
@@ -45,7 +46,7 @@ interface SideNavToggle {
     ]),
   ],
   standalone: true,
-  imports: [RouterModule, RouterOutlet, CommonModule, SublevelMenuComponent],
+  imports: [RouterModule, RouterOutlet, CommonModule, SublevelMenuComponent, SearchComponent],
   encapsulation: ViewEncapsulation.None // Para desactivar el encapsulamiento
 })
 export class SidenavComponent implements OnInit {
@@ -73,6 +74,10 @@ export class SidenavComponent implements OnInit {
 
   ngOnInit(): void {
     this.screenWidth = window.innerWidth;
+  }
+
+  busqueda(event: any) {
+    console.log(event, 'evento....');
   }
 
   toggleCollapse(): void {
