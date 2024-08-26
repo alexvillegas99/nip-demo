@@ -10,6 +10,7 @@ import { PortalComponent } from './portal/portal.component';
 import { LogisticaComponent } from './equipo-industrial/logistica/logistica.component';
 import { MantenimientoComponent } from './equipo-industrial/mantenimiento/mantenimiento.component';
 import { LayoutComponent } from './website/components/layout/layout.component';
+import { ConsumoEnergeticoComponent } from './consumo-energetico/consumo-energetico.component';
 
 export const routes: Routes = [
   {
@@ -111,6 +112,11 @@ export const routes: Routes = [
         path: 'reportes',
         title: 'Reportes',
         component: ReportsComponent,
+      },
+      {
+        path: 'consumo-energetico',
+        title: 'Consumo energético',
+        component: ConsumoEnergeticoComponent,
       },
       {
         path: 'mantenimiento',

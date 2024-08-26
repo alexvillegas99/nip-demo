@@ -21,7 +21,7 @@
   @if (screen1) {
   <div class="listado">
     @for (item of equipos; track $index) {
-    <div class="card-mantenimiento">
+    <!-- <div class="card-mantenimiento">
       <div class="imagen">
         <img src="assets/imgs/Compresor.png" alt="" />
       </div>
@@ -31,6 +31,20 @@
         <p><i class="fa-solid fa-location-dot"></i> {{item.ubicacion}}, Ecuador</p>
         <a class="btn btn-primary" [routerLink]="['/demos/demo1']" routerLinkActive="router-link-active">Revisar
           Equipo</a>
+      </div>
+    </div> -->
+    <div class="card">
+      <div class="card-body card-mantenimiento-1">
+        <div class="imagen">
+          <img src="assets/imgs/medidor.svg" alt="img_comprensor"/>
+        </div>
+        <div class="info-1">
+          <h1>Medidor de Energía:</h1>
+          <h2>Medidor PM5560</h2>
+          <p></p>
+        </div>
+        <div class="info-2"></div>
+        <div class="info-3"></div>
       </div>
     </div>
     }
