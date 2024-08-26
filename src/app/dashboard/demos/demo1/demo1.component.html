@@ -127,34 +127,34 @@
       </div>
     </div>
   </div>
-
-  @if(tablaDeDatos){
-    <div class="table-responsive">
-      <table class="table align-middle table-bordered table-bordered-sides">
-        <thead>
-          <tr>
-            <th>Dato</th>
-            <th>Valor</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (item of tablaDeDatos; track $index) {
-          <tr>
-            <td>
-              {{ item.dato }}
-            </td>
-            <td>
-              {{ item.valor | number:'1.2-2' }}
-            </td>
+@if(tablaDeDatos){
 
 
-          </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-  }
-
+  <div class="table-responsive">
+    <table class="table align-middle table-bordered table-bordered-sides">
+      <thead>
+        <tr>
+          <th>Dato</th>
+          <th>Valor</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of  tablaDeDatos; track $index) {
+        <tr>
+          <td>
+            {{ item.dato }}
+          </td>
+          <td>
+            {{ item.valor |  number:'1.2-2' }}
+          </td>
+         
+          
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}
   <div class="card card-eventos" *ngIf="eventos">
     <div class="card-body">
       <h3>

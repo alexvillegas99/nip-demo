@@ -1,60 +1,47 @@
 import { Injectable } from '@angular/core';
-import { Observable, filter, map } from 'rxjs';
-import { webSocket } from 'rxjs/webSocket';
-import {Socket, SocketIoConfig} from 'ngx-socket-io';
+import { Observable, Subject } from 'rxjs';
+import { Socket, SocketIoConfig } from 'ngx-socket-io';
+import { environment } from '../env/env';
 
 const config: SocketIoConfig = {
-  url: "https://localhost:3000",
+  url: environment.wsUrl, // URL del servidor WebSocket
 };
+
 @Injectable({
   providedIn: 'root',
 })
-/* export class SocketService {
-  private socket$;
-  
-  constructor() {
-    // Aquí debes colocar la URL de tu servidor WebSocket
-    console.log('Connecting to WebSocket server');
-    this.socket$ = webSocket('ws://localhost:4000');
-    console.log('Connected to WebSocket server');
-  }
+export class SocketService extends Socket {
+  private responseSubject = new Subject<any>();
+  private historicoResponseSubject = new Subject<any>();
 
-  // Método para enviar un mensaje al servidor WebSocket
-  sendMessage(message: string) {
-
-    this.socket$.next(message);
-  }
-
-  // Método para recibir mensajes del servidor WebSocket
-  receiveMessage(eventName: string): Observable<any> {
-    return this.socket$.asObservable().pipe(
-      filter((message: any) => message.event === eventName),
-      map((message: any) => message.data)
-    );
-  }
-}
-
-
-const config: SocketIoConfig = {
-  url: "http://localhost:4000",
-};
-@Injectable({
-  providedIn: 'root',
-}) */
-export class SocketService extends  Socket {
   constructor() {
     super(config);
-    //this.conectar();
+    // Escucha los eventos de respuesta del servidor
+    this.fromEvent<any>('findPlcDataResponse').subscribe((response) => {
+      this.responseSubject.next(response);
+    });
+    this.fromEvent<any>('findHistoricoPlcDataResponse').subscribe((response) => {
+      this.historicoResponseSubject.next(response);
+    });
   }
 
-  conectar() {
-    this.connect()
+  // Método para enviar una solicitud al servidor WebSocket
+  sendFindPlcData(ip: string): void {
+    this.emit('findPlcData', { ip });
   }
 
-  desconectar() {
-    this.disconnect()
+  // Método para recibir respuestas del servidor WebSocket
+  receivePlcData(): Observable<any> {
+    return this.responseSubject.asObservable();
   }
 
+  // Método para enviar una solicitud de datos históricos
+  sendFindHistoricoPlcData(ip: string, limit?: number): void {
+    this.emit('findHistoricoPlcData', { ip, limit });
+  }
 
+  // Método para recibir respuestas de datos históricos
+  receiveHistoricoPlcData(): Observable<any> {
+    return this.historicoResponseSubject.asObservable();
+  }
 }
-
