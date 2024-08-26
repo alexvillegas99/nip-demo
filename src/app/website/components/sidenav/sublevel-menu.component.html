@@ -19,7 +19,9 @@
             <li class="sublevel-nav-item">
                 <ng-container *ngIf="item.items && item.items.length > 0; else noItems">
                     <a class="sublevel-nav-link" (click)="handleClick(item)" [ngClass]="getActiveClass(item)">
-                        <img class="sidenav-link-icon" [src]="item.icon" width="14px" alt="icono_subleve" />
+                        @if (item.icon !== '') {
+                            <img class="sidenav-link-icon" [src]="item.icon" width="14px" alt="icono_subleve" />
+                        }
                         <span class="sublevel-link-text" @fadeInOut *ngIf="collapsed">{{ item.label }}</span>
                         <i *ngIf="collapsed" class="menu-collapse-icon"
                             [ngClass]="!item.expanded ? 'fa fa-angle-right' : 'fa fa-angle-down'"></i>
@@ -33,7 +35,9 @@
                 <ng-template #noItems>
                     <a class="sublevel-nav-link" [routerLink]="[item.routeLink]" routerLinkActive="active-sublevel"
                         [routerLinkActiveOptions]="{ exact: true }">
-                        <img class="sidenav-link-icon" [src]="item.icon" width="14px" alt="icono_subleve" />
+                        @if (item.icon !== '') {
+                            <img class="sidenav-link-icon" [src]="item.icon" width="14px" alt="icono_subleve" />
+                        }
                         <span class="sidenav-link-text" @fadeInOut *ngIf="collapsed">{{ item.label }}</span>
                     </a>
                 </ng-template>
