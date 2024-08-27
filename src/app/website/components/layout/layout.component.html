@@ -1,2 +1,3 @@
-<app-sidenav [navDatas]="navData" (onToggleSideNav)="onToggleSideNav($event)"></app-sidenav>
-<app-main [collapsed]="isSideNavCollapsed" [screenWidth]="screenWidth"></app-main>
+<app-sidenav [navDatas]="navData" (onToggleSideNav)="onToggleSideNav($event)" [ngClass]="{ 'nav-list-open': isSideNavCollapsed }" ></app-sidenav>
+<app-main [collapsed]="isSideNavCollapsed" [screenWidth]="screenWidth"   class="display-area p-3 scroll"
+[ngClass]="{ 'display-area-shrink': isSideNavCollapsed }" ></app-main>
