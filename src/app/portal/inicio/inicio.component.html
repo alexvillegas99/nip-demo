@@ -10,17 +10,20 @@
     </div>
 
     <div class="card-list">
-      @for (item of arrayCompresores; track $index) {
+      @for (item of arrayEquipos; track $index) {
       <div class="card-body container-card-info">
         <div class="informacion">
           <h6>Nombre del equipo:</h6>
           <h4>{{ item.nombre | uppercase }}</h4>
         </div>
         <div class="ubicacion">
-          <p><i class="fa-solid fa-location-dot"></i> {{item.ubicacion}}, Ecuador</p>
+          <p>
+            <i class="fa-solid fa-location-dot"></i> {{ item.ubicacion }},
+            Ecuador
+          </p>
         </div>
         <div class="imagen">
-          <img src="assets/imgs/Compresor.png" alt="" />
+          <img src="assets/imgs/medidor.svg" alt="" />
         </div>
       </div>
       }
@@ -31,19 +34,35 @@
 <div class="card" *ngIf="screen2">
   <div class="card-body">
     <div class="title">
-      <h3> <i class="fa fa-arrow-left" aria-hidden="true" (click)="cambiarScreen(1)" style="margin-right: 1rem;"></i>
-        Lista de equipos</h3>
+      <h3>
+        <i
+          class="fa fa-arrow-left"
+          aria-hidden="true"
+          (click)="cambiarScreen(1)"
+          style="margin-right: 1rem"
+        ></i>
+        Lista de equipos
+      </h3>
       <hr />
     </div>
     <div class="listado">
-      <div class="card" style="width: 100%; max-width: 23rem;">
+      <div class="card" style="width: 100%; max-width: 23rem">
         <div class="card-body">
           <div class="img">
-            <img src="assets/demos/CompresorDePistonDeDosPasos.gif" alt="" style="width: 300px; height: 200px;" />
+            <img
+              src="assets/demos/CompresorDePistonDeDosPasos.gif"
+              alt=""
+              style="width: 300px; height: 200px"
+            />
           </div>
           <div class="info">
             <h4>COMPRESOR XYZ</h4>
-            <a class="btn btn-primary" [routerLink]="['/demos/demo1']" routerLinkActive="router-link-active">Revisar</a>
+            <a
+              class="btn btn-primary"
+              [routerLink]="['/demos/demo1']"
+              routerLinkActive="router-link-active"
+              >Revisar</a
+            >
           </div>
         </div>
       </div>
@@ -61,3 +80,17 @@
     </div>
   </div>
 </div>
+<ngx-gauge
+  [type]="'arch'"
+  [value]="90"
+  [label]="'Energía'"
+  [append]="'kW/h'"
+  [min]="0"
+  [max]="100"
+  [thresholds]="thresholdConfig"
+  [thick]="15"
+  [animate]="true"
+  [markers]="markerConfig"
+>
+  >
+</ngx-gauge>

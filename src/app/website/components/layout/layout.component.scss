@@ -1,0 +1,16 @@
+.display-area {
+    position: absolute;
+    left: 0px;
+    width: calc(100%);
+    transition: left 250ms ease-in, width 250ms ease-in;
+  
+  }
+  .nav-list-open {
+    width: 325px;
+  }
+  
+  .display-area-shrink {
+    padding: 1rem;
+    
+    width: calc(100% - 280px); /* Cambiado a un valor calculado */
+  }

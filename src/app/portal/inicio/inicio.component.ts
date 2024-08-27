@@ -4,19 +4,35 @@ import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import { environment } from '../../env/env';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { DataPlcService } from '../../services/data-plc.service';
+import { NgxGaugeModule } from 'ngx-gauge';
 
 @Component({
   selector: 'app-inicio',
   standalone: true,
-  imports: [RouterModule, CommonModule],
+  imports: [RouterModule, CommonModule,NgxGaugeModule],
   templateUrl: './inicio.component.html',
   styleUrls: ['./inicio.component.scss'],
   encapsulation: ViewEncapsulation.None // Para desactivar el encapsulamiento
 })
 export class InicioComponent implements OnInit {
   map: mapboxgl.Map;
-  screen1: boolean = true;
+  screen1: boolean = true; 
   screen2: boolean = false;
+  gaugeValue =10;
+  markerConfig = {
+    '50': {color: '#ff0000', type: 'line', size: 10},
+    '70': {color: 'black', type: 'line', size: 10}
+  };
+  thresholdConfig = {
+    '0': {color: 'green'},
+    '40': {color: 'orange'},
+    '75': {color: 'red'}
+  };
+  
+  constructor(
+    private readonly dataPlc:DataPlcService
+  ) {}
 
   cambiarScreen(id: number) {
     if (id === 1) {
@@ -31,119 +47,57 @@ export class InicioComponent implements OnInit {
 
   markers: any[] = [
     {
-      lng: -79.470567,
-      lat: -0.280185,
-      title: 'Compresor 532',
-      description: 'Compresor de aire 123',
-      icono: 'equipo1',
-    },
-    {
-      lng: -79.010628,
-      lat: -2.889603,
-      title: 'Compreso XYZ',
-      description: 'Compresor de aire xyz',
-      icono: 'equipo1',
-    },
-    {
-      lng: -80.019348,
-      lat: -4.08137,
-      title: 'Compresor 532',
-      description: 'Compresor de aire 123',
-      icono: 'equipo1',
-    },
-    {
-      lng: -78.601154,
-      lat: -3.878762,
-      title: 'Compreso XYZ',
-      description: 'Compresor de aire xyz',
-      icono: 'equipo1',
-    },
-    {
-      lng: -76.528239,
-      lat: -0.76438,
-      title: 'Compresor 532',
-      description: 'Compresor de aire 123',
-      icono: 'equipo1',
-    },
-    {
-      lng: -78.819907,
-      lat: -1.231867,
-      title: 'Compresor 532',
-      description: 'Compresor de aire 123',
-      icono: 'equipo1',
-    },
-    {
-      lng: -79.940999,
-      lat: -2.180744,
-      title: 'Compreso XYZ',
-      description: 'Compresor de aire xyz',
-      icono: 'equipo1',
-    },
-    {
-      lng: -78.467853,
-      lat: 0.985788,
-      title: 'Compresor 532',
-      description: 'Compresor de aire 123',
-      icono: 'equipo1',
+      lng: -78.454786,
+      lat: -0.3431066,
+      title: 'Danec',
+      description: 'Equipos industriales',
+      icono: 'assets/logo.jpg',
     },
   ];
   
-  arrayCompresores: any[] = [
-    {
-      nombre: 'Compresor 532',
-      ubicacion: 'Quito',
-      tipo:'Compresor'
-    },
-    {
-      nombre: 'Compresor XYZ',
-      ubicacion: 'Guayaquil',
-      tipo:'Compresor'
-
-    },
-    {
-      nombre: 'Compresor 123',
-      ubicacion: 'Cuenca',
-      tipo:'Compresor'
-    },
-    {
-      nombre: 'Compresor 456',
-      ubicacion: 'Manta',
-       tipo:'Compresor'
-    },
-    {
-      nombre: 'Compresor 789',
-      ubicacion: 'Loja',
-       tipo:'Compresor'
-    },
-    {
-      nombre: 'Compresor 532',
-      ubicacion: 'Quito',
-       tipo:'Compresor'
-    },
-    {
-      nombre: 'Compresor XYZ',
-      ubicacion: 'Guayaquil',
-       tipo:'Compresor'
-    },
-    {
-      nombre: 'Compresor 123',
-      ubicacion: 'Cuenca',
-       tipo:'Compresor'
-    },
-    {
-      nombre: 'Compresor 456',
-      ubicacion: 'Manta',
-       tipo:'Compresor'
-    },
-    {
-      nombre: 'Compresor 789',
-      ubicacion: 'Loja',
-       tipo:'Compresor'
-    },
+  arrayEquipos: any[] = [
+    
   ];
 
   ngOnInit(): void {
     this.initMap();
+    this.getIps();
+  }
+  getIps() {
+    console.log('obteniendo ips');
+    this.dataPlc.getIps().subscribe({
+      next: (data) => {
+        console.log('Data:', data);
+        this.getDataPlc(data);
+      },
+      error: (error) => {
+        console.error('Error:', error
+        );
+      }
+    })
+  }
+  getDataPlc(data: any) {
+    const ips = data.ip.split(',');
+    console.log('Ips:', ips);
+    for (let i = 0; i < ips.length; i++) {
+      const ip = ips[i];
+      console.log('Ip:', ip);
+      this.dataPlc.getData({ ip: ip }).subscribe({
+        next: (data) => {
+          console.log('Data:', data);
+          this.arrayEquipos.push({
+            nombre: data['Product & Features']['Product & Features']['Meter Name'],
+            ubicacion:'Quito',
+            tipo: 'Medidor'
+          })
+          
+        },
+        error: (error) => {
+          console.error('Error:', error);
+        }
+      });
+    }
+
   }
 
   seleccionarIcono(icono: string): string {
@@ -165,11 +119,10 @@ export class InicioComponent implements OnInit {
       this.markers.forEach((marker) => {
         const customMarkerElement = document.createElement('div');
         customMarkerElement.className = 'custom-marker';
-        customMarkerElement.style.backgroundImage = `url(${this.seleccionarIcono(
-          marker.icono
-        )})`; // Coloca la imagen del marcador
-        customMarkerElement.style.width = '40px';
-        customMarkerElement.style.height = '40px';
+        customMarkerElement.style.backgroundImage = `url(${marker.icono})`; // Coloca la imagen del marcador
+        customMarkerElement.style.width = '50px';
+        customMarkerElement.style.height = '50px';
+        customMarkerElement.style.borderRadius = '50%';
         customMarkerElement.style.backgroundSize = 'contain'; // Ajusta el tamaño de la imagen
         customMarkerElement.style.backgroundPosition = 'center'; // Centra la imagen
         customMarkerElement.style.backgroundRepeat = 'no-repeat'; // Evita la repetición
@@ -179,13 +132,21 @@ export class InicioComponent implements OnInit {
           .addTo(this.map);
 
         // Define el contenido de la ventana emergente
-        const popup = new mapboxgl.Popup()
-          .setHTML(`<div class="card" style="width: 100%; max-width: 23rem;">
-              <div class="card-body" ">
-                <h2> <i class="fa fa-map-marker" aria-hidden="true" style="color: red;"></i> ${marker.title}</h2>
-                <p> <i class="fa fa-align-justify" aria-hidden="true"></i> ${marker.description}</p>
-              </div>
-            </div>`);
+        const popup = new mapboxgl.Popup({ closeButton: false, className: 'card' })
+        .setHTML(`
+       
+            <div class="card-body">
+              <h2 class="card-title">
+                <i class="fa fa-map-marker" aria-hidden="true" style="color: red;"></i> ${marker.title}
+              </h2>
+              <p class="card-text">
+                <i class="fa fa-info" aria-hidden="true"></i> ${marker.description}
+              </p>
+            </div>
+      
+        `);
+      
+      
 
         // Asocia la ventana emergente al marcador
         mapMarker.setPopup(popup);

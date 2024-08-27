@@ -9,11 +9,17 @@ export class DataPlcService {
 
 constructor(private readonly http:HttpClient) { }
 
-getData(){
-  return this.http.get<any>(`${environment.apiUrl}/plc-data`);
+getData(data:any){
+  return this.http.post<any>(`${environment.apiUrl}/plc-data`,data);
 }
-getDataUltimo(){
-  return this.http.get<any>(`${environment.apiUrl}/plc-data/ultimo`);
+getHistorico(data:any){
+  return this.http.post<any>(`${environment.apiUrl}/historico-plc`,data);
 }
+
+
+getIps(){
+  return this.http.get<any>(`${environment.apiUrl}/ip-equipo`);
+}
+
 
 }

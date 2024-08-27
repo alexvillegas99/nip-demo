@@ -3,6 +3,8 @@ import { SidenavComponent } from '../sidenav/sidenav.component';
 import { RouterOutlet } from '@angular/router';
 import { FooterComponent } from '../footer/footer.component';
 import { MainComponent } from '../main/main.component';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 interface SideNavToggle {
   screenWidth: number;
@@ -16,7 +18,8 @@ interface SideNavToggle {
     SidenavComponent,
     RouterOutlet,
     FooterComponent,
-    MainComponent
+    MainComponent,
+    CommonModule
   ],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss',

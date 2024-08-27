@@ -27,7 +27,7 @@ export class DashboardComponent implements AfterViewInit, OnDestroy {
     private readonly toastService: ToastrService,
     private readonly dataPlc: DataPlcService
   ) {
-    this.getDataPLC();
+    //this.getDataPLC();
   }
 
   ngOnDestroy(): void {
@@ -39,8 +39,8 @@ export class DashboardComponent implements AfterViewInit, OnDestroy {
 
   async getDataPLC() {
     try {
-      const data = await firstValueFrom(this.dataPlc.getData());
-      return data;
+  /*     const data = await firstValueFrom(this.dataPlc.getData());
+      return data; */
     } catch (error) {
       throw error; // Esto es opcional, dependiendo de si quieres manejar el error más arriba en la cadena de llamadas.
     }
@@ -55,7 +55,7 @@ export class DashboardComponent implements AfterViewInit, OnDestroy {
   }
 
   async actualizarGraficos() {
-    const data = await this.getDataPLC();
+  /*   const data = await this.getDataPLC();
     // console.log(data, 'data dashboard...');
 
     const st_vdfArray = data.map((item: any) => item.st_vdf);
@@ -101,7 +101,7 @@ export class DashboardComponent implements AfterViewInit, OnDestroy {
     this.chart4.update();
     this.intervalId = setInterval(async () => {
       this.actualizarGraficos();
-    }, 10000); // Ejecutar cada 5 segundos
+    }, 10000); // Ejecutar cada 5 segundos */
   }
 
   /*   createChart() {
