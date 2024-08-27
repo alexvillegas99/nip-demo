@@ -1,0 +1,106 @@
+@import './../../../styles.scss';
+
+.tarjetas {
+  margin-top: 0.2rem;
+  padding-top: 1.25rem;
+  margin-inline-start: -1rem;
+  padding-inline: 1rem;
+  background-color: $color-hover;
+}
+
+.item-card {
+  background-color: #1a4978;
+}
+
+.card-reporte {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  grid-template-rows: 1fr;
+  gap: 0px 0px;
+  grid-auto-flow: row;
+  grid-template-areas:
+    "imagen reporte";
+
+  .imagen {
+    align-self: start;
+    grid-area: imagen;
+
+    img {
+      margin-top: 1rem;
+      margin-left: 0.5rem;
+      width: 80px;
+    }
+  }
+
+  .reporte {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr .5fr;
+    gap: 20px 10px;
+    grid-auto-flow: row;
+    grid-template-areas:
+      "texto"
+      "botones";
+    align-self: stretch;
+    grid-area: reporte;
+
+    .texto {
+      grid-area: texto;
+
+      h4 {
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 23.44px;
+        text-align: left;
+        color: #909498;
+      }
+
+      p {
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 24px;
+        text-align: left;
+        color: $color-texto-2;
+      }
+    }
+
+    .botones {
+      display: grid;
+      grid-template-columns: 0.5fr 3fr;
+      grid-template-rows: 1fr;
+      gap: 0px 5px;
+      grid-template-areas:
+        "ver descargar";
+      grid-area: botones;
+
+      .ver {
+        align-self: center;
+        grid-area: ver;
+      }
+
+      .descargar {
+        align-self: center;
+        grid-area: descargar;
+      }
+    }
+
+  }
+}
+
+.btn-descargar {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 20.83px;
+  text-align: left;
+  border: 1.5px solid $color-borde-boton;
+  border-radius: 6px;
+  color: $color-texto-2;
+  height: 45px;
+}
+
+.btn-descargar:active,
+.btn-descargar:hover,
+.btn-descargar:focus {
+  color: $color-texto-2;
+  border: 1.5px solid $color-borde-boton;
+}

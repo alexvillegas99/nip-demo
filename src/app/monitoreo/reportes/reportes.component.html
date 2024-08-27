@@ -1,1 +1,63 @@
-<p>reportes works!</p>
+<div class="container-fluid">
+    <div class="flex-container">
+      <div class="item">
+        <h1>REPORTES</h1>
+      </div>
+      <div class="item"></div>
+    </div>
+  
+    <div class="flex-container">
+      <div class="item">
+        <h1>Reporte de Incidentes</h1>
+      </div>
+      <div class="item"></div>
+    </div>
+  
+    <div class="filters">
+      <div class="item">
+        <app-search [label]="'Buscar Reporte'" (searchText)="textoFiltrado($event)"></app-search>
+      </div>
+      <div class="item">
+        <app-select [labelDisabled]="'Seleccionar Equiqueta'" [lista]="estadoAlarma"
+          (opcionEvent)="opcionSeleccionada($event)"></app-select>
+      </div>
+    </div>
+  
+    <div class="tarjetas">
+      <div class="row">
+        @for (item of arrayReportes; track $index) {
+        <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12 col-6 mb-2">
+          <div class="card">
+            <div class="card-body card-reporte">
+              <div class="imagen">
+                <img [src]="item.image" alt="img_reporte">
+              </div>
+              <div class="reporte">
+                <div class="texto">
+                  <h4>{{item.name | uppercase}}</h4>
+                  <p>{{item.descripcion | uppercase}}</p>
+                  <span class="badge text-bg-primary">{{item.type | titlecase}}</span>
+                </div>
+                <div class="botones">
+                  <div class="ver">
+                    <button class="btn btn-primary">
+                      <img src="assets/imgs/icons/eye.svg" alt="img_eye">
+                    </button>
+                  </div>
+                  <div class="descargar">
+                    <button class="btn btn-descargar">
+                      <img src="assets/imgs/icons/download.svg" alt="img_download">
+                      Descargar Reporte en PDF
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+  
+  
+  </div>
