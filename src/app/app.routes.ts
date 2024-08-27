@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { LayoutUserComponent } from './layout/layout-user/layout-user.component';
 import { ReportsComponent } from './dashboard/reports/reports.component';
 import { Demo1Component } from './dashboard/demos/demo1/demo1.component';
 import { Demo2Component } from './dashboard/demos/demo2/demo2.component';

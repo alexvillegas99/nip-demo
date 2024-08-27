@@ -131,15 +131,6 @@ input:valid~label,
   -o-transform: translateY(-50%) scale(0.8);
 }
 
-.filters {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
 .table-responsive {
   padding-top: 1.5rem;
   background-color: $color-hover;

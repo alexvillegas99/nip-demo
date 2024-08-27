@@ -81,7 +81,6 @@ export class SidenavComponent implements OnInit {
   }
 
   toggleCollapse(): void {
-    console.log('toggleCollapse....');
     this.collapsed = !this.collapsed;
     this.onToggleSideNav.emit({
       collapsed: this.collapsed,
@@ -90,7 +89,6 @@ export class SidenavComponent implements OnInit {
   }
 
   closeSidenav(): void {
-    console.log('closeSidenav....');
     this.collapsed = false;
     this.onToggleSideNav.emit({
       collapsed: this.collapsed,
@@ -100,22 +98,17 @@ export class SidenavComponent implements OnInit {
 
   handleClick(item: INavbarData): void {
     // this.toggleCollapse();
-    console.log(item, 'handleClick');
     this.shrinkItems(item);
     item.expanded = !item.expanded;
   }
 
   getActiveClass(data: INavbarData): string {
-    // console.log(data, 'getActiveClass');
     return this.router.url.includes(data.routeLink) ? 'active' : '';
   }
 
   shrinkItems(item: INavbarData): void {
-    console.log(item, 'shrinkItems');
-    console.log(!this.multiple, 'multiple');
     if (!this.multiple) {
       for (let modelItem of this.navData) {
-        console.log(item !== modelItem && modelItem.expanded, 'item !== modelItem && modelItem.expanded....');
         if (item !== modelItem && modelItem.expanded) {
           modelItem.expanded = false;
         }

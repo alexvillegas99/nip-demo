@@ -29,18 +29,18 @@ export const NAVBARDATA: INavbarData[] = [
             label: 'Compresores',
             icon: '',
             items: [
-              {
-                routeLink: './reportes',
-                icon: '',
-                label: 'Compresor 1',
-                items: [
-                  // {
-                  //     routeLink: './reportes',
-                  //     label: 'Reporte Incidentes',
-                  //     icon: 'assets/imgs/navbar/reporte-incidente-d.svg',
-                  // },
-                ],
-              },
+              // {
+              //   routeLink: './reportes',
+              //   icon: '',
+              //   label: 'Compresor 1',
+              //   items: [
+              //     // {
+              //     //     routeLink: './reportes',
+              //     //     label: 'Reporte Incidentes',
+              //     //     icon: 'assets/imgs/navbar/reporte-incidente-d.svg',
+              //     // },
+              //   ],
+              // },
             ],
           },
           {
@@ -48,18 +48,18 @@ export const NAVBARDATA: INavbarData[] = [
             label: 'Variadores',
             icon: '',
             items: [
-              {
-                routeLink: './reportes',
-                icon: '',
-                label: 'Variadores 1',
-                items: [
-                  // {
-                  //     routeLink: './reportes',
-                  //     label: 'Reporte Incidentes',
-                  //     icon: 'assets/imgs/navbar/reporte-incidente-d.svg',
-                  // },
-                ],
-              },
+              // {
+              //   routeLink: './reportes',
+              //   icon: '',
+              //   label: 'Variadores 1',
+              //   items: [
+              //     // {
+              //     //     routeLink: './reportes',
+              //     //     label: 'Reporte Incidentes',
+              //     //     icon: 'assets/imgs/navbar/reporte-incidente-d.svg',
+              //     // },
+              //   ],
+              // },
             ],
           },
         ],
@@ -73,7 +73,14 @@ export const NAVBARDATA: INavbarData[] = [
             routeLink: './mantenimiento',
             label: 'Sensor de Presión',
             icon: '',
-            items: [],
+            items: [
+              // {
+              //   routeLink: './mantenimiento',
+              //   label: 'Medidor 2',
+              //   icon: '',
+              //   items: [],
+              // },
+            ],
           },
           {
             routeLink: './gestion',
