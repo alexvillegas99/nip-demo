@@ -7,6 +7,15 @@
     <div class="item"></div>
   </div>
 
+  <div class="card card-container">
+    <div class="card-body">
+        @for ( item of menu; track $index) {
+            <div class="item card" [routerLink]="['./../', item.path]" [class.selected-menu]="item.isSelected">
+                <label for="item" class="nombre">{{item.nombre}}</label>
+            </div>
+        }
+    </div>
+</div>
 
   <div class="flex-container">
     <div class="item">

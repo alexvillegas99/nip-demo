@@ -118,3 +118,61 @@ h2 {
     grid-area: info-4;
   }
 }
+
+.card-container {
+  border: none;
+
+  .card-body {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: row;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    padding: .5rem;
+    padding-block: 0rem;
+
+    .item {
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      padding: 10px 0;
+      flex-direction: row;
+      width: 100%;
+      max-width: 15rem;
+      background-color: #fff;
+
+      &:hover {
+        background-color: #c0e0ff;
+        border-radius: 0px;
+        cursor: pointer;
+      }
+
+      img {
+        width: 40px;
+        height: 40px;
+
+        &:hover {
+          cursor: pointer;
+        }
+      }
+
+      label {
+        &:hover {
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}
+
+.selected-menu {
+  background-color: #EEEEEE !important;
+  border-radius: 0px;
+  border-bottom: 2px solid $color-2;
+
+  label {
+    color: $color-2;
+    font-weight: 600;
+  }
+}

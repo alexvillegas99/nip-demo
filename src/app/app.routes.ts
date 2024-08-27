@@ -10,7 +10,7 @@ import { PortalComponent } from './portal/portal.component';
 import { LogisticaComponent } from './equipo-industrial/logistica/logistica.component';
 import { MantenimientoComponent } from './mantenimiento/mantenimiento.component';
 import { LayoutComponent } from './website/components/layout/layout.component';
-import { ConsumoEnergeticoComponent } from './consumo-energetico/consumo-energetico.component';
+import { ConsumoEnergeticoComponent } from './monitoreo/instrumentacion-medidores/gestion-medidor/consumo-energetico/consumo-energetico.component';
 import { MonitoreoComponent } from './monitoreo/monitoreo.component';
 import { ConfiguracionComponent } from './configuracion/configuracion.component';
 import { InstrumentacionMedidoresComponent } from './monitoreo/instrumentacion-medidores/instrumentacion-medidores.component';
@@ -22,6 +22,7 @@ import { GestionVariadorComponent } from './monitoreo/maquinaria-equipos/gestion
 import { MedidoresComponent } from './monitoreo/instrumentacion-medidores/gestion-medidor/medidores/medidores.component';
 import { GestionComprensorComponent } from './monitoreo/maquinaria-equipos/gestion-comprensor/gestion-comprensor.component';
 import { ComprensoresComponent } from './monitoreo/maquinaria-equipos/gestion-comprensor/comprensores/comprensores.component';
+import { VisualizadorPersonalizadoComponent } from './monitoreo/instrumentacion-medidores/gestion-medidor/visualizador-personalizado/visualizador-personalizado.component';
 
 export const routes: Routes = [
   {
@@ -88,7 +89,7 @@ export const routes: Routes = [
                 children: [
                   {
                     path: ':id/comprensor',
-                    title: 'Medidor',
+                    title: 'Comprensor',
                     component: ComprensoresComponent,
                   },
                 ],
@@ -126,6 +127,16 @@ export const routes: Routes = [
                 path: 'gestion-medidor/:id/medidor',
                 title: 'Medidor',
                 component: MedidoresComponent,
+              },
+              {
+                path: 'gestion-medidor/:id/consumo-energetico',
+                title: 'Consumo energético',
+                component: ConsumoEnergeticoComponent,
+              },
+              {
+                path: 'gestion-medidor/:id/visualizador-personalizado',
+                title: 'Consumo energético',
+                component: VisualizadorPersonalizadoComponent,
               },
             ],
           },
