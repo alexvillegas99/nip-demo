@@ -2,7 +2,7 @@ import { INavbarData } from './helper';
 
 export const NAVBARDATA: INavbarData[] = [
   {
-    routeLink: './dashboard',
+    routeLink: 'dashboard',
     icon: 'assets/imgs/navbar/portal-d.svg',
     label: 'Portal',
     items: [
@@ -267,7 +267,7 @@ export const NAVBARDATA: INavbarData[] = [
     // roles: ['ADMIN', 'BASIC']
   },
   {
-    routeLink: './mantenimiento',
+    routeLink: './configuracion',
     icon: 'assets/imgs/navbar/configuracion-d.svg',
     label: 'Configuración',
     items: [],

@@ -2,10 +2,10 @@ import { CommonModule } from '@angular/common';
 import { Component, ViewEncapsulation } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
-import { DataPlcService } from '../../services/data-plc.service';
-import { ToastrService } from '../../services/toas.service';
-import { SearchComponent } from '../../shared/components/search/search.component';
-import { SelectComponent } from '../../shared/components/select/select.component';
+import { DataPlcService } from '../services/data-plc.service';
+import { ToastrService } from '../services/toas.service';
+import { SearchComponent } from '../shared/components/search/search.component';
+import { SelectComponent } from '../shared/components/select/select.component';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 @Component({
@@ -21,7 +21,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
   ],
   templateUrl: './mantenimiento.component.html',
   styleUrl: './mantenimiento.component.scss',
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class MantenimientoComponent {
   constructor(
