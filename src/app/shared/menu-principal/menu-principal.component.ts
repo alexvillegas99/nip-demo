@@ -16,19 +16,19 @@ export class MenuPrincipalComponent implements OnInit {
   menu: any = [
     {
       nombre: 'INICIO',
-      url: '/home',
+      url: './portal/home',
       icono: 'assets/imgs/icons/home.png',
       isSelected: false,
     },
     {
       nombre: 'ESTADÍSTICAS',
-      url: '/dashboard',
+      url: './portal/dashboard',
       icono: 'assets/imgs/icons/dashboard.png',
       isSelected: false,
     },
     {
       nombre: 'ALARMAS',
-      url: '/alarmas',
+      url: './portal/alarmas',
       icono: 'assets/imgs/icons/alarmas.png',
       isSelected: false,
     },

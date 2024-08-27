@@ -6,7 +6,7 @@ export interface INavbarData {
     label: string;
     expanded?: boolean;
     items?: INavbarData[];
-    path?: string;
+    hijo?: boolean;
     roles?: string[]
 }
 

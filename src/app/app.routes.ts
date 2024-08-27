@@ -1,3 +1,4 @@
+import { VariadoresComponent } from './monitoreo/maquinaria-equipos/gestion-variador/variadores/variadores.component';
 import { Routes } from '@angular/router';
 import { ReportsComponent } from './dashboard/reports/reports.component';
 import { Demo1Component } from './dashboard/demos/demo1/demo1.component';
@@ -12,6 +13,15 @@ import { LayoutComponent } from './website/components/layout/layout.component';
 import { ConsumoEnergeticoComponent } from './consumo-energetico/consumo-energetico.component';
 import { MonitoreoComponent } from './monitoreo/monitoreo.component';
 import { ConfiguracionComponent } from './configuracion/configuracion.component';
+import { InstrumentacionMedidoresComponent } from './monitoreo/instrumentacion-medidores/instrumentacion-medidores.component';
+import { MaquinariaEquiposComponent } from './monitoreo/maquinaria-equipos/maquinaria-equipos.component';
+import { ProcesosComponent } from './monitoreo/procesos/procesos.component';
+import { ReportesComponent } from './monitoreo/reportes/reportes.component';
+import { GestionMedidorComponent } from './monitoreo/instrumentacion-medidores/gestion-medidor/gestion-medidor.component';
+import { GestionVariadorComponent } from './monitoreo/maquinaria-equipos/gestion-variador/gestion-variador.component';
+import { MedidoresComponent } from './monitoreo/instrumentacion-medidores/gestion-medidor/medidores/medidores.component';
+import { GestionComprensorComponent } from './monitoreo/maquinaria-equipos/gestion-comprensor/gestion-comprensor.component';
+import { ComprensoresComponent } from './monitoreo/maquinaria-equipos/gestion-comprensor/comprensores/comprensores.component';
 
 export const routes: Routes = [
   {
@@ -25,7 +35,7 @@ export const routes: Routes = [
     component: LayoutComponent,
     children: [
       {
-        path: '',
+        path: 'portal',
         title: 'Portal',
         component: PortalComponent,
         children: [
@@ -46,8 +56,8 @@ export const routes: Routes = [
           },
           {
             path: '',
-            redirectTo: 'home',
-            pathMatch: 'full' // Esto asegura que solo redirija cuando la URL es exactamente vacía
+            redirectTo: 'portal/home',
+            pathMatch: 'full', // Esto asegura que solo redirija cuando la URL es exactamente vacía
           },
         ],
       },
@@ -65,6 +75,76 @@ export const routes: Routes = [
         path: 'monitoreo',
         title: 'Monitoreo',
         component: MonitoreoComponent,
+        children: [
+          {
+            path: 'maquinaria-equipos',
+            title: 'Maquinaria y equipos',
+            component: MaquinariaEquiposComponent,
+            children: [
+              {
+                path: 'gestion-comprensor',
+                title: 'Gestión de Comprensores',
+                component: GestionComprensorComponent,
+                children: [
+                  {
+                    path: ':id/comprensor',
+                    title: 'Medidor',
+                    component: ComprensoresComponent,
+                  },
+                ],
+              },
+              {
+                path: 'gestion-variador',
+                title: 'Gestión de Variadores',
+                component: GestionVariadorComponent,
+                children: [
+                  {
+                    path: ':id/variador',
+                    title: 'Medidor',
+                    component: VariadoresComponent,
+                  },
+                ],
+              },
+              {
+                path: '',
+                redirectTo: 'medidor',
+                pathMatch: 'full', // Esto asegura que solo redirija cuando la URL es exactamente vacía
+              },
+            ],
+          },
+          {
+            path: 'instrumentacion-medidores',
+            title: 'Instrumentacion y medidores',
+            component: InstrumentacionMedidoresComponent,
+            children: [
+              {
+                path: 'gestion-medidor',
+                title: 'Gestión de Medidores',
+                component: GestionMedidorComponent,
+              },
+              {
+                path: 'gestion-medidor/:id/medidor',
+                title: 'Medidor',
+                component: MedidoresComponent,
+              },
+            ],
+          },
+          {
+            path: 'procesos',
+            title: 'Procesos',
+            component: ProcesosComponent,
+          },
+          {
+            path: 'reportes',
+            title: 'Reportes',
+            component: ReportesComponent,
+          },
+          {
+            path: '',
+            redirectTo: 'reportes',
+            pathMatch: 'full', // Esto asegura que solo redirija cuando la URL es exactamente vacía
+          },
+        ],
       },
       {
         path: 'mantenimiento',
@@ -91,6 +171,11 @@ export const routes: Routes = [
       //   title: 'Gestión',
       //   component: LogisticaComponent,
       // }
+      {
+        path: '',
+        redirectTo: 'portal',
+        pathMatch: 'full', // Esto asegura que solo redirija cuando la URL es exactamente vacía
+      },
     ],
-  }
+  },
 ];

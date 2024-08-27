@@ -2,104 +2,52 @@ import { INavbarData } from './helper';
 
 export const NAVBARDATA: INavbarData[] = [
   {
-    routeLink: 'dashboard',
+    routeLink: 'portal',
     icon: 'assets/imgs/navbar/portal-d.svg',
     label: 'Portal',
-    items: [
-      // {
-      //     routeLink: './administracion-usuarios/gestion-usuarios',
-      //     label: 'Administradores',
-      //     icon: 'assets/imgs/navbar/portal-d.svg',
-      // }
-    ],
+    items: [],
     // roles: ['ADMIN']
   },
   {
-    routeLink: '',
+    routeLink: 'monitoreo',
     icon: 'assets/imgs/navbar/equipos-d.svg',
     label: 'Monitoreo',
     items: [
       {
-        routeLink: '',
+        routeLink: 'maquinaria-equipos',
         label: 'Maquinaria y Equipos',
         icon: 'assets/imgs/navbar/maquinaria-d.svg',
         items: [
           {
-            routeLink: './mantenimiento',
+            routeLink: 'monitoreo/maquinaria-equipos/gestion-comprensor',
             label: 'Compresores',
             icon: '',
-            items: [
-              // {
-              //   routeLink: './reportes',
-              //   icon: '',
-              //   label: 'Compresor 1',
-              //   items: [
-              //     // {
-              //     //     routeLink: './reportes',
-              //     //     label: 'Reporte Incidentes',
-              //     //     icon: 'assets/imgs/navbar/reporte-incidente-d.svg',
-              //     // },
-              //   ],
-              // },
-            ],
+            items: [],
           },
-          {
-            routeLink: './gestion',
-            label: 'Variadores',
-            icon: '',
-            items: [
-              // {
-              //   routeLink: './reportes',
-              //   icon: '',
-              //   label: 'Variadores 1',
-              //   items: [
-              //     // {
-              //     //     routeLink: './reportes',
-              //     //     label: 'Reporte Incidentes',
-              //     //     icon: 'assets/imgs/navbar/reporte-incidente-d.svg',
-              //     // },
-              //   ],
-              // },
-            ],
-          },
+          // {
+          //   routeLink: 'gestion-variador',
+          //   label: 'Variadores',
+          //   icon: '',
+          //   items: [],
+          // },
         ],
       },
       {
-        routeLink: '',
+        routeLink: 'instrumentacion-medidores',
         label: 'Instrumentación y medidores',
         icon: 'assets/imgs/navbar/inst-medidores-d.svg',
         items: [
+          // {
+          //   routeLink: 'mantenimiento',
+          //   label: 'Sensor de Presión',
+          //   icon: '',
+          //   items: [],
+          // },
           {
-            routeLink: './mantenimiento',
-            label: 'Sensor de Presión',
-            icon: '',
-            items: [
-              // {
-              //   routeLink: './mantenimiento',
-              //   label: 'Medidor 2',
-              //   icon: '',
-              //   items: [],
-              // },
-            ],
-          },
-          {
-            routeLink: './gestion',
+            routeLink: 'monitoreo/instrumentacion-medidores/gestion-medidor',
             label: 'Medidores',
             icon: '',
-            items: [
-              {
-                routeLink: './mantenimiento',
-                label: 'Medidor 1',
-                icon: '',
-                items: [],
-              },
-              {
-                routeLink: './mantenimiento',
-                label: 'Medidor 2',
-                icon: '',
-                items: [],
-              },
-            ],
+            items: [],
           },
         ],
       },
@@ -117,35 +65,12 @@ export const NAVBARDATA: INavbarData[] = [
         ],
       },
       {
-        routeLink: './reportes',
+        routeLink: './monitoreo/reportes',
         icon: 'assets/imgs/navbar/reporteria-d.svg',
         label: 'Reportes',
-        items: [
-          // {
-          //     routeLink: './reportes',
-          //     label: 'Reporte Incidentes',
-          //     icon: 'assets/imgs/navbar/reporte-incidente-d.svg',
-          // },
-        ],
+        items: [],
         // roles: ['ADMIN', 'BASIC']
       },
-      // {
-      //     routeLink: '',
-      //     label: 'Variadores',
-      //     icon: 'assets/imgs/navbar/medidor-d.svg',
-      //     items: [
-      //         {
-      //             routeLink: './mantenimiento',
-      //             label: 'Mantenimiento',
-      //             icon: 'assets/imgs/navbar/mantenimiento-d.svg',
-      //         },
-      //         {
-      //             routeLink: './gestion',
-      //             label: 'Gestión',
-      //             icon: 'assets/imgs/navbar/reportes-d.svg',
-      //         }
-      //     ]
-      // },
     ],
     // roles: ['ADMIN', 'BASIC']
   },
@@ -155,22 +80,22 @@ export const NAVBARDATA: INavbarData[] = [
     label: 'Mantenimiento',
     items: [
       {
-        routeLink: '',
+        routeLink: './gestion',
         label: 'Gestión de Mantenimiento',
         icon: 'assets/imgs/navbar/gest-mantenimiento-d.svg',
         items: [
-          {
-            routeLink: './gestion',
-            label: 'Pedidos',
-            icon: '',
-            items: [],
-          },
-          {
-            routeLink: './gestion',
-            label: 'Tareas',
-            icon: '',
-            items: [],
-          },
+          // {
+          //   routeLink: './gestion',
+          //   label: 'Pedidos',
+          //   icon: '',
+          //   items: [],
+          // },
+          // {
+          //   routeLink: './gestion',
+          //   label: 'Tareas',
+          //   icon: '',
+          //   items: [],
+          // },
         ],
       },
       {
@@ -182,39 +107,13 @@ export const NAVBARDATA: INavbarData[] = [
             routeLink: './mantenimiento',
             label: 'Compresores',
             icon: '',
-            items: [
-              {
-                routeLink: './reportes',
-                icon: '',
-                label: 'Compresor 1',
-                items: [
-                  // {
-                  //     routeLink: './reportes',
-                  //     label: 'Reporte Incidentes',
-                  //     icon: 'assets/imgs/navbar/reporte-incidente-d.svg',
-                  // },
-                ],
-              },
-            ],
+            items: [],
           },
           {
             routeLink: './gestion',
             label: 'Variadores',
             icon: '',
-            items: [
-              {
-                routeLink: './reportes',
-                icon: '',
-                label: 'Variadores 1',
-                items: [
-                  // {
-                  //     routeLink: './reportes',
-                  //     label: 'Reporte Incidentes',
-                  //     icon: 'assets/imgs/navbar/reporte-incidente-d.svg',
-                  // },
-                ],
-              },
-            ],
+            items: [],
           },
         ],
       },
@@ -225,13 +124,13 @@ export const NAVBARDATA: INavbarData[] = [
         items: [
           {
             routeLink: './mantenimiento',
-            label: 'Sensor de Presión',
+            label: 'Sensores de Presión',
             icon: '',
             items: [],
           },
           {
             routeLink: './gestion',
-            label: 'Medidor de Energía',
+            label: 'Medidores',
             icon: '',
             items: [],
           },
