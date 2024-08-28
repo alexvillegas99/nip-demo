@@ -21,5 +21,10 @@ getIps(){
   return this.http.get<any>(`${environment.apiUrl}/ip-equipo`);
 }
 
+getListaEquipos(){
+  return this.http.get<any>(`${environment.apiUrl}/lista-equipos`);
+}
+
+
 
 }

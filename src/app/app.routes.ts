@@ -131,6 +131,11 @@ export const routes: Routes = [
                     title: 'Consumo energético',
                     component: VisualizadorPersonalizadoComponent,
                   },
+                  {
+                    path: '',
+                    redirectTo: 'medidor',
+                    pathMatch: 'full', // Esto asegura que solo redirija cuando la URL es exactamente vacía
+                  },
                 ],
               },
             ],

@@ -61,42 +61,29 @@ export class InicioComponent implements OnInit {
 
   ngOnInit(): void {
     this.initMap();
-    this.getIps();
+    this.getDataPlc();
   }
-  getIps() {
-    console.log('obteniendo ips');
-    this.dataPlc.getIps().subscribe({
-      next: (data) => {
-        console.log('Data:', data);
-        this.getDataPlc(data);
-      },
-      error: (error) => {
-        console.error('Error:', error
-        );
-      }
-    })
-  }
-  getDataPlc(data: any) {
-    const ips = data.ip.split(',');
-    console.log('Ips:', ips);
-    for (let i = 0; i < ips.length; i++) {
-      const ip = ips[i];
-      console.log('Ip:', ip);
-      this.dataPlc.getData({ ip: ip }).subscribe({
+
+  getDataPlc() {
+      this.dataPlc.getListaEquipos().subscribe({
         next: (data) => {
           console.log('Data:', data);
-          this.arrayEquipos.push({
-            nombre: data['Product & Features']['Product & Features']['Meter Name'],
-            ubicacion:'Quito',
-            tipo: 'Medidor'
-          })
+          data.forEach((element:any) => {
+            this.arrayEquipos.push({
+              nombre: element.nombre,
+              ip: element.ip,
+              ubicacion:'Quito',
+              tipo: 'Medidor'
+            })
+          });
+         
           
         },
         error: (error) => {
           console.error('Error:', error);
         }
       });
-    }
+    
 
   }
 

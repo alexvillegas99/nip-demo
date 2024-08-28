@@ -1,1 +1,32 @@
-<p>visualizador-personalizado works!</p>
+<div class="container mt-4">
+    <h3>Lista de Datos</h3>
+  
+    <div class="accordion" id="accordionExample">
+      <ng-template #recursiveList let-obj let-level="level">
+        <div *ngFor="let key of objectKeys(obj)">
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="heading{{key}}">
+              <button class="accordion-button" type="button" data-bs-toggle="collapse" [attr.data-bs-target]="'#collapse' + key" attr.aria-expanded="true" attr.aria-controls="collapse{{key}}">
+                <strong>{{ key }}</strong>
+              </button>
+            </h2>
+            <div id="collapse{{key}}" class="accordion-collapse collapse" attr.aria-labelledby="heading{{key}}" data-bs-parent="#accordionExample">
+              <div class="accordion-body">
+                <ng-container *ngIf="!isObject(obj[key])">
+                  {{ obj[key] }}
+                </ng-container>
+                <ng-container *ngIf="isObject(obj[key])">
+                  <div class="accordion">
+                    <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: obj[key], level: level + 1 }"></ng-container>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+  
+      <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: plcInfo, level: 0 }"></ng-container>
+    </div>
+  </div>
+  

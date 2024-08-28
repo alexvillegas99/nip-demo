@@ -6,12 +6,13 @@
 
   <div class="derecha">
     <div class="titulo">
-      <h2>Ubicación de Compresores</h2>
+      <h2>Ubicación de equipos</h2>
     </div>
 
     <div class="card-list">
       @for (item of arrayEquipos; track $index) {
-      <div class="card-body container-card-info">
+      <div class="card-body container-card-info" style="cursor: pointer;" [routerLink]="['../../monitoreo/instrumentacion-medidores', item.ip, 'pantalla-medidores']"
+      routerLinkActive="router-link-active" > 
         <div class="informacion">
           <h6>Nombre del equipo:</h6>
           <h4>{{ item.nombre | uppercase }}</h4>
@@ -22,6 +23,15 @@
             Ecuador
           </p>
         </div>
+
+          <p style=" font-size: 14px;
+          font-weight: 300;
+          text-align: left;
+          color: #727272;
+          margin-bottom: 0px;">
+            <i class="fa-solid fa-screwdriver-wrench"></i> {{ item.ip  }}
+          </p>
+  
         <div class="imagen">
           <img src="assets/imgs/medidor.svg" alt="" />
         </div>
