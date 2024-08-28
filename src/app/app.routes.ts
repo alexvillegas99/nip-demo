@@ -20,6 +20,7 @@ import { GestionComprensorComponent } from './monitoreo/maquinaria-equipos/gesti
 import { ComprensoresComponent } from './monitoreo/maquinaria-equipos/gestion-comprensor/comprensores/comprensores.component';
 import { VisualizadorPersonalizadoComponent } from './monitoreo/instrumentacion-medidores/gestion-medidor/visualizador-personalizado/visualizador-personalizado.component';
 import { GestionMantenimientoComponent } from './mantenimiento/gestion-mantenimiento/gestion-mantenimiento.component';
+import { PantallaMedidoresComponent } from './monitoreo/instrumentacion-medidores/gestion-medidor/pantalla-medidores/pantalla-medidores.component';
 
 export const routes: Routes = [
   {
@@ -109,23 +110,28 @@ export const routes: Routes = [
                 path: 'gestion-medidor',
                 title: 'Gestión de Medidores',
                 component: GestionMedidorComponent,
+              },
+              {
+                path: ':id/pantalla-medidores',
+                title: '',
+                component: PantallaMedidoresComponent,
                 children: [
                   {
-                    path: ':id/medidor',
+                    path: 'medidor',
                     title: 'Medidor',
                     component: MedidoresComponent,
                   },
                   {
-                    path: ':id/consumo-energetico',
+                    path: 'consumo-energetico',
                     title: 'Consumo energético',
                     component: ConsumoEnergeticoComponent,
                   },
                   {
-                    path: ':id/visualizador-personalizado',
+                    path: 'visualizador-personalizado',
                     title: 'Consumo energético',
                     component: VisualizadorPersonalizadoComponent,
                   },
-                ]
+                ],
               },
             ],
           },
