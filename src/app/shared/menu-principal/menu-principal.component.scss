@@ -48,13 +48,14 @@
 }
 
 .selected-menu {
-  background-color: #EEEEEE !important;
+  background-color: $color-4 !important;
   border-radius: 0px;
   border-bottom: 2px solid $color-2;
 
   label {
     color: $color-2;
     font-weight: 600;
+    color: #fff;
   }
 }
 
@@ -73,9 +74,7 @@
 
 @media (max-width: 410px) {
   .card {
-
     .card-body {
-
       justify-content: center;
 
       .item {

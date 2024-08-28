@@ -11,7 +11,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-mantenimiento',
   standalone: true,
-  imports: [
+  imports: [ 
     CommonModule,
     ReactiveFormsModule,
     FormsModule,

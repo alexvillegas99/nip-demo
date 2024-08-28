@@ -13,25 +13,25 @@ export const NAVBARDATA: INavbarData[] = [
     icon: 'assets/imgs/navbar/equipos-d.svg',
     label: 'Monitoreo',
     items: [
-      {
-        routeLink: 'maquinaria-equipos',
-        label: 'Maquinaria y Equipos',
-        icon: 'assets/imgs/navbar/maquinaria-d.svg',
-        items: [
-          {
-            routeLink: 'monitoreo/maquinaria-equipos/gestion-comprensor',
-            label: 'Compresores',
-            icon: '',
-            items: [],
-          },
-          // {
-          //   routeLink: 'gestion-variador',
-          //   label: 'Variadores',
-          //   icon: '',
-          //   items: [],
-          // },
-        ],
-      },
+      // {
+      //   routeLink: 'maquinaria-equipos',
+      //   label: 'Maquinaria y Equipos',
+      //   icon: 'assets/imgs/navbar/maquinaria-d.svg',
+      //   items: [
+      //     {
+      //       routeLink: 'monitoreo/maquinaria-equipos/gestion-comprensor',
+      //       label: 'Compresores',
+      //       icon: '',
+      //       items: [],
+      //     },
+      //     // {
+      //     //   routeLink: 'gestion-variador',
+      //     //   label: 'Variadores',
+      //     //   icon: '',
+      //     //   items: [],
+      //     // },
+      //   ],
+      // },
       {
         routeLink: 'instrumentacion-medidores',
         label: 'Instrumentación y medidores',
@@ -75,12 +75,12 @@ export const NAVBARDATA: INavbarData[] = [
     // roles: ['ADMIN', 'BASIC']
   },
   {
-    routeLink: '',
+    routeLink: 'mantenimiento',
     icon: 'assets/imgs/navbar/mantenimiento-d.svg',
     label: 'Mantenimiento',
     items: [
       {
-        routeLink: './gestion',
+        routeLink: './mantenimiento/gestion-mantenimiento',
         label: 'Gestión de Mantenimiento',
         icon: 'assets/imgs/navbar/gest-mantenimiento-d.svg',
         items: [

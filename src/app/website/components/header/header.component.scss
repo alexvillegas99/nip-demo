@@ -12,8 +12,8 @@
     align-items: center;
     grid-template-areas:
         "search . options";
-    border-top: 2px solid $color-borde;
-    border-right: 2px solid $color-borde;
+    border-top: none;
+    border-right: none;
     border-bottom: 2px solid $color-borde;
     border-left: none;
     background: #fff;

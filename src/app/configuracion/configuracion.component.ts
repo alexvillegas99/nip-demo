@@ -8,5 +8,18 @@ import { Component } from '@angular/core';
   styleUrl: './configuracion.component.scss'
 })
 export class ConfiguracionComponent {
-
+  listaDispositivo = [
+    {
+      nombre: 'Medidor PM5560'
+    },
+    {
+      nombre: 'Compresor PM5560'
+    },
+    {
+      nombre: 'Variador 123B'
+    },
+    {
+      nombre: 'Compresor PM5560'
+    }
+  ]
 }

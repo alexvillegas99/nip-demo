@@ -1,13 +1,9 @@
 import { VariadoresComponent } from './monitoreo/maquinaria-equipos/gestion-variador/variadores/variadores.component';
 import { Routes } from '@angular/router';
-import { ReportsComponent } from './dashboard/reports/reports.component';
-import { Demo1Component } from './dashboard/demos/demo1/demo1.component';
-import { Demo2Component } from './dashboard/demos/demo2/demo2.component';
 import { InicioComponent } from './portal/inicio/inicio.component';
 import { AlarmasComponent } from './portal/alarmas/alarmas.component';
 import { DashboardComponent } from './portal/dashboard/dashboard.component';
 import { PortalComponent } from './portal/portal.component';
-import { LogisticaComponent } from './equipo-industrial/logistica/logistica.component';
 import { MantenimientoComponent } from './mantenimiento/mantenimiento.component';
 import { LayoutComponent } from './website/components/layout/layout.component';
 import { ConsumoEnergeticoComponent } from './monitoreo/instrumentacion-medidores/gestion-medidor/consumo-energetico/consumo-energetico.component';
@@ -23,6 +19,7 @@ import { MedidoresComponent } from './monitoreo/instrumentacion-medidores/gestio
 import { GestionComprensorComponent } from './monitoreo/maquinaria-equipos/gestion-comprensor/gestion-comprensor.component';
 import { ComprensoresComponent } from './monitoreo/maquinaria-equipos/gestion-comprensor/comprensores/comprensores.component';
 import { VisualizadorPersonalizadoComponent } from './monitoreo/instrumentacion-medidores/gestion-medidor/visualizador-personalizado/visualizador-personalizado.component';
+import { GestionMantenimientoComponent } from './mantenimiento/gestion-mantenimiento/gestion-mantenimiento.component';
 
 export const routes: Routes = [
   {
@@ -62,16 +59,6 @@ export const routes: Routes = [
           },
         ],
       },
-      // {
-      //   path: 'reportes',
-      //   title: 'Reportes',
-      //   component: ReportsComponent,
-      // },
-      // {
-      //   path: 'consumo-energetico',
-      //   title: 'Consumo energético',
-      //   component: ConsumoEnergeticoComponent,
-      // },
       {
         path: 'monitoreo',
         title: 'Monitoreo',
@@ -122,21 +109,23 @@ export const routes: Routes = [
                 path: 'gestion-medidor',
                 title: 'Gestión de Medidores',
                 component: GestionMedidorComponent,
-              },
-              {
-                path: 'gestion-medidor/:id/medidor',
-                title: 'Medidor',
-                component: MedidoresComponent,
-              },
-              {
-                path: 'gestion-medidor/:id/consumo-energetico',
-                title: 'Consumo energético',
-                component: ConsumoEnergeticoComponent,
-              },
-              {
-                path: 'gestion-medidor/:id/visualizador-personalizado',
-                title: 'Consumo energético',
-                component: VisualizadorPersonalizadoComponent,
+                children: [
+                  {
+                    path: ':id/medidor',
+                    title: 'Medidor',
+                    component: MedidoresComponent,
+                  },
+                  {
+                    path: ':id/consumo-energetico',
+                    title: 'Consumo energético',
+                    component: ConsumoEnergeticoComponent,
+                  },
+                  {
+                    path: ':id/visualizador-personalizado',
+                    title: 'Consumo energético',
+                    component: VisualizadorPersonalizadoComponent,
+                  },
+                ]
               },
             ],
           },
@@ -161,6 +150,18 @@ export const routes: Routes = [
         path: 'mantenimiento',
         title: 'Mantenimiento',
         component: MantenimientoComponent,
+        children: [
+          {
+            path: 'gestion-mantenimiento',
+            title: 'Gestión mantenimiento',
+            component: GestionMantenimientoComponent,
+          },
+          {
+            path: '',
+            redirectTo: 'gestion-mantenimiento',
+            pathMatch: 'full', // Esto asegura que solo redirija cuando la URL es exactamente vacía
+          },
+        ],
       },
       {
         path: 'configuracion',
@@ -181,7 +182,17 @@ export const routes: Routes = [
       //   path: 'gestion',
       //   title: 'Gestión',
       //   component: LogisticaComponent,
-      // }
+      // },
+      // {
+      //   path: 'reportes',
+      //   title: 'Reportes',
+      //   component: ReportsComponent,
+      // },
+      // {
+      //   path: 'consumo-energetico',
+      //   title: 'Consumo energético',
+      //   component: ConsumoEnergeticoComponent,
+      // },
       {
         path: '',
         redirectTo: 'portal',
