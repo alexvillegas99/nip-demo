@@ -1,7 +1,13 @@
 @import './../../../../../styles.scss';
 
+.flex-container {
+  // border-top: 2px solid $color-borde;
+  background-color: #fff;
+}
+
 .card {
   border: none;
+  margin-bottom: 1rem;
 }
 
 .container-titulo {
@@ -175,4 +181,25 @@ h2 {
     color: $color-2;
     font-weight: 600;
   }
+}
+
+
+.card-container-lista-rapida {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  /* Espacio entre las tarjetas */
+}
+
+.card-lista-rapida {
+  flex: 1 1 calc(33.333% - 16px);
+  /* 3 tarjetas por fila */
+  box-sizing: border-box;
+  /* Incluye padding y borde en el tamaño total */
+  background-color: #f0f0f0;
+  padding: 16px;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  text-align: center;
 }
