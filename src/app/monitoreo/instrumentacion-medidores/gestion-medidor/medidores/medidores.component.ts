@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -21,7 +21,9 @@ import { MENU_PORTAL } from '../../../../core/constants/local-store.constants';
   ],
   templateUrl: './medidores.component.html',
   styleUrl: './medidores.component.scss',
+  encapsulation: ViewEncapsulation.None
 })
 export class MedidoresComponent {
+  items = ['', '', '']
 
 }
