@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MENU_PORTAL } from '../../../../core/constants/local-store.constants';
-import { Router, RouterModule, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule, RouterOutlet } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { DataPlcService } from '../../../../services/data-plc.service';
 import { CommonModule } from '@angular/common';
@@ -468,8 +468,9 @@ export class PantallaMedidoresComponent {
   constructor(
     private readonly dataPlc: DataPlcService,
     private readonly toastService: ToastrService,
-    private readonly router: Router
-  ) {}
+    private readonly router: Router,
+  ) {
+  }
 
   cambiarPantalla(screen: any) {
     if (screen === 1) {

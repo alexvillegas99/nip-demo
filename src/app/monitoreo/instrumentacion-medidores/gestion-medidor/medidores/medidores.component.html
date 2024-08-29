@@ -6,29 +6,29 @@
             </div>
             <div class="info-1">
                 <h1>Medidor de Energía:</h1>
-                <h2>Medidor PM5560</h2>
+                <h2>Medidor {{plcMedidor.nombre}}</h2>
 
                 <p> <img src="assets/imgs/icons/clock.svg" alt="img_clock">01/08/2024 | 09:20:00</p>
             </div>
             <div class="info-2">
                 <h1>Modelo:</h1>
-                <h2>METSEPM5560</h2>
+                <h2>{{plcMedidor.modelo}}</h2>
 
                 <p><img src="assets/imgs/icons/current.svg" alt="img_current">Conexión: Remota</p>
             </div>
             <div class="info-3">
                 <h1>Número de serie:</h1>
-                <h2>600098804</h2>
+                <h2>{{plcMedidor.serie}}</h2>
 
                 <h1>Nombre Equipo:</h1>
-                <h2>MG 1096</h2>
+                <h2>{{plcMedidor.nombre}}</h2>
             </div>
             <div class="info-4">
                 <h1>Área:</h1>
-                <h2>#Producción</h2>
+                <h2>#{{plcMedidor.area | uppercase}}</h2>
 
-                <h1>Responsable:</h1>
-                <h2>Juan Dominguez</h2>
+                <!-- <h1>Responsable:</h1>
+                <h2>Juan Dominguez</h2> -->
             </div>
 
         </div>
@@ -45,11 +45,27 @@
 
 <div class="container-fluid">
     <div class="card-container-lista-rapida">
-        @for (item of items; track $index) {
-
-        <div class="card-lista-rapida">Card 1</div>
-        <!-- Agrega más tarjetas según sea necesario -->
+        @for (item of plcInfo; track $index) {
+            <div class="card-tarjeta">
+                <div class="card-header">
+                    <h2>{{item.name}}</h2>
+                    <a href="#" class="saber-mas">Saber más <span>&rarr;</span></a>
+                </div>
+                <table>
+                    <tbody>
+                        @for (op of item.arreglo; track $index) {
+                            <tr>
+                                <td>{{op.label}}</td>
+                                <td>{{op.valor}}</td>
+                                <td>A</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         }
     </div>
+
+
 
 </div>

@@ -23,35 +23,34 @@ import { SelectComponent } from '../../../shared/components/select/select.compon
   styleUrl: './gestion-medidor.component.scss',
 })
 export class GestionMedidorComponent implements OnInit {
-  constructor(
-    private readonly dataPlc: DataPlcService,
-    private readonly toastService: ToastrService
-  ) {}
-  ngOnInit(): void {
-   this.getDataPlc();
-  }
-
   screen1 = true;
   screen2 = false;
   screen3 = false;
   mantenimientoSeleccionado: any;
+
+  fechaActual = new Date();
+  equipos: any = [];
+
+  constructor(
+    private readonly dataPlc: DataPlcService,
+    private readonly toastService: ToastrService
+  ) {}
+  
+  ngOnInit(): void {
+    this.getDataPlc();
+  }
+
   getDataPlc() {
     this.dataPlc.getListaEquipos().subscribe({
       next: (data) => {
         console.log('Data:', data);
-       this.equipos = data;
-       
-        
+        this.equipos = data;
       },
       error: (error) => {
         console.error('Error:', error);
-      }
+      },
     });
-  
-
-}
-fechaActual = new Date();
-  equipos:any = [];
+  }
 
   cambiarPantalla(screen: any) {
     if (screen === 1) {
@@ -68,7 +67,6 @@ fechaActual = new Date();
       this.screen3 = true;
     }
   }
-
 
   seleccionarMantenimiento(data: any) {
     console.log(data);
