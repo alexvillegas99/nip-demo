@@ -1,29 +1,71 @@
 @if(plcInfo){
-  <div *ngFor="let category of plcInfo">
-    <div class="accordion" id="accordionExample">
-      <div class="accordion-item">
-        <h2 class="accordion-header" [id]="generateUniqueId(category.categoria, 'category-')">
-          <button class="accordion-button" type="button" [attr.data-bs-toggle]="'collapse'" [attr.data-bs-target]="'#collapse-' + generateUniqueId(category.categoria, 'category-')" aria-expanded="true" [attr.aria-controls]="'collapse-' + generateUniqueId(category.categoria, 'category-')">
-            {{category.categoria}}
-          </button>
-        </h2>
-        <div [id]="'collapse-' + generateUniqueId(category.categoria, 'category-')" class="accordion-collapse collapse show" [attr.aria-labelledby]="generateUniqueId(category.categoria, 'category-')" data-bs-parent="#accordionExample">
-          <div class="accordion-body">
-            <div *ngFor="let subCategory of category.valores">
-              <div class="accordion" [id]="'accordionExample-' + generateUniqueId(category.categoria, 'category-')">
-                <div class="accordion-item">
-                  <h2 class="accordion-header" [id]="generateUniqueId(subCategory.subcategoria, 'subCategory-')">
-                    <button class="accordion-button collapsed" type="button" [attr.data-bs-toggle]="'collapse'" [attr.data-bs-target]="'#collapse-' + generateUniqueId(subCategory.subcategoria, 'subCategory-')" aria-expanded="false" [attr.aria-controls]="'collapse-' + generateUniqueId(subCategory.subcategoria, 'subCategory-')">
-                      {{subCategory.subcategoria}}
-                    </button>
-                  </h2>
-                  <div [id]="'collapse-' + generateUniqueId(subCategory.subcategoria, 'subCategory-')" class="accordion-collapse collapse" [attr.aria-labelledby]="generateUniqueId(subCategory.subcategoria, 'subCategory-')" [attr.data-bs-parent]="'#accordionExample-' + generateUniqueId(category.categoria, 'category-')">
-                    <div class="accordion-body">
-                      <ul>
-                        <li *ngFor="let field of subCategory.valores">
-                          <strong>{{field.campo}}:</strong> {{field.valor}}
-                        </li>
-                      </ul>
+<div class="row">
+  <!-- Columna izquierda con el listado -->
+  <div class="col-md-4" style="max-width: 30%">
+    <div class="scrollable-container">
+      <div *ngFor="let category of plcInfo">
+        <div class="accordion" id="accordionExample">
+          <div class="accordion-item card" style="cursor: pointer">
+            <h2 class="accordion-header card-header" [id]="generateUniqueId(category.categoria, 'category-')">
+              <button
+                class="accordion-button collapsed"
+                type="button"
+                [attr.data-bs-toggle]="'collapse'"
+                [attr.data-bs-target]="'#collapse-' + generateUniqueId(category.categoria, 'category-')"
+                aria-expanded="false"
+                [attr.aria-controls]="'collapse-' + generateUniqueId(category.categoria, 'category-')"
+              >
+                {{ category.categoria }}
+              </button>
+            </h2>
+            <div
+              [id]="'collapse-' + generateUniqueId(category.categoria, 'category-')"
+              class="accordion-collapse collapse"
+              [attr.aria-labelledby]="generateUniqueId(category.categoria, 'category-')"
+              data-bs-parent="#accordionExample"
+            >
+              <div class="accordion-body card-body">
+                <div *ngFor="let subCategory of category.valores">
+                  <div
+                    class="accordion"
+                    [id]="'accordionExample-' + generateUniqueId(category.categoria, 'category-')"
+                  >
+                    <div class="accordion-item card" style="cursor: pointer">
+                      <h2
+                        class="accordion-header card-header"
+                        [id]="generateUniqueId(subCategory.subcategoria, 'subCategory-')"
+                      >
+                        <button
+                          class="accordion-button collapsed"
+                          type="button"
+                          [attr.data-bs-toggle]="'collapse'"
+                          [attr.data-bs-target]="'#collapse-' + generateUniqueId(subCategory.subcategoria, 'subCategory-')"
+                          aria-expanded="false"
+                          [attr.aria-controls]="'collapse-' + generateUniqueId(subCategory.subcategoria, 'subCategory-')"
+                        >
+                          {{ subCategory.subcategoria }}
+                        </button>
+                      </h2>
+                      <div
+                        [id]="'collapse-' + generateUniqueId(subCategory.subcategoria, 'subCategory-')"
+                        class="accordion-collapse collapse"
+                        [attr.aria-labelledby]="generateUniqueId(subCategory.subcategoria, 'subCategory-')"
+                        [attr.data-bs-parent]="'#accordionExample-' + generateUniqueId(category.categoria, 'category-')"
+                      >
+                        <div class="accordion-body card-body">
+                          <ul class="list-group">
+                            <li
+                              *ngFor="let field of subCategory.valores"
+                              class="list-group-item card"
+                              style="cursor: pointer; margin-bottom: 5px"
+                            >
+                              <div class="card-body" (click)="cambiarValorMedidor(field)">
+                                <strong>{{ field.campo }}:</strong> {{ field.valor }}
+                              </div>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -34,4 +76,64 @@
       </div>
     </div>
   </div>
+  
+
+  <!-- Columna derecha para mostrar otra información -->
+  <div class="col-md-8" style="max-width: 70%; height: 50vh">
+    <div class="card" style="height: 50vh">
+      <div class="card-body d-flex flex-column">
+        <!-- Título -->
+        <h5 class="card-title">{{ titulo }}</h5>
+
+        <!-- Contenedor de las 3 cards en fila -->
+        <div
+          class="d-flex justify-content-between flex-wrap mt-3"
+          style="flex-grow: 1"
+        >
+          <!-- Card 1 -->
+          <div class="card flex-fill m-2" style="min-width: 30%">
+            <div class="card-body">
+              <h6 class="card-subtitle mb-2 text-muted">Medidor Angular</h6>
+              <div style=" width: 100%; height: 100%; display: grid; place-items: center;">
+              <ngx-gauge
+                [type]="'arch'"
+                [value]="gaugeValue"
+                [label]="label"
+                [append]="append"
+                [min]="min"
+                [max]="max"
+                [thresholds]="thresholdConfig"
+                [thick]="15"
+                [animate]="true"
+                [markers]="markerConfig"
+              >
+                >
+              </ngx-gauge>
+            </div>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="card flex-fill m-2" style="min-width: 30%">
+            <div class="card-body">
+              <h6 class="card-subtitle mb-2 text-muted">Medidor Digital</h6>
+           <div style=" width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 1rem;">
+          <label style="font-size: 50px; font-weight: 900; ">    {{gaugeValue}}</label>
+          <label >{{label}}</label>
+           </div>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+         <!--  <div class="card flex-fill m-2" style="min-width: 30%">
+            <div class="card-body">
+              <h6 class="card-subtitle mb-2 text-muted">Card 3</h6>
+              <p class="card-text">Contenido de la tercera card.</p>
+            </div>
+          </div> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 }

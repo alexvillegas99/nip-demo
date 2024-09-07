@@ -3,23 +3,83 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DataPlcService } from '../../../../services/data-plc.service';
 import { v4 as uuidv4 } from 'uuid';
+import { NgxGaugeModule } from 'ngx-gauge';
 @Component({
   selector: 'app-visualizador-personalizado',
   standalone: true,
-  imports: [CommonModule ],
+  imports: [CommonModule,NgxGaugeModule ],
   templateUrl: './visualizador-personalizado.component.html',
   styleUrl: './visualizador-personalizado.component.scss'
 })
 export class VisualizadorPersonalizadoComponent implements OnInit {
+cambiarValorMedidor(_t26: any) {
+  if (isNaN(_t26.valor)) {
+    return;
+  }
+this.gaugeValue = _t26.valor;
+if(this.gaugeValue <100){
+  this.min = 0;
+  this.max = 100;
+}else{
+  this.min = 0;
+  this.max = _t26.valor+100;
+}
+console.log(this.max)
+this.actualizarMarkerConfig();
+this.label = _t26.campo;
+}
+actualizarMarkerConfig() {
+  const data: { [key: number]: { color: string; type: string; size: number } } = {};
+
+  // Función para generar un color hexadecimal aleatorio
+  function generarColorAleatorio(): string {
+    return '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
+  }
+
+  for (let i = this.min; i <= this.max; i += 10) {
+    data[i] = {
+      color: i === this.max ? '#ff0000' : generarColorAleatorio(),
+      type: 'line',
+      size: 10
+    };
+  }
+
+  console.log(data);
+  this.markerConfig = data;
+}
+
   ip: string | null = null;
   fullUrl: string = '';
+  label: string = 'Medidor';
+  append: string = '';
+  min=0;
+  max=100;
 
   constructor(private route: ActivatedRoute,private readonly plcData:DataPlcService) {}
-
+  titulo: string = 'Visualizador Personalizado';
+  gaugeValue =0;
+  markerConfig:any = {
+    '0': {color: 'black', type: 'line', size: 10},
+    '10': {color: 'black', type: 'line', size: 10},
+    '20': {color: 'black', type: 'line', size: 10},
+    '30': {color: 'black', type: 'line', size: 10},
+    '40': {color: 'black', type: 'line', size: 10},
+    '50': {color: 'black', type: 'line', size: 10},
+    '60': {color: 'black', type: 'line', size: 10},
+    '70': {color: 'black', type: 'line', size: 10},
+    '80': {color: 'black', type: 'line', size: 10},
+    '90': {color: 'black', type: 'line', size: 10},
+    '100': {color: 'black', type: 'line', size: 10}
+  };
+  thresholdConfig = {
+    '0': {color: 'green'},
+    '40': {color: 'green'},
+    '75': {color: 'green'}
+  };
   ngOnInit(): void {
     // Obtener la URL completa
     this.fullUrl = window.location.href;
-
+    console.log(this.markerConfig);
     // Extraer la IP usando una expresión regular
     const ipMatch = this.fullUrl.match(/instrumentacion-medidores\/([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)/);
     if (ipMatch) {
