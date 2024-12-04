@@ -203,3 +203,61 @@ h2 {
   border-radius: 8px;
   text-align: center;
 }
+
+.card-tarjeta {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  width: 30%;
+  padding: 20px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.card-header h2 {
+  font-size: 18px;
+  color: #2a2a2a;
+  margin: 0;
+}
+
+.saber-mas {
+  color: #1e73be;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.saber-mas span {
+  margin-left: 5px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+thead th {
+  background-color: #f7f8fa;
+  padding: 10px;
+  text-align: left;
+  color: #8c8c8c;
+  font-weight: normal;
+  font-size: 14px;
+}
+
+tbody td {
+  padding: 10px;
+  border-top: 1px solid #eaeaea;
+  color: #4a4a4a;
+  font-size: 14px;
+}
+
+tbody tr:hover {
+  background-color: #f5f5f5;
+}
