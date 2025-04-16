@@ -1,28 +1,36 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { RouterModule, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule, RouterOutlet } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { DataPlcService } from '../../../services/data-plc.service';
-import { SearchComponent } from '../../../shared/components/search/search.component';
-import { SelectComponent } from '../../../shared/components/select/select.component';
 
 @Component({
   selector: 'app-gestion-medidor',
   standalone: true,
   imports: [
-    RouterOutlet,
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
     RouterModule,
-    SearchComponent,
-    SelectComponent,
   ],
   templateUrl: './gestion-medidor.component.html',
   styleUrl: './gestion-medidor.component.scss',
 })
 export class GestionMedidorComponent implements OnInit {
+  navegar(item: any) {
+    console.log(item);
+    console.log(this.id);
+    if (!this.id || !item) return;
+  
+    const ruta =
+      this.id === 'variadores'
+        ? ['/monitoreo/instrumentacion', item, 'pantalla-variadores','variador']
+        : ['/monitoreo/instrumentacion', item, 'pantalla-medidores'];
+    console.log(ruta);
+    this.router.navigate(ruta);
+  }
+  
   screen1 = true;
   screen2 = false;
   screen3 = false;
@@ -33,18 +41,41 @@ export class GestionMedidorComponent implements OnInit {
 
   constructor(
     private readonly dataPlc: DataPlcService,
-    private readonly toastService: ToastrService
+    private readonly toastService: ToastrService,
+    private readonly router: Router,
+    private readonly route: ActivatedRoute // 👈 nuevo
   ) {}
-  
+  id: string | null = null;
   ngOnInit(): void {
-    this.getDataPlc();
+    this.route.url.subscribe((segments) => {
+      const lastSegment = segments[segments.length - 1]?.path;
+      console.log('Ruta detectada:', lastSegment);
+  
+      this.id = lastSegment;
+  
+      if (this.id !== 'variadores' && this.id !== 'medidores') {
+        this.toastService.error('No se encontró el id de la url');
+        this.router.navigate(['/portal/home']);
+      } else {
+        this.getDataPlc(); // 👈 volver a cargar los datos
+      }
+    });
   }
+  
 
   getDataPlc() {
     this.dataPlc.getListaEquipos().subscribe({
       next: (data) => {
         console.log('Data:', data);
-        this.equipos = data;
+        this.equipos = data; 
+        //filtrar por tipo
+        if(this.id === 'variadores'){
+          this.equipos = this.equipos.filter((item: any) => item.tipo === 'variador');
+        }
+
+        if(this.id === 'medidores'){
+          this.equipos = this.equipos.filter((item: any) => item.tipo === 'pm');
+        }
       },
       error: (error) => {
         console.error('Error:', error);
@@ -52,25 +83,5 @@ export class GestionMedidorComponent implements OnInit {
     });
   }
 
-  cambiarPantalla(screen: any) {
-    if (screen === 1) {
-      this.screen1 = true;
-      this.screen2 = false;
-      this.screen3 = false;
-    } else if (screen === 2) {
-      this.screen1 = false;
-      this.screen2 = true;
-      this.screen3 = false;
-    } else if (screen === 3) {
-      this.screen1 = false;
-      this.screen2 = false;
-      this.screen3 = true;
-    }
-  }
 
-  seleccionarMantenimiento(data: any) {
-    console.log(data);
-    this.mantenimientoSeleccionado = data;
-    this.cambiarPantalla(3);
-  }
 }

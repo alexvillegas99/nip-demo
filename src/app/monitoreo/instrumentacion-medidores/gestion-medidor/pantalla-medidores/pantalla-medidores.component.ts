@@ -16,14 +16,8 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 export class PantallaMedidoresComponent {
   menu: any = [
     {
-      nombre: 'MEDIDOR',
+      nombre: 'VARIADOR',
       path: 'medidor',
-      isSelected: false,
-      productIDNumber: 15235,
-    },
-    {
-      nombre: 'CALIDAD DE ENERGÍA',
-      path: 'consumo-energetico',
       isSelected: false,
       productIDNumber: 15235,
     },

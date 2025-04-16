@@ -1,0 +1,121 @@
+<div class="flex">
+  <div class="item">
+    <h1>GESTIÓN DE USUARIOS</h1>
+  </div>
+  <div class="item">
+    <button class="btn boton-1" (click)="abrirModal(modalUsuario)">
+      Crear usuario
+    </button>
+  </div>
+</div>
+
+<div class="filters">
+  <div class="item">
+    <app-select
+      [labelDisabled]="'Rol'"
+      [lista]="filtrosRoles"
+      (opcionEvent)="rolFiltro = $event"
+    ></app-select>
+  </div>
+  <div class="item">
+    <app-select
+      [labelDisabled]="'Estado'"
+      [lista]="filtrosEstados"
+      (opcionEvent)="estadoFiltro = $event"
+    ></app-select>
+  </div>
+  <div class="item">
+    <button class="btn btn-light boton-2" (click)="filtrarUsuarios()">
+      Filtrar
+    </button>
+  </div>
+</div>
+
+<div class="container-tabla">
+  <div class="table-responsive">
+    <table class="table align-middle table-bordered table-bordered-sides">
+      <thead>
+        <tr>
+          <th>NOMBRE</th>
+          <th>EMAIL</th>
+          <th>ROL</th>
+          <th>ESTADO</th>
+          <th>ACCIONES</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let usuario of usuarios">
+          <td>{{ usuario.nombre }}</td>
+          <td>{{ usuario.correo }}</td>
+          <td>{{ usuario.rol }}</td>
+          <td (click)="cambiarEstado(usuario, !usuario.estado)">
+            <!-- sapn con bg color succes o danger -->
+
+            <span
+            style="cursor: pointer;"
+              class="badge"
+              [ngClass]="usuario.estado ? 'bg-success' : 'bg-danger'"
+              >{{ usuario.estado ? "Activo" : "Inactivo" }}</span>
+
+          </td>
+          <td>
+            <button
+              class="btn btn-primary"
+              (click)="abrirModal(modalUsuario, usuario)"
+            >
+              Editar
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<ng-template #modalUsuario let-modal>
+  <form [formGroup]="formUsuario">
+    <div class="modal-body">
+      <h4>{{ usuarioSeleccionado ? "Editar Usuario" : "Nuevo Usuario" }}</h4>
+      <div class="form-group">
+        <label>Cédula:</label>
+        <input formControlName="cedula" class="form-control" />
+      </div>
+      <div class="form-group">
+        <label>Nombre:</label>
+        <input formControlName="nombre" class="form-control" />
+      </div>
+      <div class="form-group">
+        <label>Correo Institucional:</label>
+        <input formControlName="correo" class="form-control" />
+      </div>
+      <div class="form-group">
+        <label>Cargo:</label>
+        <select formControlName="rol" class="form-select">
+          <option *ngFor="let cargo of cargos" [value]="cargo">{{ cargo }}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Celular:</label>
+        <input formControlName="telefono" class="form-control" />
+      </div>
+      <div class="form-group">
+        <label>Rol:</label>
+        <select formControlName="rol" class="form-select">
+          <option *ngFor="let rol of roles" [value]="rol">{{ rol }}</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-cancel" (click)="modalUsuarioRef?.hide()">
+        Cancelar
+      </button>
+      <button
+        class="btn btn-primary"
+        [disabled]="formUsuario.invalid"
+        (click)="guardarUsuario()"
+      >
+        Guardar
+      </button>
+    </div>
+  </form>
+</ng-template>

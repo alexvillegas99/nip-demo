@@ -2,11 +2,11 @@
     <div class="card">
         <div class="card-body card-mantenimiento">
             <div class="imagen">
-                <img src="assets/imgs/medidor.svg" alt="img_comprensor" />
+                <img [src]="plcMedidor.imagen" alt="img_comprensor" style="width: 75px; height: 100px; object-fit: contain;" />
             </div>
             <div class="info-1">
-                <h1>Medidor de Energía:</h1>
-                <h2>Medidor {{plcMedidor.nombre}}</h2>
+                <h1>Variador de Energía:</h1>
+                <h2>Variador {{plcMedidor.nombre}}</h2>
 
                 <p> <img src="assets/imgs/icons/clock.svg" alt="img_clock">01/08/2024 | 09:20:00</p>
             </div>
@@ -27,8 +27,8 @@
                 <h1>Área:</h1>
                 <h2>#{{plcMedidor.area | uppercase}}</h2>
 
-                <!-- <h1>Responsable:</h1>
-                <h2>Juan Dominguez</h2> -->
+                 <h1>Estacion:</h1>
+                <h2>Juan Dominguez</h2> 
             </div>
 
         </div>

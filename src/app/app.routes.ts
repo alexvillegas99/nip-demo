@@ -1,4 +1,4 @@
-import { VariadoresComponent } from './monitoreo/maquinaria-equipos/gestion-variador/variadores/variadores.component';
+
 import { Routes } from '@angular/router';
 import { InicioComponent } from './portal/inicio/inicio.component';
 import { AlarmasComponent } from './portal/alarmas/alarmas.component';
@@ -21,6 +21,10 @@ import { ComprensoresComponent } from './monitoreo/maquinaria-equipos/gestion-co
 import { VisualizadorPersonalizadoComponent } from './monitoreo/instrumentacion-medidores/gestion-medidor/visualizador-personalizado/visualizador-personalizado.component';
 import { GestionMantenimientoComponent } from './mantenimiento/gestion-mantenimiento/gestion-mantenimiento.component';
 import { PantallaMedidoresComponent } from './monitoreo/instrumentacion-medidores/gestion-medidor/pantalla-medidores/pantalla-medidores.component';
+import { UsuariosComponent } from './usuarios/usuarios.component';
+import { PantallaVariadoresComponent } from './monitoreo/instrumentacion-medidores/gestion-variadores/pantalla-variadores/pantalla-variadores.component';
+import { VariadoresComponent } from './monitoreo/instrumentacion-medidores/gestion-variadores/variadores/variadores.component';
+import { OrometroComponent } from './mantenimiento/orometro/orometro.component';
 
 export const routes: Routes = [
   {
@@ -102,12 +106,12 @@ export const routes: Routes = [
             ],
           },
           {
-            path: 'instrumentacion-medidores',
+            path: 'instrumentacion',
             title: 'Instrumentacion y medidores',
             component: InstrumentacionMedidoresComponent,
             children: [
               {
-                path: 'gestion-medidor',
+                path: 'gestion/:id',
                 title: 'Gestión de Medidores',
                 component: GestionMedidorComponent,
               },
@@ -136,6 +140,20 @@ export const routes: Routes = [
                     redirectTo: 'medidor',
                     pathMatch: 'full', // Esto asegura que solo redirija cuando la URL es exactamente vacía
                   },
+                ],
+              },
+              {
+                path: ':id/pantalla-variadores',
+                title: '',
+                component: PantallaVariadoresComponent,
+                children: [
+                  {
+                    path: 'variador',
+                    title: 'Variador',
+                    component: VariadoresComponent,
+                  },
+                
+                
                 ],
               },
             ],
@@ -168,10 +186,15 @@ export const routes: Routes = [
             component: GestionMantenimientoComponent,
           },
           {
+            path: 'orometro',
+            title: 'Gestión de Orometro',
+            component: OrometroComponent,
+          },
+         /*  {
             path: '',
             redirectTo: 'gestion-mantenimiento',
             pathMatch: 'full', // Esto asegura que solo redirija cuando la URL es exactamente vacía
-          },
+          }, */
         ],
       },
       {
@@ -179,36 +202,17 @@ export const routes: Routes = [
         title: 'Configuracion',
         component: ConfiguracionComponent,
       },
-      // {
-      //   path: 'demos/demo1',
-      //   title: 'Compresor',
-      //   component: Demo1Component,
-      // },
-      // {
-      //   path: 'demos/demo2',
-      //   title: 'Logística',
-      //   component: Demo2Component,
-      // },
-      // {
-      //   path: 'gestion',
-      //   title: 'Gestión',
-      //   component: LogisticaComponent,
-      // },
-      // {
-      //   path: 'reportes',
-      //   title: 'Reportes',
-      //   component: ReportsComponent,
-      // },
-      // {
-      //   path: 'consumo-energetico',
-      //   title: 'Consumo energético',
-      //   component: ConsumoEnergeticoComponent,
-      // },
+      {
+        path: 'usuarios',
+        title: 'usuarios',
+        component: UsuariosComponent,
+      },
       {
         path: '',
         redirectTo: 'portal',
         pathMatch: 'full', // Esto asegura que solo redirija cuando la URL es exactamente vacía
       },
+      
     ],
   },
 ];

@@ -1,0 +1,17 @@
+@import './../../styles.scss';
+
+.container-tabla {
+  margin-top: 0.2rem;
+  padding-top: 1.25rem;
+  padding-inline: 1rem;
+  background-color: $color-hover;
+  min-height: 80vh;
+
+  .table-responsive {
+    padding-inline: 1rem;
+  }
+
+  table th, table td {
+    text-align: center;
+  }
+}

@@ -82,4 +82,17 @@ export class AlertService {
       confirmButtonText: 'Aceptar',
     });
   }
+
+  showToast(icon: SweetAlertIcon, title: string = '') {
+    Swal.fire({
+      toast: true,
+      position: 'top-end',
+      icon,
+      title,
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+    });
+  }
+  
 }

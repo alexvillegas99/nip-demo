@@ -1,26 +1,14 @@
-<div class="dashboard">
-  <div class="opciones">
-    <div class="filtros"></div>
-    <div class="boton">
-      <button class="btn btn-primary boton-1">
-        <i class="fa-solid fa-plus"></i>
-        Añadir nuevo
-      </button>
-    </div>
+<div class="grid-graficos">
+  <div class="grafico" *ngFor="let chart of chartOptions; index as i">
+    <apx-chart
+      [series]="chart.series!"
+      [chart]="chart.chart!"
+      [xaxis]="chart.xaxis!"
+      [title]="chart.title!"
+      [stroke]="chart.stroke!"
+      [legend]="chart.legend!"
+      [dataLabels]="chart.dataLabels!"
+      [tooltip]="{ theme: 'dark' }"
+    ></apx-chart>
   </div>
-  <div class="charts">
-    <div class="chart-container">
-      <canvas id="myChart"></canvas>
-    </div>
-    <div class="chart-container">
-      <canvas id="myChart2"></canvas>
-    </div>
-    <div class="chart-container">
-      <canvas id="myChart3"></canvas>
-    </div>
-    <div class="chart-container">
-      <canvas id="myChart4"></canvas>
-    </div>
-  </div>
-
 </div>

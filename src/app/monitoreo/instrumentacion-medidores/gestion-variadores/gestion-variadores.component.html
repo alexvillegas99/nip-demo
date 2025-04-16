@@ -1,0 +1,79 @@
+<div class="container-fluid">
+    <div class="flex-container">
+      <div class="item">
+        <h1>MANTENIMIENTO</h1>
+      </div>
+      <div class="item"></div>
+    </div>
+  
+    <div class="flex-container">
+      <div class="item">
+        <h2>Variadores añadidos</h2>
+      </div>
+      <div class="item">
+        <button class="btn btn-light boton-2" type="button">
+          <img src="assets/imgs/icons/filter.svg" alt="icon_filter">
+          Filtrar por
+        </button>
+      </div>
+    </div>
+  
+    <div class="flex-container">
+      <div class="item">
+        <h1>Lista de Variadores</h1>
+      </div>
+      <div class="item"></div>
+    </div>
+  
+    <div class="compresores">
+
+      <div class="row">
+        @for (item of equipos; track $index) {
+  
+        <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-6 mb-2">
+          <div class="card">
+            <div class="card-body card-mantenimiento">
+              <div class="imagen">
+                <img src="assets/imgs/variador.png" alt="img_comprensor" style="width: 150px; height: 150px ;" />
+              </div>
+              <div class="info-1">
+                <h1>Variador de Energía:</h1>
+                <h2>Variador {{item.nombre}}</h2>
+  
+                <p> <img src="assets/imgs/icons/clock.svg" alt="img_clock" style="margin-right: .4rem;">{{fechaActual | date:'dd/mm/yyyy | hh:mm:ss'}}</p>
+  
+                <button class="btn boton-1" [routerLink]="['./../', item.ip, 'pantalla-medidores']"
+  
+                  routerLinkActive="router-link-active">
+                  Configurar Variador
+                </button>
+              </div>
+              <div class="info-2">
+                <h1>Modelo:</h1>
+                <h2>{{item.modelo}}</h2>
+  
+                <p><img src="assets/imgs/icons/current.svg" alt="img_current">Conexión: Remota</p>
+              </div>
+              <div class="info-3">
+                <h1>Número de serie:</h1>
+                <h2>{{item.serie}}</h2>
+  
+                <h1>Nombre Equipo:</h1>
+                <h2>{{item.nombre}}</h2>
+              </div>
+              <div class="info-4">
+                <h1>Área:</h1>
+                <h2>#{{item.area | uppercase}}</h2>
+  
+               <!--  <h1>Responsable:</h1>
+                <h2>Juan Dominguez</h2> -->
+              </div>
+  
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+      
+    </div>
+  </div>

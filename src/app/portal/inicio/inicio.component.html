@@ -11,7 +11,7 @@
 
     <div class="card-list">
       @for (item of arrayEquipos; track $index) {
-      <div class="card-body container-card-info" style="cursor: pointer;" [routerLink]="['../../monitoreo/instrumentacion-medidores', item.ip, 'pantalla-medidores']"
+      <div class="card-body container-card-info" style="cursor: pointer;" [routerLink]="['../../monitoreo/instrumentacion', item.ip, 'pantalla-variadores','variador']"
       routerLinkActive="router-link-active" > 
         <div class="informacion">
           <h6>Nombre del equipo:</h6>
@@ -33,7 +33,7 @@
           </p>
   
         <div class="imagen">
-          <img src="assets/imgs/medidor.svg" alt="" />
+          <img [src]="item.imagen" alt="" style="width: 75px; height: 100px; object-fit: contain;"  />
         </div>
       </div>
       }
@@ -41,56 +41,7 @@
   </div>
 </div>
 
-<div class="card" *ngIf="screen2">
-  <div class="card-body">
-    <div class="title">
-      <h3>
-        <i
-          class="fa fa-arrow-left"
-          aria-hidden="true"
-          (click)="cambiarScreen(1)"
-          style="margin-right: 1rem"
-        ></i>
-        Lista de equipos
-      </h3>
-      <hr />
-    </div>
-    <div class="listado">
-      <div class="card" style="width: 100%; max-width: 23rem">
-        <div class="card-body">
-          <div class="img">
-            <img
-              src="assets/demos/CompresorDePistonDeDosPasos.gif"
-              alt=""
-              style="width: 300px; height: 200px"
-            />
-          </div>
-          <div class="info">
-            <h4>COMPRESOR XYZ</h4>
-            <a
-              class="btn btn-primary"
-              [routerLink]="['/demos/demo1']"
-              routerLinkActive="router-link-active"
-              >Revisar</a
-            >
-          </div>
-        </div>
-      </div>
-      <!--      <div class="card" *ngFor="let item of arrayReportes">
-        <div class="card-body">
-          <div class="img">
-            <img [src]="item.image" alt="" />
-          </div>
-          <div class="info">
-            <h4>{{ item.name }}</h4>
-            <a class="btn btn-primary">Revisar</a>
-          </div>
-        </div>
-      </div> -->
-    </div>
-  </div>
-</div>
-<ngx-gauge
+<!-- <ngx-gauge
   [type]="'arch'"
   [value]="90"
   [label]="'Energía'"
@@ -103,4 +54,4 @@
   [markers]="markerConfig"
 >
   >
-</ngx-gauge>
+</ngx-gauge> -->

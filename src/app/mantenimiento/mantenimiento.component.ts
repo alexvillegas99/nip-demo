@@ -26,7 +26,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 export class MantenimientoComponent {
   constructor(
     private readonly dataPlc: DataPlcService,
-    private readonly toastService: ToastrService
+    private readonly toastService: ToastrService,
   ) {}
 
   screen1 = true;

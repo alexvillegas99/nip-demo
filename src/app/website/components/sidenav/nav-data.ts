@@ -43,15 +43,21 @@ export const NAVBARDATA: INavbarData[] = [
           //   icon: '',
           //   items: [],
           // },
-          {
-            routeLink: 'monitoreo/instrumentacion-medidores/gestion-medidor',
+    /*       {
+            routeLink: 'monitoreo/instrumentacion/gestion/medidores',
             label: 'Medidores',
+            icon: '',
+            items: [],
+          }, */
+          {
+            routeLink: 'monitoreo/instrumentacion/gestion/variadores',
+            label: 'Variadores',
             icon: '',
             items: [],
           },
         ],
       },
-      {
+     /*  {
         routeLink: '',
         label: 'Procesos',
         icon: 'assets/imgs/navbar/procesos.svg',
@@ -63,14 +69,14 @@ export const NAVBARDATA: INavbarData[] = [
             items: [],
           },
         ],
-      },
-      {
+      }, */
+     /*  {
         routeLink: './monitoreo/reportes',
         icon: 'assets/imgs/navbar/reporteria-d.svg',
         label: 'Reportes',
         items: [],
         // roles: ['ADMIN', 'BASIC']
-      },
+      }, */
     ],
     // roles: ['ADMIN', 'BASIC']
   },
@@ -84,21 +90,18 @@ export const NAVBARDATA: INavbarData[] = [
         label: 'Gestión de Mantenimiento',
         icon: 'assets/imgs/navbar/gest-mantenimiento-d.svg',
         items: [
-          // {
-          //   routeLink: './gestion',
-          //   label: 'Pedidos',
-          //   icon: '',
-          //   items: [],
-          // },
-          // {
-          //   routeLink: './gestion',
-          //   label: 'Tareas',
-          //   icon: '',
-          //   items: [],
-          // },
         ],
       },
       {
+        routeLink: './mantenimiento/orometro',
+        label: 'Gestión de  Horometro',
+        icon: 'assets/imgs/navbar/gest-mantenimiento-d.svg',
+        items: [
+        ],
+      },
+    
+    
+     /*  {
         routeLink: '',
         label: 'Maquinaria y Equipos',
         icon: 'assets/imgs/navbar/maquinaria-d.svg',
@@ -161,7 +164,7 @@ export const NAVBARDATA: INavbarData[] = [
           // },
         ],
         // roles: ['ADMIN', 'BASIC']
-      },
+      }, */
     ],
     // roles: ['ADMIN', 'BASIC']
   },
@@ -169,6 +172,13 @@ export const NAVBARDATA: INavbarData[] = [
     routeLink: './configuracion',
     icon: 'assets/imgs/navbar/configuracion-d.svg',
     label: 'Configuración',
+    items: [],
+    // roles: ['ADMIN', 'BASIC']
+  },
+  {
+    routeLink: './usuarios',
+    icon: 'assets/imgs/navbar/user.svg',
+    label: 'Usuarios',
     items: [],
     // roles: ['ADMIN', 'BASIC']
   },

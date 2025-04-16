@@ -1,0 +1,275 @@
+<div class="container-fluid" *ngIf="plcMedidor">
+  <!-- Tarjeta principal de información del variador -->
+  <div class="card mb-3">
+    <div
+      class="card-body card-mantenimiento d-flex align-items-center justify-content-between"
+    >
+      <!-- Imagen del equipo -->
+      <div class="imagen">
+        <img
+          [src]="plcMedidor.imagen"
+          alt="img_variador"
+          style="width: 150px; height: 150px; object-fit: contain"
+        />
+      </div>
+
+      <!-- Info básica -->
+      <div class="info-1">
+        <h1>Variador de Energía:</h1>
+        <h2>{{ plcMedidor.nombre }}</h2>
+        <p>
+          <img src="assets/imgs/icons/clock.svg" alt="img_clock" />01/08/2024 |
+          09:20:00
+        </p>
+      </div>
+
+      <div class="info-2">
+        <h1>Modelo:</h1>
+        <h2>{{ plcMedidor.modelo }}</h2>
+      </div>
+
+      <div class="info-3">
+        <h1>Número de serie:</h1>
+        <h2>{{ plcMedidor.serie }}</h2>
+        <h1>Nombre Equipo:</h1>
+        <h2>{{ plcMedidor.nombre }}</h2>
+      </div>
+
+      <div class="info-4">
+        <h1>Área:</h1>
+        <h2>#{{ plcMedidor.area | uppercase }}</h2>
+        <h1>IP:</h1>
+        <h2>{{ plcMedidor.ip }}</h2>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tarjeta de datos de la placa -->
+  <div class="card mb-4">
+    <div class="card-body d-flex align-items-center gap-4">
+      <img
+        [src]="plcMedidor.motor"
+        alt="motor"
+        style="width: 100px; height: auto"
+      />
+      <div style="border: 1px solid #e0e0e0; padding: 1rem; border-radius: 8px">
+        <h4 style="margin-bottom: 0.5rem; color: #0d47a1">
+          Datos de la placa del motor
+        </h4>
+        <div
+          style="
+            display: grid;
+            grid-template-columns: repeat(2, auto);
+            gap: 0.5rem 2rem;
+          "
+        >
+          <div>
+            <small>P<sub>nom</sub></small
+            ><strong> {{ plcMedidor.Pnom }}</strong>
+          </div>
+          <div>
+            <small>U<sub>nom</sub></small
+            ><strong> {{ plcMedidor.Vnom }}</strong>
+          </div>
+          <div>
+            <small>I<sub>nom</sub></small
+            ><strong> {{ plcMedidor.Inom }}</strong>
+          </div>
+          <div>
+            <small>n<sub>nom</sub></small
+            ><strong> {{ plcMedidor.Nnom }}</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="flex">
+  <div class="item">
+    <div class="card border-0">
+      <div class="card-body">
+        @for ( item of menu; track $index) {
+        <div
+          class="item card"
+          (click)="cambiarMenu($index)"
+          [class.selected-menu]="item.active"
+          style="margin-top: 0.7rem"
+        >
+          <label for="item" class="nombre">{{ item.nombre }}</label>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container-tabla">
+  @if (menu[0].active) {
+  <div class="table-responsive">
+    <!-- Datos eléctricos -->
+    <div class="container-fluid" *ngIf="plcInfo">
+      <div class="dashboard-layout">
+        <!-- Columna izquierda: Estado del variador -->
+        <div class="col-estado card-tarjeta">
+          <div class="card-header"><h2>Estado del variador</h2></div>
+          <div>
+            <p>
+              <img
+                src="assets/imgs/icons/current.svg"
+                alt="img_current"
+              />Conexión: {{ getConexionLabel(plcInfo) }}
+            </p>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <span class="fw-bold fs-5">{{
+              plcInfo.RUN === 1 ? "RUN" : plcInfo.FLT === 1 ? "FALLA" : "READY"
+            }}</span>
+            <div [ngStyle]="getStatusStyle()"></div>
+          </div>
+          <table class="mt-3">
+            <tr>
+              <td>Voltaje(U)</td>
+              <td>{{ plcInfo.voltaje }} V</td>
+            </tr>
+            <tr>
+              <td>Corriente(I)</td>
+              <td>{{ plcInfo.corriente }} A</td>
+            </tr>
+            <tr>
+              <td>Frecuencia</td>
+              <td>{{ plcInfo.frecuencia }} Hz</td>
+            </tr>
+            <tr>
+              <td>Potencia</td>
+              <td>{{ plcInfo.potencia }} kW</td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- Columna derecha: tarjetas 2x2 -->
+        <div class="col-tarjetas">
+          <div class="card-tarjeta">
+            <div class="card-header"><h2>Velocidad del Motor</h2></div>
+            <div class="text-center">
+              <apx-chart
+                *ngIf="chartOptions"
+                #rpmChart
+                [series]="chartOptions.series!"
+                [chart]="chartOptions.chart!"
+                [plotOptions]="chartOptions.plotOptions!"
+                [stroke]="chartOptions.stroke!"
+                [labels]="chartOptions.labels!"
+                [fill]="chartOptions.fill!"
+              >
+              </apx-chart>
+            </div>
+          </div>
+
+          <div
+            class="card-tarjeta"
+            style="
+              display: flex;
+              flex-direction: column;
+              justify-content: flex-start;
+              align-items: flex-start;
+            "
+          >
+            <div class="card-header"><h2>Voltaje del Motor</h2></div>
+            <div
+              class="text-center"
+              style="
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                margin-top: 20%;
+              "
+            >
+              <h1 class="display-5" style="color: #0d47a1">
+                {{ plcInfo.voltaje }}
+              </h1>
+              <p class="fs-4" style="color: #0d47a1">V</p>
+            </div>
+          </div>
+
+          <div
+            class="card-tarjeta"
+            style="
+              display: flex;
+              flex-direction: column;
+              justify-content: flex-start;
+              align-items: flex-start;
+            "
+          >
+            <div class="card-header"><h2>Potencia en Kw</h2></div>
+            <apx-chart
+              style="
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                margin-top: 10%;
+              "
+              *ngIf="linearOptions"
+              #linearChart
+              [series]="linearOptions.series!"
+              [chart]="linearOptions.chart!"
+              [xaxis]="linearOptions.xaxis!"
+              [plotOptions]="linearOptions.plotOptions!"
+              [dataLabels]="linearOptions.dataLabels!"
+              [fill]="linearOptions.fill!"
+              [stroke]="linearOptions.stroke!"
+              [tooltip]="linearOptions.tooltip!"
+            >
+            </apx-chart>
+          </div>
+
+          <div class="card-tarjeta">
+            <div class="card-header"><h2>Corriente del Motor</h2></div>
+            <div
+              class="text-center"
+              style="
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                margin-top: 20%;
+              "
+            >
+              <h1 class="display-5" style="color: #0d47a1">
+                {{ plcInfo.corriente }}
+              </h1>
+              <p class="fs-4" style="color: #0d47a1">A</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  } @if (menu[1].active) {
+  <div class="table-responsive">
+    <table class="table align-middle table-bordered table-bordered-sides">
+      <div class="grid-graficos">
+        <div class="grafico" *ngFor="let chart of otrosChartOptions; index as i; trackBy: trackByIndex">
+          <apx-chart
+            [series]="chart.series!"
+            [chart]="chart.chart!"
+            [xaxis]="chart.xaxis!"
+            [title]="chart.title!"
+            [stroke]="chart.stroke!"
+            [legend]="chart.legend!"
+            [dataLabels]="chart.dataLabels!"
+            [tooltip]="{ theme: 'dark' }"
+          ></apx-chart>
+        </div>
+      </div>
+      
+    </table>
+  </div>
+
+  }
+</div>

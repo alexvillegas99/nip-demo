@@ -16,6 +16,7 @@ import { TimepickerModule } from 'ngx-bootstrap/timepicker';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxGaugeModule } from 'ngx-gauge';
 import { LinearGaugeModule } from '@syncfusion/ej2-angular-lineargauge';
+import { NgApexchartsModule } from 'ng-apexcharts';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
@@ -31,6 +32,7 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(NgbModule),
     importProvidersFrom(BrowserAnimationsModule),
     importProvidersFrom(NgxGaugeModule),
-    importProvidersFrom(LinearGaugeModule)
-  ],
+    importProvidersFrom(LinearGaugeModule),
+    importProvidersFrom(NgApexchartsModule),
+  ],  
 };

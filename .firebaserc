@@ -1,6 +1,6 @@
 {
   "projects": {
-    "default": "nip-demo"
+    "default": "prisma-industrial-monitor"
   },
   "targets": {},
   "etags": {}

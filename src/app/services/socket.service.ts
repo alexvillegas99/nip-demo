@@ -36,9 +36,10 @@ export class SocketService extends Socket {
   }
 
   // Método para enviar una solicitud de datos históricos
-  sendFindHistoricoPlcData(ip: string, limit?: number): void {
-    this.emit('findHistoricoPlcData', { ip, limit });
+  sendFindHistoricoPlcData(ips: string[], limit?: number): void {
+    this.emit('findHistoricoPlcData', { ips, limit });
   }
+  
 
   // Método para recibir respuestas de datos históricos
   receiveHistoricoPlcData(): Observable<any> {

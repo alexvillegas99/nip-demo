@@ -42,7 +42,7 @@ export class AlarmasComponent implements OnInit {
   valores = [
     {
       codigo: '601',
-      tiempo: '10/01/2022 10:00',
+      tiempo: '10/03/2025 10:00',
       condicion: 'Temperatura',
       evento: 'Se a detectado una caida de presion critica',
       estado: 'Pendiente',
@@ -51,7 +51,7 @@ export class AlarmasComponent implements OnInit {
     },
     {
       codigo: '600',
-      tiempo: '10/01/2022 10:00',
+      tiempo: '09/03/2025 10:00',
       condicion: 'Temperatura',
       evento: 'Se a detectado una caida de presion critica',
       estado: 'Pendiente',
@@ -60,7 +60,7 @@ export class AlarmasComponent implements OnInit {
     },
     {
       codigo: '601',
-      tiempo: '10/01/2022 10:00',
+      tiempo: '09/03/2025 10:00',
       condicion: 'Temperatura',
       evento: 'Se a detectado una caida de presion critica',
       estado: 'Atendido',
@@ -69,7 +69,7 @@ export class AlarmasComponent implements OnInit {
     },
     {
       codigo: '600',
-      tiempo: '10/01/2022 10:00',
+      tiempo: '08/03/2025 10:00',
       condicion: 'Temperatura',
       evento: 'Temperatura alta',
       estado: 'Atendido',
@@ -78,7 +78,7 @@ export class AlarmasComponent implements OnInit {
     },
     {
       codigo: '601',
-      tiempo: '10/01/2022 10:00',
+      tiempo: '10/02/2025 10:00',
       condicion: 'Temperatura',
       evento: 'Temperatura alta',
       estado: 'Pendiente',
@@ -87,7 +87,7 @@ export class AlarmasComponent implements OnInit {
     },
     {
       codigo: '600',
-      tiempo: '10/01/2022 10:00',
+      tiempo: '10/02/2025 10:00',
       condicion: 'Temperatura',
       evento: 'Se a detectado una caida de presion critica',
       estado: 'Atendido',
@@ -96,7 +96,7 @@ export class AlarmasComponent implements OnInit {
     },
     {
       codigo: '601',
-      tiempo: '10/01/2022 10:00',
+      tiempo: '09/02/2025 10:00',
       condicion: 'Temperatura',
       evento: 'Se a detectado una caida de presion critica',
       estado: 'Pendiente',
@@ -105,7 +105,7 @@ export class AlarmasComponent implements OnInit {
     },
     {
       codigo: '600',
-      tiempo: '10/01/2022 10:00',
+      tiempo: '10/01/2025 10:00',
       condicion: 'Temperatura',
       evento: 'Temperatura alta',
       estado: 'Pendiente',
@@ -114,7 +114,7 @@ export class AlarmasComponent implements OnInit {
     },
     {
       codigo: '601',
-      tiempo: '10/01/2022 10:00',
+      tiempo: '10/01/2025 10:00',
       condicion: 'Temperatura',
       evento: 'Temperatura alta',
       estado: 'Atendido',

@@ -34,25 +34,11 @@ export class InicioComponent implements OnInit {
     private readonly dataPlc:DataPlcService
   ) {}
 
-  cambiarScreen(id: number) {
-    if (id === 1) {
-      this.screen1 = true;
-      this.screen2 = false;
-      this.initMap();
-    } else if (id === 2) {
-      this.screen1 = false;
-      this.screen2 = true;
-    }
-  }
+
 
   markers: any[] = [
-    {
-      lng: -78.454786,
-      lat: -0.3431066,
-      title: 'Danec',
-      description: 'Equipos industriales',
-      icono: 'assets/logo.jpg',
-    },
+    
+   
   ];
   
   arrayEquipos: any[] = [
@@ -68,16 +54,28 @@ export class InicioComponent implements OnInit {
       this.dataPlc.getListaEquipos().subscribe({
         next: (data) => {
           console.log('Data:', data);
+         
+          data=  data.filter((item: any) => item.tipo === 'variador');
+          
           data.forEach((element:any) => {
             this.arrayEquipos.push({
-              nombre: element.nombre,
+              nombre: element.nombre, 
               ip: element.ip,
-              ubicacion:'Quito',
-              tipo: 'Medidor'
+              ubicacion:'Ambato',
+              tipo: 'Medidor',
+              imagen:element.imagen,
             })
           });
-         
-          
+          this.markers = data.map((element:any) => ({
+            lng: element.ubicacion.split(',')[0],
+            lat: element.ubicacion.split(',')[1],
+            title: element.nombre,
+            description: element.tipo +' - ' + element.modelo + ' - ' + element.serie,
+            icono: 'assets/logo.png',
+
+          })
+        );
+            console.log('Markers:', this.markers);
         },
         error: (error) => {
           console.error('Error:', error);
@@ -98,8 +96,8 @@ export class InicioComponent implements OnInit {
       this.map = new mapboxgl.Map({
         container: 'map',
         style: environment.map.mapbox_style,
-        center: [-78.606495, -1.572575], // Centro del ecuador
-        zoom: 6.2, // Nivel de zoom inicial
+        center: [-78.581389,-1.241389], // Centro del ecuador
+        zoom: 12, // Nivel de zoom inicial
         accessToken: environment.map.api_key_mapbox,
       });
 
@@ -109,6 +107,7 @@ export class InicioComponent implements OnInit {
         customMarkerElement.style.backgroundImage = `url(${marker.icono})`; // Coloca la imagen del marcador
         customMarkerElement.style.width = '50px';
         customMarkerElement.style.height = '50px';
+        customMarkerElement.style.backgroundColor = 'white'; // Color de fondo del marcador
         customMarkerElement.style.borderRadius = '50%';
         customMarkerElement.style.backgroundSize = 'contain'; // Ajusta el tamaño de la imagen
         customMarkerElement.style.backgroundPosition = 'center'; // Centra la imagen
@@ -127,7 +126,7 @@ export class InicioComponent implements OnInit {
                 <i class="fa fa-map-marker" aria-hidden="true" style="color: red;"></i> ${marker.title}
               </h2>
               <p class="card-text">
-                <i class="fa fa-info" aria-hidden="true"></i> ${marker.description}
+               ${marker.description}
               </p>
             </div>
       
@@ -148,7 +147,7 @@ export class InicioComponent implements OnInit {
         });
 
         mapMarker.getElement().addEventListener('click', () => {
-          this.cambiarScreen(2);
+        
           console.log('Clic en el marcador:', marker);
         });
       });
