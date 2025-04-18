@@ -1,26 +1,53 @@
 <div class="filtro-equipos">
-  <div class="selector-tipo">
-    <label for="tipoEquipo">Tipo de equipo:</label>
-    <select id="tipoEquipo" [(ngModel)]="tipoSeleccionado" (change)="cambiarTipoEquipo()">
-      <option value="variador">Variador</option>
-      <option value="pm">PM</option>
-    </select>
-  </div>
+  <div class="filtro-linea">
+    <!-- Selector de tipo -->
+    <div class="selector-inline">
+      <label for="tipoEquipo">Equipo:</label>
+      <select id="tipoEquipo" [(ngModel)]="tipoSeleccionado" (change)="cambiarTipoEquipo()">
+        <option value="variador">Variador</option>
+        <option value="pm">PM</option>
+      </select>
+    </div>
 
-  <div class="equipos-container">
-    <div
-      class="equipo-item"
-      *ngFor="let equipo of plcList"
-      [class.inactivo]="!equiposSeleccionados.includes(equipo.ip)"
-    >
-      <label>
-        <input
-          type="checkbox"
-          [checked]="equiposSeleccionados.includes(equipo.ip)"
-          (change)="onCheckboxChange($event, equipo.ip)"
-        />
-        {{ equipo.nombre || equipo.ip }}
-      </label>
+    <!-- Selector de tiempo -->
+    <div class="selector-inline">
+      <label for="tiempoHistorico">Tiempo:</label>
+      <select id="tiempoHistorico" [(ngModel)]="tiempoHistorico" (change)="onCambioTiempo(tiempoHistorico)">
+        <option value="5m">5m</option>
+        <option value="10m">10m</option>
+        <option value="1h">1h</option>
+        <option value="3h">3h</option>
+        <option value="12h">12h</option>
+        <option value="1d">1 día</option>
+        <option value="7d">7 días</option>
+        <option value="personalizado">Personalizado</option>
+      </select>
+    </div>
+
+    <!-- Tiempo personalizado -->
+    <div class="selector-inline" *ngIf="tiempoHistorico === 'personalizado'">
+      <label>Valor:</label>
+      <input type="number" min="1" [(ngModel)]="cantidadTiempo" />
+      <select [(ngModel)]="unidadTiempo" (change)="onCambioTiempoPersonalizado()">
+        <option value="s">seg</option>
+        <option value="m">min</option>
+        <option value="h">hora</option>
+        <option value="d">día</option>
+      </select>
+    </div>
+
+    <!-- Selector de refresco -->
+    <div class="selector-inline">
+      <label for="refresco">Actualizar:</label>
+      <select id="refresco" [(ngModel)]="refresco" (change)="onCambioRefresco(refresco)">
+        <option [value]="0">No</option>
+        <option [value]="5000">5s</option>
+        <option [value]="10000">10s</option>
+        <option [value]="15000">15s</option>
+        <option [value]="30000">30s</option>
+        <option [value]="60000">1min</option>
+        <option [value]="300000">5min</option>
+      </select>
     </div>
   </div>
 </div>

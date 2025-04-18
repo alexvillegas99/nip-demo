@@ -252,6 +252,49 @@
   </div>
   } @if (menu[1].active) {
   <div class="table-responsive">
+<!-- Filtros de tiempo -->
+<!-- Filtros de tiempo y refresco -->
+<div class="filtros mb-4 d-flex flex-wrap gap-4 align-items-end" style="padding: 1rem">
+  <!-- Tiempo histórico -->
+  <div>
+    <label><strong>Tiempo histórico:</strong></label>
+    <select
+      class="form-select"
+      [(ngModel)]="tiempoHistorico"
+      (change)="onCambioTiempo(tiempoHistorico)"
+    >
+      <option value="5m">Últimos 5 minutos</option>
+      <option value="15m">Últimos 15 minutos</option>
+      <option value="30m">Últimos 30 minutos</option>
+      <option value="1h">Última 1 hora</option>
+      <option value="5h">Últimas 5 horas</option>
+      <option value="12h">Últimas 12 horas</option>
+      <option value="24h">Últimas 24 horas</option>
+      <option value="7d">Últimos 7 días</option>
+      <option value="30d">Últimos 30 días</option>
+    </select>
+  </div>
+
+ 
+
+  <!-- Frecuencia de actualización -->
+  <div>
+    <label><strong>Refrescar cada:</strong></label>
+    <select
+      class="form-select"
+      [(ngModel)]="refresco"
+      (change)="onCambioRefresco()"
+    >
+      <option [ngValue]="5000">5 segundos</option>
+      <option [ngValue]="10000">10 segundos</option>
+      <option [ngValue]="30000">30 segundos</option>
+      <option [ngValue]="60000">1 minuto</option>
+    </select>
+  </div>
+</div>
+
+
+    
     <table class="table align-middle table-bordered table-bordered-sides">
       <div class="grid-graficos">
         <div class="grafico" *ngFor="let chart of otrosChartOptions; index as i; trackBy: trackByIndex">

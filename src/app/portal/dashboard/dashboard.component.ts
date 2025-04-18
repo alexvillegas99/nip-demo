@@ -47,14 +47,17 @@ export type ChartOptions = {
   encapsulation: ViewEncapsulation.None,
 })
 export class DashboardComponent implements OnInit, OnDestroy {
-  plcList: any[] = [];                          // Lista de todos los equipos
-  historicoData: any[] = [];                   // Datos históricos recibidos por WebSocket
-  fechas: string[] = [];                       // Etiquetas de eje X (tiempo)
-  chartOptions: Partial<ChartOptions>[] = [];  // Configuración de gráficos
-  tipoSeleccionado: string = 'variador';       // Tipo actual de equipos seleccionados
-  historicoSub!: Subscription;                 // Subscripción al socket
-  actualizacionInterval: any;                 // Intervalo de actualización
-  equiposSeleccionados: string[] = [];         // Lista de IPs seleccionadas
+  plcList: any[] = [];
+  historicoData: any[] = [];
+  fechas: string[] = [];
+  chartOptions: Partial<ChartOptions>[] = [];
+  tipoSeleccionado: string = 'variador';
+  historicoSub!: Subscription;
+  actualizacionInterval: any;
+  equiposSeleccionados: string[] = [];
+
+  tiempoHistorico: string = '5m';
+  refresco: number = 5000;
 
   @ViewChildren(ChartComponent) chartComponents!: QueryList<ChartComponent>;
 
@@ -65,14 +68,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.getListaEquipos();
-
-    // Solicitud de datos periódica
-    this.actualizacionInterval = setInterval(() => {
-      const ips = this.plcList.map((item) => item.ip);
-      if (ips.length > 0) {
-        this._socketService.sendFindHistoricoPlcData(ips, 10, this.tipoSeleccionado);
-      }
-    }, 10000);
+    this.iniciarIntervalo();
   }
 
   ngOnDestroy(): void {
@@ -80,21 +76,38 @@ export class DashboardComponent implements OnInit, OnDestroy {
     if (this.historicoSub) this.historicoSub.unsubscribe();
   }
 
-  // Obtener equipos desde el backend
+  iniciarIntervalo() {
+    clearInterval(this.actualizacionInterval);
+    if (this.refresco > 0) {
+      this.actualizacionInterval = setInterval(() => {
+        this._socketService.sendFindHistoricoPlcData(
+          this.equiposSeleccionados,
+          this.tiempoHistorico,
+          this.tipoSeleccionado
+        );
+      }, this.refresco);
+    }
+  }
+
+  onCambioRefresco(valor: number) {
+    this.refresco = valor;
+    this.iniciarIntervalo();
+  }
+
+ 
   getListaEquipos() {
     this.dataPlc.getListaEquipos().subscribe({
       next: (data) => {
         this.plcList = data.filter((item: any) => item.tipo === this.tipoSeleccionado);
         this.equiposSeleccionados = this.plcList.map((item) => item.ip);
         const ips = this.plcList.map((item) => item.ip);
-        this._socketService.sendFindHistoricoPlcData(ips, 10, this.tipoSeleccionado);
+        this._socketService.sendFindHistoricoPlcData(ips, this.tiempoHistorico, this.tipoSeleccionado);
         this.listenHistorico();
       },
       error: (err) => console.error('Error:', err),
     });
   }
 
-  // Escuchar datos históricos por WebSocket
   listenHistorico() {
     if (this.historicoSub) this.historicoSub.unsubscribe();
 
@@ -113,7 +126,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-  // Formatear y redondear datos
   private formatearDatos(d: any) {
     return {
       ...d,
@@ -129,7 +141,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     return valor !== undefined ? Math.round(valor * 100) / 100 : null;
   }
 
-  // Construcción de gráficos para cada tipo
   generarGraficos() {
     this.chartOptions = [];
 
@@ -180,7 +191,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Actualizar solo los datos del gráfico
   actualizarGraficos() {
     const tipos = this.tipoSeleccionado === 'pm'
       ? [
@@ -190,27 +200,27 @@ export class DashboardComponent implements OnInit, OnDestroy {
           'frecuencia_A', 'frecuencia_B', 'frecuencia_C',
         ]
       : ['corriente', 'voltaje', 'potencia', 'frecuencia', 'rpm'];
-  
+
     if (this.chartComponents.length !== tipos.length) {
       console.warn('Gráficos aún no renderizados completamente. Se omite actualización.');
       return;
     }
-  
+
     this.chartComponents.forEach((chart, index) => {
       const tipo = tipos[index];
-  
+
       const nuevasSeries = this.historicoData.map((equipo) => {
         const nombre = this.plcList.find((p) => p.ip === equipo.ip)?.nombre || equipo.ip;
-  
+
         const datos = equipo.data.map((d: any) =>
           tipo === 'rpm'
             ? this.calcularRPM(equipo.ip, d.frecuencia)
             : this.redondear(d[tipo])
         );
-  
+
         return { name: nombre, data: datos };
       });
-  
+
       chart.updateOptions(
         {
           series: [...nuevasSeries, this.serieBase()],
@@ -226,7 +236,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           legend: {
             show: true,
             labels: { colors: ['#000'] },
-            formatter: (name:any) => (name === 'Base' ? '' : name),
+            formatter: (name: any) => (name === 'Base' ? '' : name),
           },
         },
         false,
@@ -234,14 +244,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
       );
     });
   }
-  
 
-  // Serie invisible para evitar error en gráficos vacíos
   private serieBase() {
     return { name: 'Base', data: Array(this.fechas.length).fill(0), color: 'transparent' };
   }
 
-  // Cálculo específico de RPM según IP y frecuencia
   private calcularRPM(ip: string, frecuencia: number) {
     const maxRPM = this.getMaxRPM(ip);
     return Math.round((frecuencia / 60) * maxRPM * 100) / 100;
@@ -255,7 +262,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     return rpmMap[ip] || 1780;
   }
 
-  // Cambio entre tipo de equipos (variador o pm)
   cambiarTipoEquipo() {
     this.chartOptions = [];
     this.fechas = [];
@@ -264,7 +270,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     setTimeout(() => this.getListaEquipos(), 0);
   }
 
-  // Manejo de selección por checkbox
   toggleEquipoSeleccion(ip: string, checked: boolean) {
     this.equiposSeleccionados = checked
       ? [...this.equiposSeleccionados, ip]
@@ -278,7 +283,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     if (this.historicoSub) this.historicoSub.unsubscribe();
 
-    this._socketService.sendFindHistoricoPlcData(this.equiposSeleccionados, 10, this.tipoSeleccionado);
+    this._socketService.sendFindHistoricoPlcData(this.equiposSeleccionados, this.tiempoHistorico, this.tipoSeleccionado);
     this.listenHistorico();
   }
 
@@ -286,4 +291,38 @@ export class DashboardComponent implements OnInit, OnDestroy {
     const checked = (event.target as HTMLInputElement).checked;
     this.toggleEquipoSeleccion(ip, checked);
   }
+
+  cantidadTiempo: number = 1;
+unidadTiempo: string = 'h';
+
+onCambioTiempo(valor: string) {
+  console.log('Cambio de tiempo:', valor);
+  this.tiempoHistorico = valor;
+
+  // No dispares aún si es personalizado
+  if (valor !== 'personalizado') {
+    this._socketService.sendFindHistoricoPlcData(
+      this.equiposSeleccionados,
+      this.tiempoHistorico,
+      this.tipoSeleccionado
+    );
+  }
+}
+
+  
+  onCambioTiempoPersonalizado() {
+    if (this.cantidadTiempo > 0 && this.unidadTiempo) {
+      this.tiempoHistorico = `${this.cantidadTiempo}${this.unidadTiempo}`;
+      console.log('Tiempo personalizado aplicado:', this.tiempoHistorico);
+  
+      this._socketService.sendFindHistoricoPlcData(
+        this.equiposSeleccionados,
+        this.tiempoHistorico,
+        this.tipoSeleccionado
+      );
+    }
+  }
+  
+  
+  
 }

@@ -15,6 +15,7 @@ import {
   NgApexchartsModule,
 } from 'ng-apexcharts';
 import ApexCharts from 'apexcharts';
+import { FormsModule } from '@angular/forms';
 
 export type ChartOptions = {
   series: ApexNonAxisChartSeries;
@@ -54,7 +55,7 @@ export type HistoricoChartOptions = {
 @Component({
   selector: 'app-variadores',
   standalone: true,
-  imports: [CommonModule, NgApexchartsModule],
+  imports: [CommonModule, NgApexchartsModule,FormsModule],
   templateUrl: './variadores.component.html',
   styleUrl: './variadores.component.scss',
 })
@@ -89,45 +90,63 @@ export class VariadoresComponent implements OnInit, OnDestroy {
 
       // Emitir solicitud cada 3 segundos
       this.intervalSub = interval(3000).subscribe(() => {
-        this._socketService.sendFindPlcData(ip);
+        this._socketService.sendFindPlcData(ip, 'variador');
       });
 
       // Escuchar la respuesta del servidor
       this.plcDataSub = this._socketService
-        .receivePlcData()
-        .subscribe((data) => {
-          console.log(data, 'data....');
-
-          this.plcInfo = data;
-
-          //regla de 3 para 60 hz equivale a 3450rpm  a cuanto equivale la de this.plcInfo.frecuencia
-
-          let maxRPM = 1780;
-
-          if (this.plcMedidor?.ip === '172.16.8.9') {
-            maxRPM = 3450;
-          } else if (this.plcMedidor?.ip === '172.16.107.5') {
-            maxRPM = 1785;
-          }
-
-          const currentRPM = (this.plcInfo.frecuencia / 60) * maxRPM;
-          console.log(currentRPM, 'currentRPM');
-
-          this.updateRPM(currentRPM);
-
-          this.updateLinear(this.plcInfo.potencia);
-        });
+      .receivePlcData()
+      .subscribe((data) => {
+        console.log(data, 'data....');
+    
+        this.plcInfo = {
+          ...data,
+          corriente: Math.round(data.corriente * 100) / 100,
+          voltaje: Math.round(data.voltaje * 100) / 100,
+          potencia: Math.round(data.potencia * 100) / 100,
+          frecuencia: Math.round(data.frecuencia * 100) / 100,
+        };
+    
+        let maxRPM = 1780;
+        if (this.plcMedidor?.ip === '172.16.8.9') {
+          maxRPM = 3450;
+        } else if (this.plcMedidor?.ip === '172.16.107.5') {
+          maxRPM = 1785;
+        }
+    
+        const currentRPM =
+          Math.round((this.plcInfo.frecuencia / 60) * maxRPM * 100) / 100;
+        console.log(currentRPM, 'currentRPM');
+    
+        this.updateRPM(currentRPM);
+        this.updateLinear(this.plcInfo.potencia);
+      });
+    
     }
   }
   obtenerDataHistoricoPlc() {
-    // Actualización automática cada 10s
+    clearInterval(this.actualizacionInterval); // limpiar si ya hay uno
+  
+    const ip = this.plcMedidor?.ip;
+    if (!ip) return;
+  
+    // Consulta inicial
+    this._socketService.sendFindHistoricoPlcData(
+      [ip],
+      this.tiempoHistorico,
+      'variador'
+    );
+  
+    // Auto-actualización
     this.actualizacionInterval = setInterval(() => {
-      const ips = [this.plcMedidor.ip];
-      if (ips.length > 0) {
-        this._socketService.sendFindHistoricoPlcData(ips, 75);
-      }
-    }, 15000);
+      this._socketService.sendFindHistoricoPlcData(
+        [ip],
+        this.tiempoHistorico,
+        'variador'
+      );
+    }, this.refresco);
   }
+  
 
   @ViewChild('rpmChart', { static: false }) rpmChart!: any;
 
@@ -154,7 +173,7 @@ export class VariadoresComponent implements OnInit, OnDestroy {
 
     this.linearChart.updateSeries(newSeries);
   }
-  actualizacionInterval: any;
+
   ngOnDestroy(): void {
     this.intervalSub?.unsubscribe();
     this.plcDataSub?.unsubscribe();
@@ -190,35 +209,18 @@ export class VariadoresComponent implements OnInit, OnDestroy {
     this.otrosChartOptions = [];
     const tipos = ['corriente', 'voltaje', 'potencia', 'frecuencia', 'rpm'];
   
-    const bloques = 5;
-  
-    const agruparYPromediar = (lista: number[]) => {
-      const agrupados: number[] = [];
-      for (let i = 0; i < lista.length; i += bloques) {
-        const grupo = lista.slice(i, i + bloques);
-        const promedio =
-          grupo.reduce((acc, val) => acc + val, 0) / grupo.length;
-        agrupados.push(Number(promedio.toFixed(2)));
-      }
-      return agrupados;
-    };
-  
-    const fechasReducidas: string[] = [];
-    for (let i = 0; i < data.length; i += bloques) {
-      const fechaReferencia = new Date(data[i].fecha).toLocaleTimeString();
-      fechasReducidas.push(fechaReferencia);
-    }
+    const fechasReducidas: string[] = data.map((d: any) =>
+      new Date(d.fecha).toLocaleTimeString()
+    );
   
     for (const tipo of tipos) {
-      const datosOriginales = data.map((d: any) => {
+      const datos = data.map((d: any) => {
         if (tipo === 'rpm') {
           const maxRPM = this.getMaxRPM(this.ip!);
-          return Math.round((d.frecuencia / 60) * maxRPM);
+          return Math.round((d.frecuencia / 60) * maxRPM * 100) / 100;
         }
-        return d[tipo];
+        return Math.round(d[tipo] * 100) / 100;
       });
-  
-      const datosReducidos = agruparYPromediar(datosOriginales);
   
       let guideValue = 0;
       switch (tipo) {
@@ -240,35 +242,32 @@ export class VariadoresComponent implements OnInit, OnDestroy {
           break;
       }
   
-      // Series comunes
       const equipoSerie = {
         name: this.plcMedidor?.nombre || 'Equipo',
-        data: datosReducidos,
+        data: datos,
       };
   
       const nominalSerie = {
         name: 'Nominal',
-        data: Array(datosReducidos.length).fill(guideValue),
+        data: Array(datos.length).fill(guideValue),
       };
   
       const baseSerie = {
         name: 'Base',
-        data: Array(datosReducidos.length).fill(0),
+        data: Array(datos.length).fill(0),
         color: 'transparent',
       };
   
-      // Series adicionales solo para frecuencia
       const minSerie = {
         name: 'Mínimo permitido (49 Hz)',
-        data: Array(datosReducidos.length).fill(49),
+        data: Array(datos.length).fill(49),
         color: '#e74c3c',
       };
   
-   
-      // Armar el array de series
-      const seriesFinal = tipo === 'frecuencia'
-        ? [equipoSerie, nominalSerie, minSerie, baseSerie]
-        : [equipoSerie, nominalSerie, baseSerie];
+      const seriesFinal =
+        tipo === 'frecuencia'
+          ? [equipoSerie, nominalSerie, minSerie, baseSerie]
+          : [equipoSerie, nominalSerie, baseSerie];
   
       this.otrosChartOptions.push({
         series: seriesFinal,
@@ -286,25 +285,29 @@ export class VariadoresComponent implements OnInit, OnDestroy {
           labels: { rotate: -45 },
         },
         yaxis: {
-          min: tipo === 'frecuencia' ? 49 : ['corriente', 'voltaje', 'potencia'].includes(tipo) ? 0 : undefined,
-          max: tipo === 'frecuencia' ? 60 : Math.max(...datosReducidos, guideValue) + 1,
+          min:
+            tipo === 'frecuencia'
+              ? 49
+              : ['corriente', 'voltaje', 'potencia'].includes(tipo)
+              ? 0
+              : undefined,
+          max:
+            tipo === 'frecuencia'
+              ? 60
+              : Math.max(...datos, guideValue) + 1,
           labels: {
             formatter: (value: number) => value.toFixed(2),
           },
         },
         legend: {
           show: true,
-          labels: {
-            colors: ['#000'],
-          },
-          formatter: (seriesName) =>
-            seriesName === 'Base' ? '' : seriesName,
+          labels: { colors: ['#000'] },
+          formatter: (name: string) => (name === 'Base' ? '' : name),
         },
         dataLabels: { enabled: false },
       });
     }
   }
-  
   
 
   getMaxRPM(ip: string): number {
@@ -490,4 +493,23 @@ export class VariadoresComponent implements OnInit, OnDestroy {
   trackByIndex(index: number): number {
     return index;
   }
+
+  tiempoHistorico: string = '5m';
+  
+  refresco: number = 5000;
+  actualizacionInterval: any;
+  
+
+  onCambioTiempo(valor: string) {
+    this.tiempoHistorico = valor;
+    if (valor !== 'personalizado') {
+      this.obtenerDataHistoricoPlc();
+    }
+  }
+  onCambioRefresco() {
+    console.log('Nuevo intervalo de refresco:', this.refresco);
+    this.obtenerDataHistoricoPlc();
+  }
+
+
 }

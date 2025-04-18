@@ -30,10 +30,12 @@ export class SocketService extends Socket {
     });
   }
  
+
   // Método para enviar una solicitud al servidor WebSocket
-  sendFindPlcData(ip: string): void {
-    this.emit('findPlcData', { ip });
-  }
+sendFindPlcData(ip: string, tipo?: string): void {
+  this.emit('findPlcData', { ip, tipo });
+}
+
 
   // Método para recibir respuestas del servidor WebSocket
   receivePlcData(): Observable<any> {
@@ -41,9 +43,11 @@ export class SocketService extends Socket {
   }
 
   // Método para enviar una solicitud de datos históricos
-  sendFindHistoricoPlcData(ips: string[], limit?: number,tipo?:any): void {
-    this.emit('findHistoricoPlcData', { ips, limit, tipo });
+  sendFindHistoricoPlcData(ips: string[], rango: string, tipo?: any): void {
+    this.emit('findHistoricoPlcData', { ips, rango, tipo });
   }
+  
+  
   
 
   // Método para recibir respuestas de datos históricos
