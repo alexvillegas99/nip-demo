@@ -44,3 +44,135 @@
     transform: scale(1.01);
   }
 }
+.equipos-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 1rem 0;
+}
+
+.equipo-item {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  transition: all 0.2s ease;
+  cursor: pointer;
+
+  input[type='checkbox'] {
+    margin-right: 8px;
+    transform: scale(1.2);
+  }
+
+  &:hover {
+    background-color: #e0f2fe;
+  }
+
+  &.inactivo {
+    opacity: 0.5;
+  }
+}
+.selector-tipo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+
+  label {
+    font-weight: 600;
+    color: #334155;
+  }
+
+  select {
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    background-color: #f8fafc;
+    font-size: 0.95rem;
+    color: #1e293b;
+    outline: none;
+    transition: border-color 0.2s ease;
+
+    &:hover {
+      border-color: #3b82f6;
+    }
+
+    &:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+    }
+  }
+}
+.filtro-equipos {
+  padding: 1.5rem 1rem;
+  background-color: #f8fafc;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
+
+  .selector-tipo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+
+    label {
+      font-weight: 600;
+      color: #334155;
+    }
+
+    select {
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      background-color: #fff;
+      font-size: 0.95rem;
+      color: #1e293b;
+      transition: border-color 0.2s ease;
+
+      &:hover {
+        border-color: #3b82f6;
+      }
+
+      &:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+      }
+    }
+  }
+
+  .equipos-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+
+    .equipo-item {
+      background: #e2e8f0;
+      border-radius: 20px;
+      padding: 0.4rem 1rem;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      transition: background 0.2s ease, box-shadow 0.2s ease;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+
+      input[type='checkbox'] {
+        margin-right: 8px;
+        transform: scale(1.2);
+      }
+
+      &:hover {
+        background-color: #dbeafe;
+      }
+
+      &.inactivo {
+        opacity: 0.5;
+      }
+    }
+  }
+}

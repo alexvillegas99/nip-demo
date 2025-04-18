@@ -13,6 +13,7 @@ const config: SocketIoConfig = {
 export class SocketService extends Socket {
   private responseSubject = new Subject<any>();
   private historicoResponseSubject = new Subject<any>();
+  private responsePLCSubject = new Subject<any>();
 
   constructor() {
     super(config);
@@ -23,8 +24,12 @@ export class SocketService extends Socket {
     this.fromEvent<any>('findHistoricoPlcDataResponse').subscribe((response) => {
       this.historicoResponseSubject.next(response);
     });
+    // ESCUCHAR PARA sendFindPlcDataAll
+    this.fromEvent<any>('findPlcDataAllResponse').subscribe((response) => {
+      this.responsePLCSubject.next(response);
+    });
   }
-
+ 
   // Método para enviar una solicitud al servidor WebSocket
   sendFindPlcData(ip: string): void {
     this.emit('findPlcData', { ip });
@@ -36,13 +41,24 @@ export class SocketService extends Socket {
   }
 
   // Método para enviar una solicitud de datos históricos
-  sendFindHistoricoPlcData(ips: string[], limit?: number): void {
-    this.emit('findHistoricoPlcData', { ips, limit });
+  sendFindHistoricoPlcData(ips: string[], limit?: number,tipo?:any): void {
+    this.emit('findHistoricoPlcData', { ips, limit, tipo });
   }
   
 
   // Método para recibir respuestas de datos históricos
   receiveHistoricoPlcData(): Observable<any> {
     return this.historicoResponseSubject.asObservable();
+  }
+
+
+   // Método para enviar una solicitud al servidor WebSocket
+   sendFindPlcDataAll(): void {
+    this.emit('findPlcDataAll');
+  }
+
+  // Método para recibir respuestas del servidor WebSocket
+  receivePlcDataAll(): Observable<any> {
+    return this.responsePLCSubject.asObservable();
   }
 }

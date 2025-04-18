@@ -11,47 +11,49 @@
 
     <div class="card-list">
       @for (item of arrayEquipos; track $index) {
-      <div class="card-body container-card-info" style="cursor: pointer;" [routerLink]="['../../monitoreo/instrumentacion', item.ip, 'pantalla-variadores','variador']"
-      routerLinkActive="router-link-active" > 
-        <div class="informacion">
-          <h6>Nombre del equipo:</h6>
-          <h4>{{ item.nombre | uppercase }}</h4>
-        </div>
-        <div class="ubicacion">
-          <p>
-            <i class="fa-solid fa-location-dot"></i> {{ item.ubicacion }},
-            Ecuador
+        <div class="card-body container-card-info" style="cursor: pointer;" 
+             [routerLink]="['../../monitoreo/instrumentacion', item.ip, 'pantalla-variadores','variador']"
+             routerLinkActive="router-link-active"> 
+      
+          <div class="informacion">
+            <h6>Nombre del equipo:</h6>
+            <h4>{{ item.nombre | uppercase }}</h4>
+          </div>
+      
+          <div class="ubicacion">
+            <p>
+              <i class="fa-solid fa-location-dot"></i> {{ item.ubicacion }}, Ecuador
+            </p>
+          </div>
+      
+          <p style="font-size: 14px; font-weight: 300; text-align: left; color: #727272; margin-bottom: 0px;">
+            <i class="fa-solid fa-screwdriver-wrench"></i> {{ item.ip }}
           </p>
+      
+          <!-- Solo mostrar estado si es tipo variador -->
+          <div *ngIf="item.tipo === 'variador'" class="estado-variador">
+            <span [ngClass]="{
+              'estado-run': item.estado === 'RUN',
+              'estado-falla': item.estado === 'FALLA',
+              'estado-ready': item.estado === 'READY'
+            }">
+              <i class="fa-solid"
+                 [ngClass]="{
+                   'fa-circle text-success': item.estado === 'RUN',
+                   'fa-circle text-danger': item.estado === 'FALLA',
+                   'fa-circle text-warning': item.estado === 'READY'
+                 }"></i>
+              Estado: {{ item.estado }}
+            </span>
+          </div>
+      
+          <div class="imagen">
+            <img [src]="item.imagen" alt="" style="width: 75px; height: 100px; object-fit: contain;" />
+          </div>
         </div>
-
-          <p style=" font-size: 14px;
-          font-weight: 300;
-          text-align: left;
-          color: #727272;
-          margin-bottom: 0px;">
-            <i class="fa-solid fa-screwdriver-wrench"></i> {{ item.ip  }}
-          </p>
-  
-        <div class="imagen">
-          <img [src]="item.imagen" alt="" style="width: 75px; height: 100px; object-fit: contain;"  />
-        </div>
-      </div>
       }
+      
     </div>
   </div>
 </div>
 
-<!-- <ngx-gauge
-  [type]="'arch'"
-  [value]="90"
-  [label]="'Energía'"
-  [append]="'kW/h'"
-  [min]="0"
-  [max]="100"
-  [thresholds]="thresholdConfig"
-  [thick]="15"
-  [animate]="true"
-  [markers]="markerConfig"
->
-  >
-</ngx-gauge> -->

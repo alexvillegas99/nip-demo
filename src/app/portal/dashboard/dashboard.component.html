@@ -1,6 +1,35 @@
-<div class="grid-graficos">
+<div class="filtro-equipos">
+  <div class="selector-tipo">
+    <label for="tipoEquipo">Tipo de equipo:</label>
+    <select id="tipoEquipo" [(ngModel)]="tipoSeleccionado" (change)="cambiarTipoEquipo()">
+      <option value="variador">Variador</option>
+      <option value="pm">PM</option>
+    </select>
+  </div>
+
+  <div class="equipos-container">
+    <div
+      class="equipo-item"
+      *ngFor="let equipo of plcList"
+      [class.inactivo]="!equiposSeleccionados.includes(equipo.ip)"
+    >
+      <label>
+        <input
+          type="checkbox"
+          [checked]="equiposSeleccionados.includes(equipo.ip)"
+          (change)="onCheckboxChange($event, equipo.ip)"
+        />
+        {{ equipo.nombre || equipo.ip }}
+      </label>
+    </div>
+  </div>
+</div>
+
+
+<div class="grid-graficos" *ngIf="chartOptions.length > 0">
   <div class="grafico" *ngFor="let chart of chartOptions; index as i">
     <apx-chart
+      *ngIf="chart"
       [series]="chart.series!"
       [chart]="chart.chart!"
       [xaxis]="chart.xaxis!"

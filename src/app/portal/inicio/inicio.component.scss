@@ -169,3 +169,42 @@
     }
   }
 }
+
+.estado-variador {
+  margin-top: 8px;
+  font-weight: 500;
+  font-size: 14px;
+
+  .fa-circle {
+    margin-right: 6px;
+    font-size: 12px;
+  }
+
+  &.estado-run {
+    color: #22c55e;
+  }
+
+  &.estado-falla {
+    color: #ef4444;
+  }
+
+  &.estado-ready {
+    color: #facc15;
+  }
+}
+.popup-card-body {
+  padding: 0.75rem;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.popup-card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #1f2937;
+}
+
+.popup-card-text {
+  font-size: 0.875rem;
+  color: #4b5563;
+}
