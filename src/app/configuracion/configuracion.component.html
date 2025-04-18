@@ -4,3 +4,49 @@
     </div>
     <div class="item"></div>
 </div>
+
+<div class="container-tabla">
+    <div class="table-responsive">
+        <table class="table align-middle table-bordered table-bordered-sides">
+            <thead>
+                <tr>
+                    <th>INFORMACIÓN</th>
+                    <th>IMAGEN</th>
+                    <th>DESCRIPCIÓN</th>
+                    <th>ACCIONES</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for(item of listaDispositivo; track item)
+                {
+                <tr>
+                    <td>
+                        <h5> {{item.nombre}} </h5>
+                        <p> {{item.ip}}</p>
+                    </td>
+
+                    <td>
+                        <img style="width: 4rem;" src="{{item.imagen}}" alt="Img de {{item.nombre}}"
+                            class="img-fluid" />
+                    </td>
+
+                    <td>
+                        <h5> {{item.area | uppercase}} </h5>
+                        <p> {{item.tipo | uppercase}} </p>
+                        <p> {{item.modelo}} </p>
+                        <p> {{item.serie}} </p>
+                    </td>
+
+                    <td>
+                        <button class="btn btn-primary" (click)="abrirModal()">
+                            Editar
+                        </button>
+                    </td>
+                </tr>
+                }
+
+
+            </tbody>
+        </table>
+    </div>
+</div>
