@@ -42,10 +42,10 @@
 <div class="flex">
   <div class="item">
     @if (menu[0].active) {
-      <h2>Lista de Pedidos</h2>
+    <h2>Lista de Pedidos</h2>
     }
     @if (menu[1].active) {
-      <h2>Lista de Tareas</h2>
+    <h2>Lista de Tareas</h2>
     }
   </div>
   <div class="item"></div>
@@ -81,12 +81,10 @@
           <td>{{ item.proveedor | uppercase }}</td>
           <td>{{ item.producto | uppercase }}</td>
           <td>{{ item.fecha_creacion | date: 'dd/MM/yyyy' }}</td>
-          <td
-            [ngClass]="{
+          <td [ngClass]="{
               entregado: item.estado==='Entregado', 
               proceso: item.estado==='En proceso' ,
-              envio:  item.estado==='Envió'}"
-              >
+              envio:  item.estado==='Envió'}">
             {{ item.estado | uppercase }}</td>
           <td style="display: flex; flex-direction: row; gap: .5rem; justify-content: center;">
 

@@ -1,8 +1,18 @@
-<div class="flex-container">
+<div class="filters">
     <div class="item">
-        <h1>Agregar Equipo</h1>
+        <app-search [label]="'Buscar por nombre'" (searchText)="textoFiltrado($event)"></app-search>
     </div>
-    <div class="item"></div>
+    <div class="item">
+        <app-select [labelDisabled]="'Seleccionar Tipo'" [lista]="filtrosTipo"
+            (opcionEvent)="opcionSeleccionada($event)">
+        </app-select>
+    </div>
+
+    <div class="item">
+        <button type="button" class="btn boton-1 " (click)="abrirModal(modalDispositivo)">
+            <i class="fa fa-plus" aria-hidden="true"></i> Crear nuevo dispositivo
+        </button>
+    </div>
 </div>
 
 <div class="container-tabla">
@@ -38,8 +48,14 @@
                     </td>
 
                     <td>
-                        <button class="btn btn-primary" (click)="abrirModal()">
+                        <button class="btn btn-primary" (click)="abrirModal(modalDispositivo, item)">
                             Editar
+                        </button>
+
+                        <p></p>
+
+                        <button class="btn btn-secondary" (click)="abrirModalValores(modalValores, item.data)">
+                            Valores
                         </button>
                     </td>
                 </tr>
@@ -50,3 +66,127 @@
         </table>
     </div>
 </div>
+
+<ng-template #modalDispositivo let-modal>
+    <form [formGroup]="formDispositivo">
+        <div class="modal-body">
+            <h4>{{ dipositivoSeleccionado ? "Editar Dispositivo" : "Nuevo Dispositivo" }}</h4>
+            <div class="form-group">
+                <label for="Tipo">Tipo:</label>
+                <select formControlName="tipo" class="form-select">
+                    <option *ngFor="let tipo of filtrosTipo" [value]="tipo.code">{{ tipo.nombre }}</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="Ip">Ip:</label>
+                <input formControlName="ip" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label for="Nombre">Nombre:</label>
+                <input formControlName="nombre" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label for="Modelo">Modelo:</label>
+                <input formControlName="modelo" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label for="serie">Serie:</label>
+                <input formControlName="serie" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label for="area">Area:</label>
+                <input formControlName="area" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label for="imagen">Imagen:</label>
+                <input formControlName="imagen" class="form-control" />
+            </div>
+
+            @if(esVariador) {
+            <div class="form-group">
+                <label for="ubicacion">Ubicacion:</label>
+                <input formControlName="ubicacion" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label for="Inom">Inom:</label>
+                <input formControlName="Inom" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label for="Nnom">Nnom:</label>
+                <input formControlName="Nnom" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label for="Pnom">Pnom:</label>
+                <input formControlName="Pnom" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label for="Vnom">Vnom:</label>
+                <input formControlName="Vnom" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label for="motor">Motor:</label>
+                <input formControlName="motor" class="form-control" />
+            </div>
+            }
+
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-cancel" (click)="modalDispositivoRef?.hide()">
+                Cancelar
+            </button>
+            <button class="btn btn-primary" [disabled]="formDispositivo.invalid" (click)="createDevice()">
+                Guardar
+            </button>
+        </div>
+    </form>
+</ng-template>
+
+
+<ng-template #modalValores let-modal>
+    <table class="table align-middle table-bordered table-bordered-sides">
+        <thead>
+            <tr>
+                <th>DESCRIPCIÓN</th>
+                <th>TIPO DE DATO</th>
+                <th>REGISTROS</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for(item of valoresSeleccionados; track item)
+            {
+            <tr>
+                <td>
+                    <p> {{item.Description}} </p>
+                </td>
+
+                <td>
+                    <p> {{item.DataType}} </p>
+                </td>
+
+                <td>
+                    <p>{{item.Register}}</p>
+                </td>
+            </tr>
+            }
+
+
+        </tbody>
+    </table>
+
+    <div class="modal-footer">
+        <button class="btn btn-cancel" (click)="modalValoresRef?.hide()">
+            Aceptar
+        </button>
+    </div>
+</ng-template>

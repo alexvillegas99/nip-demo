@@ -11,4 +11,13 @@ export class ListaEquiposService {
   getDevices() {
     return this.http.get<any>(this.API);
   }
+
+  createDevice(data: any) {
+    console.log(data, '-data a cre');
+    return this.http.post<any>(this.API, data);
+  }
+
+  updateDevice(id: number, data: any) {
+    return this.http.put<any>(`${this.API}/${id}`, data);
+  }
 }

@@ -15,7 +15,7 @@ import { AlertService } from '../services/alert.service';
 @Component({
   selector: 'app-usuarios',
   standalone: true,
-  
+
   imports: [FormsModule, ReactiveFormsModule, SelectComponent, CommonModule],
   templateUrl: './usuarios.component.html',
   styleUrl: './usuarios.component.scss',
@@ -65,7 +65,7 @@ export class UsuariosComponent implements OnInit {
     private fb: FormBuilder,
     private usuariosService: UsuariosService,
     private modalService: BsModalService,
-    private alert: AlertService,
+    private alert: AlertService
   ) {}
 
   ngOnInit(): void {
@@ -102,6 +102,7 @@ export class UsuariosComponent implements OnInit {
       class: 'modal-md modal-dialog-centered',
     });
   }
+
   guardarUsuario() {
     const data = this.formUsuario.value;
     if (this.usuarioSeleccionado) {
@@ -109,11 +110,14 @@ export class UsuariosComponent implements OnInit {
         .customAlertSweet('question', '¿Deseas actualizar este usuario?')
         .then((ok) => {
           if (!ok) return;
-  
+
           this.usuariosService
             .updateUsuario(this.usuarioSeleccionado._id, data)
             .subscribe(() => {
-              this.alert.showToast('success', 'Usuario actualizado correctamente');
+              this.alert.showToast(
+                'success',
+                'Usuario actualizado correctamente'
+              );
               this.cargarUsuarios();
               this.modalUsuarioRef?.hide();
             });
@@ -126,23 +130,25 @@ export class UsuariosComponent implements OnInit {
       });
     }
   }
-  
+
   cambiarEstado(usuario: any, estado: boolean) {
     const mensaje = estado ? 'habilitar' : 'deshabilitar';
     this.alert
       .customAlertSweet('warning', `¿Deseas ${mensaje} a ${usuario.nombre}?`)
       .then((ok) => {
         if (!ok) return;
-  
+
         this.usuariosService
           .setEstadoUsuario(usuario._id, estado)
           .subscribe(() => {
-            this.alert.showToast('success', `Usuario ${estado ? 'habilitado' : 'deshabilitado'} correctamente`);
+            this.alert.showToast(
+              'success',
+              `Usuario ${estado ? 'habilitado' : 'deshabilitado'} correctamente`
+            );
             this.cargarUsuarios();
           });
       });
   }
-  
 
   filtrarUsuarios() {
     this.usuariosService.getUsuarios(this.rolFiltro).subscribe((resp) => {
