@@ -107,15 +107,11 @@ export class GestionMantenimientoComponent implements OnInit {
 
   menu: any[] = [
     {
-      active: false,
-      nombre: 'PEDIDOS',
-      isSelected: false,
-    },
-    {
       active: true,
       nombre: 'TAREAS',
       isSelected: false,
     },
+   
   ];
 
   headers_tareas = [

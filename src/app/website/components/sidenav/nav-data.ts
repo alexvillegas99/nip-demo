@@ -43,12 +43,12 @@ export const NAVBARDATA: INavbarData[] = [
           //   icon: '',
           //   items: [],
           // },
-    /*       {
+          {
             routeLink: 'monitoreo/instrumentacion/gestion/medidores',
             label: 'Medidores',
             icon: '',
             items: [],
-          }, */
+          }, 
           {
             routeLink: 'monitoreo/instrumentacion/gestion/variadores',
             label: 'Variadores',

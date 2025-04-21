@@ -66,6 +66,7 @@ export class VariadoresComponent implements OnInit, OnDestroy {
 
   items = ['Current', 'Power', 'Voltage', 'Power Factor'];
 
+
   ip: string | null = null;
   fullUrl: string = '';
   plcInfo: any;
@@ -185,7 +186,7 @@ export class VariadoresComponent implements OnInit, OnDestroy {
     this._plcData.getListaEquipos().subscribe({
       next: (resp) => {
         console.log(resp);
-        this.plcMedidor = resp.find((plc: any) => plc.ip === this.ip);
+        this.plcMedidor = resp.find((plc: any) => plc.ip === this.ip && plc.tipo === 'variador');
         this.chartLinear();
         this.chart(0);
         this.obtenerDataHistoricoPlc();

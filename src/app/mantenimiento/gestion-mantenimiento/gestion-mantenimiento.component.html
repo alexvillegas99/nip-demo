@@ -24,13 +24,13 @@
       Filtrar por
     </button>
 
-    @if (menu[0].active) {
+   <!--  @if (menu[0].active) {
     <button type="button" class="btn boton-1" (click)="abrirModalPedidos(crear_pedido_modal)">
       <i class="fa fa-plus" aria-hidden="true"></i> Crear nuevo pedido
     </button>
     }
-
-    @if (menu[1].active) {
+ -->
+    @if (menu[0].active) {
     <button type="button" class="btn boton-1 " (click)="modalNuevaTarea(content1)">
       <i class="fa fa-plus" aria-hidden="true"></i> Crear nueva tarea
     </button>
@@ -41,10 +41,10 @@
 
 <div class="flex">
   <div class="item">
-    @if (menu[0].active) {
+  <!--   @if (menu[0].active) {
     <h2>Lista de Pedidos</h2>
-    }
-    @if (menu[1].active) {
+    } -->
+    @if (menu[0].active) {
     <h2>Lista de Tareas</h2>
     }
   </div>
@@ -63,7 +63,7 @@
 </div>
 
 <div class="container-tabla">
-  @if (menu[0].active) {
+<!--   @if (menu[0].active) {
   <div class="table-responsive">
     <table class="table align-middle table-bordered table-bordered-sides">
       <thead>
@@ -105,8 +105,8 @@
     </table>
 
   </div>
-  }
-  @if (menu[1].active) {
+  } -->
+  @if (menu[0].active) {
   <div class="table-responsive">
     <table class="table align-middle table-bordered table-bordered-sides">
       <thead>

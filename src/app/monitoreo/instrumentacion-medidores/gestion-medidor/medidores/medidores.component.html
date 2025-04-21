@@ -1,71 +1,157 @@
-<div class="container-fluid">
-    <div class="card">
-        <div class="card-body card-mantenimiento">
-            <div class="imagen">
-                <img [src]="plcMedidor.imagen" alt="img_comprensor" style="width: 75px; height: 100px; object-fit: contain;" />
-            </div>
-            <div class="info-1">
-                <h1>Variador de Energía:</h1>
-                <h2>Variador {{plcMedidor.nombre}}</h2>
+<div class="container-fluid" *ngIf="plcMedidor">
+  <!-- Tarjeta principal -->
+  <div class="card mb-3">
+    <div
+      class="card-body card-mantenimiento d-flex align-items-center justify-content-between"
+    >
+      <!-- Imagen del equipo -->
+      <div class="imagen">
+        <img
+          [src]="plcMedidor.imagen"
+          alt="img_equipo"
+          style="width: 150px; height: 150px; object-fit: contain"
+        />
+      </div>
 
-                <p> <img src="assets/imgs/icons/clock.svg" alt="img_clock">01/08/2024 | 09:20:00</p>
-            </div>
-            <div class="info-2">
-                <h1>Modelo:</h1>
-                <h2>{{plcMedidor.modelo}}</h2>
+      <!-- Info básica -->
+      <div class="info-1">
+        <h1>{{ plcMedidor.tipo === "pm" ? "PM:" : "VARIADOR:" }}</h1>
+        <h2>{{ plcMedidor.nombre }}</h2>
+        <p>
+          <img src="assets/imgs/icons/clock.svg" alt="img_clock" />
+          {{ fechaHoraActual }}
+        </p>
+      </div>
 
-                <p><img src="assets/imgs/icons/current.svg" alt="img_current">Conexión: Remota</p>
-            </div>
-            <div class="info-3">
-                <h1>Número de serie:</h1>
-                <h2>{{plcMedidor.serie}}</h2>
+      <div class="info-2">
+        <h1>Modelo:</h1>
+        <h2>{{ plcMedidor.modelo }}</h2>
+      </div>
 
-                <h1>Nombre Equipo:</h1>
-                <h2>{{plcMedidor.nombre}}</h2>
-            </div>
-            <div class="info-4">
-                <h1>Área:</h1>
-                <h2>#{{plcMedidor.area | uppercase}}</h2>
+      <div class="info-3">
+        <h1>Número de serie:</h1>
+        <h2>{{ plcMedidor.serie }}</h2>
+        <h1>Nombre Equipo:</h1>
+        <h2>{{ plcMedidor.nombre }}</h2>
+      </div>
 
-                 <h1>Estacion:</h1>
-                <h2>Juan Dominguez</h2> 
-            </div>
+      <div class="info-4">
+        <h1>Área:</h1>
+        <h2>#{{ plcMedidor.area | uppercase }}</h2>
+        <h1>IP:</h1>
+        <h2>{{ plcMedidor.ip }}</h2>
+      </div>
+    </div>
+  </div>
 
+  <!-- Lectura en tiempo real -->
+  <div class="table-responsive" *ngIf="plcInfo">
+    <div class="dashboard-layout">
+      <!-- Columna izquierda: Estado -->
+      <div class="col-estado card-tarjeta">
+        <div class="card-header">
+          <h2>Estado del {{ plcMedidor.tipo === "pm" ? "PM" : "Variador" }}</h2>
         </div>
-    </div>
-</div>
+       
 
-<div class="flex-container" style="border-top: 2px solid #EEF5F9;">
-    <div class="item">
-        <h2>Vista rápida</h2>
-    </div>
-    <div class="item">
-    </div>
-</div>
+        <table class="mt-3">
+          <!-- Datos de variador -->
+          <ng-container *ngIf="plcMedidor.tipo === 'variador'">
+            <tr>
+              <td>Voltaje(U)</td>
+              <td>{{ plcInfo.voltaje }} V</td>
+            </tr>
+            <tr>
+              <td>Corriente(I)</td>
+              <td>{{ plcInfo.corriente }} A</td>
+            </tr>
+            <tr>
+              <td>Frecuencia</td>
+              <td>{{ plcInfo.frecuencia }} Hz</td>
+            </tr>
+            <tr>
+              <td>Potencia</td>
+              <td>{{ plcInfo.potencia }} kW</td>
+            </tr>
+          </ng-container>
 
-<div class="container-fluid">
-    <div class="card-container-lista-rapida">
-        @for (item of plcInfo; track $index) {
-            <div class="card-tarjeta">
-                <div class="card-header">
-                    <h2>{{item.name}}</h2>
-                    <a href="#" class="saber-mas">Saber más <span>&rarr;</span></a>
-                </div>
-                <table>
-                    <tbody>
-                        @for (op of item.arreglo; track $index) {
-                            <tr>
-                                <td>{{op.label}}</td>
-                                <td>{{op.valor}}</td>
-                                <td>A</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+          <!-- Datos de PM -->
+          <ng-container *ngIf="plcMedidor.tipo === 'pm'">
+            <tr>
+              <td>Corriente A</td>
+              <td>{{ plcInfo.corriente_A }} A</td>
+            </tr>
+            <tr>
+              <td>Corriente B</td>
+              <td>{{ plcInfo.corriente_B }} A</td>
+            </tr>
+            <tr>
+              <td>Corriente C</td>
+              <td>{{ plcInfo.corriente_C }} A</td>
+            </tr>
+
+            <tr>
+              <td>Voltaje AB</td>
+              <td>{{ plcInfo.voltaje_AB }} V</td>
+            </tr>
+            <tr>
+              <td>Voltaje BC</td>
+              <td>{{ plcInfo.voltaje_BC }} V</td>
+            </tr>
+            <tr>
+              <td>Voltaje CA</td>
+              <td>{{ plcInfo.voltaje_CA }} V</td>
+            </tr>
+
+            <tr>
+              <td>Potencia A</td>
+              <td>{{ plcInfo.potencia_A }} kW</td>
+            </tr>
+            <tr>
+              <td>Potencia B</td>
+              <td>{{ plcInfo.potencia_B }} kW</td>
+            </tr>
+            <tr>
+              <td>Potencia C</td>
+              <td>{{ plcInfo.potencia_C }} kW</td>
+            </tr>
+
+            <tr>
+              <td>Frecuencia A</td>
+              <td>{{ plcInfo.frecuencia_A }} Hz</td>
+            </tr>
+            <tr>
+              <td>Frecuencia B</td>
+              <td>{{ plcInfo.frecuencia_B }} Hz</td>
+            </tr>
+            <tr>
+              <td>Frecuencia C</td>
+              <td>{{ plcInfo.frecuencia_C }} Hz</td>
+            </tr>
+          </ng-container>
+        </table>
+      </div>
+
+
+        <!-- Sección de gráficos históricos (solo para PM) -->
+        <div class="grid-graficos" *ngIf="chartOptions.length > 0">
+            <div class="grafico" *ngFor="let chart of chartOptions">
+              <apx-chart
+              #chartRef
+                *ngIf="chart"
+                [series]="chart.series!"
+                [chart]="chart.chart!"
+                [xaxis]="chart.xaxis!"
+                [title]="chart.title!"
+                [stroke]="chart.stroke!"
+                [legend]="chart.legend!"
+                [dataLabels]="chart.dataLabels!"
+                [tooltip]="{ theme: 'dark' }"
+              ></apx-chart>
             </div>
-        }
+          </div>
+          
+
     </div>
-
-
-
+  </div>
 </div>

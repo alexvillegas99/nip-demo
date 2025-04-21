@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule, RouterOutlet } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { DataPlcService } from '../../../services/data-plc.service';
+import { SocketService } from '../../../services/socket.service';
 
 @Component({
   selector: 'app-gestion-medidor',
@@ -43,7 +44,8 @@ export class GestionMedidorComponent implements OnInit {
     private readonly dataPlc: DataPlcService,
     private readonly toastService: ToastrService,
     private readonly router: Router,
-    private readonly route: ActivatedRoute // 👈 nuevo
+    private readonly route: ActivatedRoute, // 👈 nuevo
+    private readonly socketService: SocketService
   ) {}
   id: string | null = null;
   ngOnInit(): void {
@@ -66,22 +68,36 @@ export class GestionMedidorComponent implements OnInit {
   getDataPlc() {
     this.dataPlc.getListaEquipos().subscribe({
       next: (data) => {
-        console.log('Data:', data);
-        this.equipos = data; 
-        //filtrar por tipo
-        if(this.id === 'variadores'){
+        this.equipos = data;
+  
+        if (this.id === 'variadores') {
           this.equipos = this.equipos.filter((item: any) => item.tipo === 'variador');
         }
-
-        if(this.id === 'medidores'){
+  
+        if (this.id === 'medidores') {
           this.equipos = this.equipos.filter((item: any) => item.tipo === 'pm');
         }
+  
+        // Enviar solicitud al socket y escuchar
+        this.socketService.sendFindPlcDataAll();
+        this.socketService.receivePlcDataAll().subscribe((plcData: any[]) => {
+          this.equipos = this.equipos.map((equipo:any) => {
+            const plc = plcData.find((p) => p.IP === equipo.ip);
+            if (equipo.tipo === 'variador' && plc) {
+              equipo.estado = plc.RUN === 1 ? 'RUN' : plc.FLT === 1 ? 'FALLA' : 'READY';
+            } else {
+              equipo.estado = 'SIN DATOS';
+            }
+            return equipo;
+          });
+        });
       },
       error: (error) => {
         console.error('Error:', error);
       },
     });
   }
+  
 
 
 }

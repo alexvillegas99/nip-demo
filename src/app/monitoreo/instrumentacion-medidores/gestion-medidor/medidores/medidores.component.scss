@@ -261,3 +261,113 @@ tbody td {
 tbody tr:hover {
   background-color: #f5f5f5;
 }
+
+.dashboard-layout {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  align-items: start;
+  gap: 1rem;
+}
+
+.col-estado {
+  /* ✅ Solo lo que ocupe su contenido */
+  align-self: start;
+}
+
+.col-tarjetas {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, auto); /* filas auto-ajustadas */
+  gap: 1rem;
+}
+
+.card-tarjeta {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+/* Responsive para móvil */
+@media (max-width: 768px) {
+  .dashboard-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .col-tarjetas {
+    grid-template-columns: 1fr;
+    grid-template-rows: unset;
+  }
+}
+.card-tarjeta {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.apexcharts-canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.card {
+  border: none;
+
+  .card-body {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: row;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    padding: .5rem;
+    padding-block: 0rem;
+
+    .item {
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      padding: 10px 0;
+      flex-direction: row;
+      width: 100%;
+      max-width: 15rem;
+      background-color: #fff;
+
+      &:hover {
+        background-color: #c0e0ff;
+        border-radius: 0px;
+        cursor: pointer;
+      }
+
+      img {
+        width: 40px;
+        height: 40px;
+
+        &:hover {
+          cursor: pointer;
+        }
+      }
+
+      label {
+        &:hover {
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}
+
+
+.grid-graficos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(45%, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.grafico {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  padding: 1rem;
+}

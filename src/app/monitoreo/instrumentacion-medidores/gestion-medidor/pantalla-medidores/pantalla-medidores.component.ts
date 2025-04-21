@@ -21,12 +21,12 @@ export class PantallaMedidoresComponent {
       isSelected: false,
       productIDNumber: 15235,
     },
-    {
+    /* {
       nombre: 'VISUALIZADOR PERSONALIZADO',
       path: 'visualizador-personalizado',
       isSelected: false,
       productIDNumber: 15235,
-    },
+    }, */
   ];
 
   screen1 = true;
