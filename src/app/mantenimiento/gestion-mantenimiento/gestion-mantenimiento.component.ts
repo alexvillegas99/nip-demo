@@ -111,7 +111,6 @@ export class GestionMantenimientoComponent implements OnInit {
       nombre: 'TAREAS',
       isSelected: false,
     },
-   
   ];
 
   headers_tareas = [

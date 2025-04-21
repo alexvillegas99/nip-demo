@@ -13,6 +13,7 @@ import { SelectComponent } from '../shared/components/select/select.component';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { SearchComponent } from '../shared/components/search/search.component';
 import { AlertService } from '../services/alert.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-configuracion',
@@ -32,6 +33,7 @@ export class ConfiguracionComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly modalService = inject(BsModalService);
   private readonly alert = inject(AlertService);
+  private readonly _modalService = inject(NgbModal);
 
   filtrosTipo = [
     {
@@ -45,17 +47,21 @@ export class ConfiguracionComponent implements OnInit {
   ];
 
   formDispositivo!: FormGroup;
+  formValores!: FormGroup;
   modalDispositivoRef: any;
   modalValoresRef: any;
+  modalAgregarValoresRef: any;
 
   listaDispositivo: any;
   listaDispositivoFiltrada: any;
   dipositivoSeleccionado!: any;
   valoresSeleccionados!: any;
+  valorSeleccionado!: any;
 
   ngOnInit(): void {
     this.getDevices();
     this.inicializarFormulario();
+    this.inicializarFormularioValores();
   }
 
   inicializarFormulario() {
@@ -73,6 +79,17 @@ export class ConfiguracionComponent implements OnInit {
       Pnom: new FormControl(''),
       Vnom: new FormControl(''),
       motor: new FormControl(''),
+    });
+  }
+
+  inicializarFormularioValores() {
+    this.formValores = this.fb.group({
+      Description: new FormControl(
+        '',
+        Validators.compose([Validators.required])
+      ),
+      Register: new FormControl('', Validators.compose([Validators.required])),
+      DataType: new FormControl('', Validators.compose([Validators.required])),
     });
   }
 
@@ -111,6 +128,46 @@ export class ConfiguracionComponent implements OnInit {
     this.modalValoresRef = this.modalService.show(template, {
       class: 'modal-md modal-dialog-centered',
     });
+  }
+
+  abrirModalAgregarEditarValores(template: TemplateRef<any>, valores?: any) {
+    // this.valoresSeleccionados = valores;
+    this.modalValoresRef.hide();
+
+    this.modalAgregarValoresRef = this.modalService.show(template, {
+      class: 'modal-md modal-dialog-centered',
+    });
+
+    if (valores) {
+      /*this.subTareaSeleccionada = { ...tarea, index };
+      this.formActividades.patchValue(tarea);
+      const formattedTime = this.formatTime(tarea.duracionEstimada);
+      this.formActividades.controls['duracionEstimada'].setValue(formattedTime);*/
+      // this.formActividades.controls.duracionEstimada.setValue()
+    }
+
+    if (this.modalValoresRef) {
+      this.modalValoresRef.close(); // Cierra el modal 1 antes de abrir el 2
+    }
+    this.modalAgregarValoresRef = this._modalService.open(template, {
+      ariaLabelledBy: 'modal-basic-title',
+      size: 'lg',
+      centered: true,
+    });
+    this.modalAgregarValoresRef.result.then(
+      (result: any) => {
+        // Abrir modal 1 de nuevo cuando se cierre el modal 2
+        if (this.modalValoresRef) {
+          this.abrirModalValores(this.modalValoresRef); // Reemplaza `content1` con el contenido del modal 1
+        }
+      },
+      (reason: any) => {
+        // Abrir modal 1 de nuevo cuando se rechace el modal 2
+        if (this.modalValoresRef) {
+          this.abrirModalValores(this.modalValoresRef); // Reemplaza `content1` con el contenido del modal 1
+        }
+      }
+    );
   }
 
   createDevice() {
@@ -170,6 +227,37 @@ export class ConfiguracionComponent implements OnInit {
     console.log(event, 'opcionSeleccionada....');
     this.listaDispositivoFiltrada = this.listaDispositivo.filter((item: any) =>
       item.tipo.toLowerCase().includes(event.toLowerCase())
+    );
+  }
+
+  editarValor(template: TemplateRef<any>, valorEditar: any) {
+    if (valorEditar) {
+      this.valorSeleccionado = valorEditar;
+
+      this.formValores.patchValue(valorEditar);
+    }
+
+    /*if (this.modalRef1) {
+      this.modalRef1.close(); // Cierra el modal 1 antes de abrir el 2
+    }*/
+    this.modalAgregarValoresRef = this._modalService.open(template, {
+      ariaLabelledBy: 'modal-basic-title',
+      size: 'lg',
+      centered: true,
+    });
+    this.modalAgregarValoresRef.result.then(
+      (result: any) => {
+        // Abrir modal 1 de nuevo cuando se cierre el modal 2
+        /*if (this.modal1Referencia) {
+          this.openModal1(this.modal1Referencia); // Reemplaza `content1` con el contenido del modal 1
+        }*/
+      },
+      (reason: any) => {
+        // Abrir modal 1 de nuevo cuando se rechace el modal 2
+        /*if (this.modalRef1) {
+          this.openModal1(this.modalRef1); // Reemplaza `content1` con el contenido del modal 1
+        }*/
+      }
     );
   }
 }
