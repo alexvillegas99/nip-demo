@@ -1,13 +1,30 @@
 import { CommonModule } from '@angular/common';
-import { Component, TemplateRef, ViewEncapsulation } from '@angular/core';
-import { FormsModule, ReactiveFormsModule, Validators, FormBuilder } from '@angular/forms';
-import { NgbTimepickerModule, NgbTimeStruct, NgbModalRef, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import {
+  Component,
+  OnInit,
+  TemplateRef,
+  ViewEncapsulation,
+} from '@angular/core';
+import {
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+  FormBuilder,
+} from '@angular/forms';
+import {
+  NgbTimepickerModule,
+  NgbTimeStruct,
+  NgbModalRef,
+  NgbModal,
+} from '@ng-bootstrap/ng-bootstrap';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { AlertService } from '../../services/alert.service';
 import { SearchComponent } from '../../shared/components/search/search.component';
 import { SelectComponent } from '../../shared/components/select/select.component';
 import { StepperComponent } from '../../shared/stepper/stepper.component';
 import { ToastrService } from '../../services/toas.service';
+import { TareaService } from '../../services/tarea.service';
+import { UsuariosService } from '../../services/usuarios.service';
 
 @Component({
   selector: 'app-gestion-mantenimiento',
@@ -19,13 +36,13 @@ import { ToastrService } from '../../services/toas.service';
     StepperComponent,
     NgbTimepickerModule,
     SearchComponent,
-    SelectComponent
+    SelectComponent,
   ],
   templateUrl: './gestion-mantenimiento.component.html',
   styleUrl: './gestion-mantenimiento.component.scss',
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
-export class GestionMantenimientoComponent {
+export class GestionMantenimientoComponent implements OnInit {
   filtrosPedidos = [
     {
       nombre: 'Entregado',
@@ -59,17 +76,18 @@ export class GestionMantenimientoComponent {
     },
   ];
   currentStep = 2;
+
   formTareas = this.fb.group({
     titulo: ['', Validators.required],
     descripcion: ['', Validators.required],
-    usuario_asignado: ['', Validators.required],
+    usuarioAsignado: ['', Validators.required],
     prioridad: ['', Validators.required],
   });
 
   formActividades = this.fb.group({
     descripcion: ['', Validators.required],
-    tipo_tarea: ['', Validators.required],
-    duracion_estimada: [
+    tipoTarea: ['', Validators.required],
+    duracionEstimada: [
       { hour: 0, minute: 0, second: 0 } as NgbTimeStruct,
       Validators.required,
     ],
@@ -119,88 +137,88 @@ export class GestionMantenimientoComponent {
     'Acciones',
   ];
 
-  tareas = [
-    {
+  tareas: any = [
+    /*{
       titulo: 'Reemplazar filtro de aire acondicionado',
       descripcion: 'Reemplazar filtro de aire acondicionado',
       prioridad: 'Alta',
-      usuario_asignado: 'Alex Villegas',
-      tareas_asociadas: [
+      usuarioAsignado: 'Alex Villegas',
+      actividades: [
         {
           descripcion: 'Reemplazar filtro de aire acondicionado',
-          tipo_tarea: 'Mecánica',
+          tipoTarea: 'Mecánica',
           prioridad: 'Alta',
-          duracion_estimada: '01:00',
+          duracionEstimada: '01:00',
           estado: true,
           tiempo_paro_mantenimiento: '01:30',
-          usuario_asignado: 'Juan Perez',
+          usuarioAsignado: 'Juan Perez',
         },
         {
           descripcion: 'Reemplazar filtro de aire acondicionado',
-          tipo_tarea: 'Mecánica',
+          tipoTarea: 'Mecánica',
           prioridad: 'Media',
-          duracion_estimada: '01:00',
+          duracionEstimada: '01:00',
           estado: false,
           tiempo_paro_mantenimiento: '01:30',
-          usuario_asignado: 'Juan Perez',
+          usuarioAsignado: 'Juan Perez',
         },
         {
           descripcion: 'Reemplazar filtro de aire acondicionado',
-          tipo_tarea: 'Mecánica',
+          tipoTarea: 'Mecánica',
           prioridad: 'Baja',
-          duracion_estimada: '01:00',
+          duracionEstimada: '01:00',
           estado: true,
           tiempo_paro_mantenimiento: '01:30',
-          usuario_asignado: 'Juan Perez',
+          usuarioAsignado: 'Juan Perez',
         },
       ],
-      fecha_creacion: '2021-10-10',
+      fechaCreacion: '2021-10-10',
     },
     {
       titulo: 'Reemplazar filtro de aire acondicionado',
       descripcion: 'Reemplazar filtro de aire acondicionado',
       prioridad: 'Media',
-      usuario_asignado: 'Alex Villegas',
-      tareas_asociadas: [
+      usuarioAsignado: 'Alex Villegas',
+      actividades: [
         {
           descripcion: 'Reemplazar filtro de aire acondicionado',
-          tipo_tarea: 'Mecánica',
+          tipoTarea: 'Mecánica',
           prioridad: 'Alta',
 
-          duracion_estimada: '01:00',
+          duracionEstimada: '01:00',
           estado: false,
           tiempo_paro_mantenimiento: '01:30',
-          usuario_asignado: 'Juan Perez',
+          usuarioAsignado: 'Juan Perez',
         },
       ],
-      fecha_creacion: '2021-10-10',
+      fechaCreacion: '2021-10-10',
     },
     {
       titulo: 'Reemplazar filtro de aire acondicionado',
       descripcion: 'Reemplazar filtro de aire acondicionado',
       prioridad: 'Baja',
-      usuario_asignado: 'Alex Villegas',
-      tareas_asociadas: [
+      usuarioAsignado: 'Alex Villegas',
+      actividades: [
         {
           descripcion: 'Reemplazar filtro de aire acondicionado',
-          tipo_tarea: 'Mecánica',
+          tipoTarea: 'Mecánica',
           prioridad: 'Alta',
-          duracion_estimada: '01:00',
+          duracionEstimada: '01:00',
           estado: false,
           tiempo_paro_mantenimiento: '01:30',
-          usuario_asignado: 'Juan Perez',
+          usuarioAsignado: 'Juan Perez',
         },
       ],
-      fecha_creacion: '2021-10-10',
-    },
+      fechaCreacion: '2021-10-10',
+    }, */
   ];
 
-  pedidos = [
-    {
+  pedidos: any = [
+    /*{
       detalle: 'Detalle del pedido 1',
       usuario: 'Alex Villegas',
       proveedor: 'Proveedor 1',
-      fecha_creacion: '2021-10-10',
+      fechaCreacion: '2021-10-10',
       estado: 'Entregado',
       producto: 'Producto 1',
       tipo_producto: 'Tipo 1',
@@ -226,7 +244,7 @@ export class GestionMantenimientoComponent {
       detalle: 'Detalle del pedido 2',
       usuario: 'Alex Villegas',
       proveedor: 'Proveedor 1',
-      fecha_creacion: '2021-10-10',
+      fechaCreacion: '2021-10-10',
       estado: 'En proceso',
       producto: 'Producto 1',
       tipo_producto: 'Tipo 1',
@@ -242,7 +260,7 @@ export class GestionMantenimientoComponent {
       detalle: 'Detalle del pedido 3',
       usuario: 'Alex Villegas',
       proveedor: 'Proveedor 1',
-      fecha_creacion: '2021-10-10',
+      fechaCreacion: '2021-10-10',
       estado: 'Envió',
       producto: 'Producto 1',
       tipo_producto: 'Tipo 1',
@@ -258,7 +276,7 @@ export class GestionMantenimientoComponent {
           observacion: 'Observación 2',
         },
       ],
-    },
+    }, */
   ];
 
   configModal = {
@@ -267,7 +285,7 @@ export class GestionMantenimientoComponent {
     class: 'modal-dialog-centered modal-xl',
   };
 
-  headers_tareas_asociadas = [
+  headers_actividades = [
     'Descripción',
     'Tipo de tarea',
     'Duración estimada',
@@ -281,13 +299,44 @@ export class GestionMantenimientoComponent {
   subTareaSeleccionada: any = null;
   pedidoSeleccionado: any = null;
 
+  usuariosAsignar: any = [];
+
   constructor(
-    private modalService: BsModalService,
-    private fb: FormBuilder,
+    private readonly modalService: BsModalService,
+    private readonly fb: FormBuilder,
     private readonly alertService: AlertService,
     private readonly toastService: ToastrService,
-    private _modalService: NgbModal
+    private readonly _modalService: NgbModal,
+    private readonly tareaService: TareaService,
+    private readonly usuarioService: UsuariosService
   ) {}
+
+  ngOnInit(): void {
+    this.getTask();
+    this.getUsuarios();
+  }
+
+  getUsuarios() {
+    this.usuarioService.getUsuarios('Operador').subscribe({
+      next: (res) => {
+        console.log(res);
+        this.usuariosAsignar = res.data;
+      },
+      error: (error) => {},
+    });
+  }
+
+  getTask() {
+    this.tareaService.getTask().subscribe({
+      next: (res) => {
+        console.log(res);
+        this.tareas = res;
+      },
+      error: (err) => {
+        console.error(err);
+      },
+    });
+  }
 
   eliminarPedido(_t69: number) {
     this.alertService
@@ -299,12 +348,17 @@ export class GestionMantenimientoComponent {
       });
   }
 
-  eliminarTarea(_t33: number) {
+  eliminarTarea(id: string) {
     this.alertService
       .customAlertSweet('warning', '¿Estás seguro de eliminar esta tarea?')
       .then((result) => {
         if (result) {
-          this.tareas.splice(_t33, 1);
+          this.tareaService.deleteTask(id).subscribe({
+            next: (res) => {
+              this.getTask();
+            },
+            error: (err) => {},
+          });
         }
       });
   }
@@ -314,12 +368,33 @@ export class GestionMantenimientoComponent {
     this.formPedidos.reset();
   }
 
-  eliminarSubTarea(posicion: number) {
+  eliminarSubTarea(posicion: number, tarea: any) {
+    console.log(posicion, 'index');
+
     this.alertService
-      .customAlertSweet('warning', '¿Estás seguro de eliminar esta tarea?')
+      .customAlertSweet('warning', '¿Estás seguro de eliminar esta actividad?')
       .then((result) => {
         if (result) {
-          this.tareaSeleccionada.tareas_asociadas.splice(posicion, 1);
+          this.tareaSeleccionada.actividades.splice(posicion, 1);
+
+          this.tareaService
+            .updateTask(this.tareaSeleccionada._id, this.tareaSeleccionada)
+            .subscribe({
+              next: (res) => {
+                console.log(res, 'rspuetsa...');
+
+                this.toastService.showSuccess(
+                  'Actividad eliminada',
+                  'La actividad ha sido eliminada correctamente'
+                );
+              },
+              error: (err) => {
+                this.toastService.showError(
+                  'Actividad no eliminada ',
+                  'La actividad no ha sido eliminada correctamente'
+                );
+              },
+            });
         }
       });
   }
@@ -370,7 +445,7 @@ export class GestionMantenimientoComponent {
     this.formTareas.patchValue({
       titulo: tarea.titulo,
       descripcion: tarea.descripcion,
-      usuario_asignado: tarea.usuario_asignado,
+      usuarioAsignado: tarea.usuarioAsignado,
       prioridad: tarea.prioridad,
     });
     this.formTareas.disable();
@@ -384,34 +459,69 @@ export class GestionMantenimientoComponent {
 
   guardarTarea() {
     const tarea = this.formTareas.value;
-    const fechaActual = new Date();
-    const fechaFormateada = `${fechaActual.getFullYear()}-${this.padZero(
-      fechaActual.getMonth() + 1
-    )}-${this.padZero(fechaActual.getDate())}`;
 
     const data = {
       titulo: tarea.titulo!,
       descripcion: tarea.descripcion!,
-      tareas_asociadas: [],
-      fecha_creacion: fechaFormateada,
-      usuario_asignado: tarea.usuario_asignado!,
+      actividades: [],
+      usuarioAsignado: tarea.usuarioAsignado!,
       prioridad: tarea.prioridad!,
     };
 
-    this.tareas.unshift(data);
-    this.modalRef1.close();
-    this.formTareas.reset();
-    this.toastService.showSuccess(
-      'Tarea creada',
-      'La tarea ha sido creada correctamente'
-    );
+    this.tareaService.createTask(data).subscribe({
+      next: (res) => {
+        this.getTask();
+        this.modalRef1.close();
+        this.formTareas.reset();
+        this.toastService.showSuccess(
+          'Tarea creada',
+          'La tarea ha sido creada correctamente'
+        );
+      },
+      error: (error) => {
+        console.error(error);
+        this.toastService.showError(
+          'Tarea no creada',
+          'La tarea no pudo ser creada, intente nuevamente'
+        );
+      },
+    });
   }
 
   editarTarea() {
+    const tarea: any = this.formTareas.value;
+
     if (this.formTareas.disabled) {
       this.formTareas.enable();
     } else {
+      console.log(tarea);
       this.formTareas.disable();
+      const data = {
+        titulo: tarea.titulo!,
+        descripcion: tarea.descripcion!,
+        actividades: [],
+        usuarioAsignado: tarea.usuarioAsignado!,
+        prioridad: tarea.prioridad!,
+      };
+
+      this.tareaService.updateTask(this.tareaSeleccionada._id, data).subscribe({
+        next: (res) => {
+          this.getTask();
+          this.modalRef1.close();
+          this.formTareas.reset();
+          this.toastService.showSuccess(
+            'Tarea creada',
+            'La tarea ha sido creada correctamente'
+          );
+        },
+        error: (error) => {
+          console.error(error);
+          this.toastService.showError(
+            'Tarea no creada',
+            'La tarea no pudo ser creada, intente nuevamente'
+          );
+        },
+      });
     }
   }
 
@@ -425,16 +535,26 @@ export class GestionMantenimientoComponent {
 
   guardarSubTarea() {
     const tarea: any = this.formActividades.value;
-    console.log(tarea);
-    tarea.duracion_estimada = this.formatearFecha(tarea.duracion_estimada);
+
+    tarea.duracionEstimada = this.formatearFecha(tarea.duracionEstimada);
     tarea.estado = false;
-    this.tareaSeleccionada.tareas_asociadas.push(tarea);
-    this.modalRef2.close();
-    this.toastService.showSuccess(
-      'Actividad creada',
-      'La actividad ha sido creada correctamente'
-    );
-    this.formActividades.reset();
+
+    this.tareaSeleccionada.actividades.push(tarea);
+
+    this.tareaService
+      .updateTask(this.tareaSeleccionada._id, this.tareaSeleccionada)
+      .subscribe({
+        next: (res) => {
+          this.tareaSeleccionada = res;
+          this.modalRef2.close();
+          this.toastService.showSuccess(
+            'Actividad creada',
+            'La actividad ha sido creada correctamente'
+          );
+          this.formActividades.reset();
+        },
+        error: (err) => {},
+      });
   }
 
   formatearFecha(duracion: any): any {
@@ -457,10 +577,9 @@ export class GestionMantenimientoComponent {
 
   guardarSubTareaEditada() {
     const tarea: any = this.formActividades.value;
-    tarea.duracion_estimada = this.formatearFecha(tarea.duracion_estimada);
+    tarea.duracionEstimada = this.formatearFecha(tarea.duracionEstimada);
     tarea.estado = this.subTareaSeleccionada.estado;
-    this.tareaSeleccionada.tareas_asociadas[this.subTareaSeleccionada.index] =
-      tarea;
+    this.tareaSeleccionada.actividades[this.subTareaSeleccionada.index] = tarea;
     this.modalRef2.close();
     this.toastService.showSuccess(
       'Actividad editada',
@@ -479,7 +598,7 @@ export class GestionMantenimientoComponent {
     const data: any = {
       pedido: pedido.titulo!,
       detalle: pedido.observacion!,
-      fecha_creacion: fechaFormateada,
+      fechaCreacion: fechaFormateada,
       estado: 'En proceso',
       usuario: pedido.usuario!,
       proveedor: pedido.proveedor!,
@@ -528,11 +647,9 @@ export class GestionMantenimientoComponent {
     if (tarea) {
       this.subTareaSeleccionada = { ...tarea, index };
       this.formActividades.patchValue(tarea);
-      const formattedTime = this.formatTime(tarea.duracion_estimada);
-      this.formActividades.controls['duracion_estimada'].setValue(
-        formattedTime
-      );
-      // this.formActividades.controls.duracion_estimada.setValue()
+      const formattedTime = this.formatTime(tarea.duracionEstimada);
+      this.formActividades.controls['duracionEstimada'].setValue(formattedTime);
+      // this.formActividades.controls.duracionEstimada.setValue()
     }
 
     if (this.modalRef1) {
@@ -560,10 +677,33 @@ export class GestionMantenimientoComponent {
   }
 
   textoFiltrado(event: any) {
-    console.log(event, 'textoFiltrado....'); 
+    console.log(event, 'textoFiltrado....');
   }
 
   opcionSeleccionada(event: any) {
-    console.log(event, 'opcionSeleccionada....'); 
+    console.log(event, 'opcionSeleccionada....');
+  }
+
+  onEstadoChange(subtarea: any, tarea: any) {
+    this.tareaSeleccionada.actividades.map((subta: any) => {
+      if (subta._id === subtarea._id) {
+        subta.estado = !!subta.estado;
+      }
+    });
+
+    this.tareaService.updateTask(tarea._id, this.tareaSeleccionada).subscribe({
+      next: (res) => {
+        this.toastService.showSuccess(
+          'Actividad editada',
+          'La actividad ha sido editada correctamente'
+        );
+      },
+      error: (err) => {
+        this.toastService.showError(
+          'Actividad no editada',
+          'La actividad no ha sido editada correctamente'
+        );
+      },
+    });
   }
 }

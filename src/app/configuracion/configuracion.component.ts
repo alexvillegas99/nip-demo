@@ -49,6 +49,7 @@ export class ConfiguracionComponent implements OnInit {
   modalValoresRef: any;
 
   listaDispositivo: any;
+  listaDispositivoFiltrada: any;
   dipositivoSeleccionado!: any;
   valoresSeleccionados!: any;
 
@@ -83,6 +84,7 @@ export class ConfiguracionComponent implements OnInit {
     this._listaEquiposService.getDevices().subscribe({
       next: (response) => {
         this.listaDispositivo = response;
+        this.listaDispositivoFiltrada = response;
       },
       error: (error) => {},
     });
@@ -159,9 +161,15 @@ export class ConfiguracionComponent implements OnInit {
 
   textoFiltrado(event: any) {
     console.log(event, 'textoFiltrado....');
+    this.listaDispositivoFiltrada = this.listaDispositivo.filter((item: any) =>
+      item.nombre.toLowerCase().includes(event.toLowerCase())
+    );
   }
 
   opcionSeleccionada(event: any) {
     console.log(event, 'opcionSeleccionada....');
+    this.listaDispositivoFiltrada = this.listaDispositivo.filter((item: any) =>
+      item.tipo.toLowerCase().includes(event.toLowerCase())
+    );
   }
 }

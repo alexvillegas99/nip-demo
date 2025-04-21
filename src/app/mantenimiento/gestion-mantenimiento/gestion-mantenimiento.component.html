@@ -53,7 +53,7 @@
 
 <div class="filters">
   <div class="item">
-    <app-search [label]="'Buscar Pedido'" (searchText)="textoFiltrado($event)"></app-search>
+    <app-search [label]="'Buscar Tarea'" (searchText)="textoFiltrado($event)"></app-search>
   </div>
   <div class="item">
     <app-select [labelDisabled]="'Seleccionar Filtros'" [lista]="filtrosPedidos"
@@ -80,7 +80,7 @@
           <td>{{ item.usuario | uppercase }}</td>
           <td>{{ item.proveedor | uppercase }}</td>
           <td>{{ item.producto | uppercase }}</td>
-          <td>{{ item.fecha_creacion | date: 'dd/MM/yyyy' }}</td>
+          <td>{{ item.createdAt | date: 'dd/MM/yyyy' }}</td>
           <td [ngClass]="{
               entregado: item.estado==='Entregado', 
               proceso: item.estado==='En proceso' ,
@@ -121,20 +121,20 @@
         <tr>
           <td>{{ tarea.titulo }}</td>
           <td>{{ tarea.descripcion }}</td>
-          <td>{{ tarea.tareas_asociadas.length }}</td>
+          <td>{{ tarea.actividades.length }}</td>
           <!-- <td
             [ngClass]="{'prioridad-alta': tarea.prioridad==='Alta', 'prioridad-media': tarea.prioridad==='Media' ,'prioridad-baja':  tarea.prioridad==='Baja'}">
             {{tarea.prioridad}}
           </td> -->
-          <td>{{ tarea.fecha_creacion | date: 'dd/MM/yyyy' }}</td>
+          <td>{{ tarea.createdAt | date: 'dd/MM/yyyy' }}</td>
           <td style="display: flex; flex-direction: row; align-items: center; justify-content: center; gap: .5rem;">
             <button class="btn btn-cancel" title="Visualizar" (click)="seleccionarTarea(tarea, content1)"
               style="color: #191D23;">
               <i class="fa fa-eye" aria-hidden="true"></i>
             </button>
-            <button class="btn btn-cancel" title="Eliminar" (click)="eliminarTarea($index)"
+            <button class="btn btn-cancel" title="Eliminar" (click)="eliminarTarea(tarea._id)"
               style="color: #191D23;margin-left: 5px">
-              <i class="fa fa-trash-o" aria-hidden="true"></i>
+              <i class="fa fa-trash" aria-hidden="true"></i>
             </button>
           </td>
         </tr>
@@ -230,7 +230,7 @@
         <p><i class="fas fa-truck"></i>Proveedor: {{ pedidoSeleccionado?.proveedor }}</p>
         <p><i class="fas fa-info-circle"></i>Detalle: {{ pedidoSeleccionado?.detalle }}</p>
         <p><i class="fas fa-box"></i>Producto: {{ pedidoSeleccionado?.producto }}</p>
-        <p><i class="fas fa-calendar-alt"></i>Fecha: {{ pedidoSeleccionado?.fecha_creacion }}</p>
+        <p><i class="fas fa-calendar-alt"></i>Fecha: {{ pedidoSeleccionado?.createdAt }}</p>
         <p><i class="fas fa-hourglass-half"></i>Estado: {{ pedidoSeleccionado?.estado }}</p>
 
       </div>
@@ -279,7 +279,7 @@
   </div>
 </ng-template>
 
-<!-- Template para Modal 1 -->
+<!-- Template para Modal 1 - Tarea -->
 <ng-template #content1 let-modal>
 
   <div class="modal-body">
@@ -307,11 +307,10 @@
       <div class="row">
         <div class="col-12 col-sm-6 form-group">
           <label for="titulo">Usuario Designado:</label>
-          <select class="form-select" aria-label="Default select example" formControlName="usuario_asignado">
-            <option selected value="">Seleccione...</option>
-            <option value="Alex Villegas">Alex Villegas</option>
-            <option value="Juan Perez">Juan Perez</option>
-            <option value="Anthony Barros">Anthony Barros</option>
+          <select class="form-select" aria-label="Default select example" formControlName="usuarioAsignado">
+            @for (item of usuariosAsignar; track $index) {
+            <option [value]="item.cedula">{{item.nombre}}</option>
+            }
           </select>
         </div>
         <div class="col-12 col-sm-6 form-group">
@@ -350,25 +349,26 @@
         </div>
         <div class="table-responsive">
 
-          @if(tareaSeleccionada?.tareas_asociadas?.length > 0){
+          @if(tareaSeleccionada?.actividades?.length > 0){
           <table class="table align-middle table-bordered table-bordered-sides">
             <thead>
               <tr>
-                @for (header of headers_tareas_asociadas; track $index) {
+                @for (header of headers_actividades; track $index) {
                 <th>{{ header }}</th>
                 }
               </tr>
             </thead>
             <tbody>
-              @for (tarea_asociada of tareaSeleccionada?.tareas_asociadas; track
+              @for (tarea_asociada of tareaSeleccionada?.actividades; track
               $index) {
               <tr>
                 <td>{{ tarea_asociada.descripcion }}</td>
-                <td>{{ tarea_asociada.tipo_tarea }}</td>
-                <td>{{ tarea_asociada.duracion_estimada }}</td>
+                <td>{{ tarea_asociada.tipoTarea }}</td>
+                <td>{{ tarea_asociada.duracionEstimada }}</td>
                 <td>
                   <label class="switch">
-                    <input type="checkbox" [(ngModel)]="tarea_asociada.estado" />
+                    <input type="checkbox" (change)="onEstadoChange(tarea_asociada, tareaSeleccionada)"
+                      [(ngModel)]="tarea_asociada.estado" />
                     <div class="slider">
                       <div class="circle">
                         <svg class="cross" xml:space="preserve" style="enable-background: new 0 0 512 512"
@@ -401,13 +401,12 @@
                     gap: 0.5rem;
                   ">
                   <button type="button" class="btn btn-danger" title="Eliminar tarea"
-                    (click)="eliminarSubTarea($index)">
+                    (click)="eliminarSubTarea($index, tareaSeleccionada)">
                     <i class="fa fa-trash" aria-hidden="true"></i>
                   </button>
                   <button class="btn btn-primary" title="Editar" (click)="openModal2(content2,tarea_asociada, $index ); modal.close()
-           
                     ">
-                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                    <i class="fa fa-pencil" aria-hidden="true"></i>
                   </button>
                 </td>
               </tr>
@@ -450,7 +449,7 @@
 
         <div class="col-12 col-sm-6 form-group">
           <label for="titulo">Tipo Tarea:</label>
-          <select class="form-select" aria-label="Default select example" formControlName="tipo_tarea">
+          <select class="form-select" aria-label="Default select example" formControlName="tipoTarea">
             <option selected value="">Seleccione...</option>
             <option value="Mantenimiento">Mantenimiento</option>
             <option value="Mecánica">Mecánica</option>
@@ -460,7 +459,7 @@
 
         <div class="col-12 col-sm-6 form-group">
           <label for="titulo">Duración estimada:</label>
-          <ngb-timepicker formControlName="duracion_estimada" [meridian]="false" [spinners]="false"></ngb-timepicker>
+          <ngb-timepicker formControlName="duracionEstimada" [meridian]="false" [spinners]="false"></ngb-timepicker>
 
         </div>
 
@@ -470,7 +469,7 @@
       <div class="button-contianer" style="text-align: right; margin: 10px 0px">
         <button type="submit" class="btn btn-danger" style="margin-right: 10px"
           (click)="modal.close();this.subTareaSeleccionada = null;formActividades.reset();">
-          <i class="fa fa-trash" aria-hidden="true"></i> Cancelar
+          Cancelar
         </button>
         <button type="submit" class="btn btn-primary" [disabled]="formActividades.invalid" (click)="guardarSubTarea()"
           *ngIf="!subTareaSeleccionada">
