@@ -130,19 +130,18 @@ export class ConfiguracionComponent implements OnInit {
     });
   }
 
-  abrirModalAgregarEditarValores(template: TemplateRef<any>, valores?: any) {
-    // this.valoresSeleccionados = valores;
-    this.modalValoresRef.hide();
+  abrirModalAgregarEditarValores(
+    template: TemplateRef<any>,
+    valor?: any,
+    index?: number
+  ) {
+    console.log();
 
-    this.modalAgregarValoresRef = this.modalService.show(template, {
-      class: 'modal-md modal-dialog-centered',
-    });
-
-    if (valores) {
-      /*this.subTareaSeleccionada = { ...tarea, index };
-      this.formActividades.patchValue(tarea);
-      const formattedTime = this.formatTime(tarea.duracionEstimada);
-      this.formActividades.controls['duracionEstimada'].setValue(formattedTime);*/
+    if (valor) {
+      this.valorSeleccionado = { ...valor, index };
+      this.formValores.patchValue(valor);
+      //const formattedTime = this.formatTime(valor.duracionEstimada);
+      //this.formActividades.controls['duracionEstimada'].setValue(formattedTime);
       // this.formActividades.controls.duracionEstimada.setValue()
     }
 

@@ -494,7 +494,6 @@ export class GestionMantenimientoComponent implements OnInit {
       const data = {
         titulo: tarea.titulo!,
         descripcion: tarea.descripcion!,
-        actividades: [],
         usuarioAsignado: tarea.usuarioAsignado!,
         prioridad: tarea.prioridad!,
       };

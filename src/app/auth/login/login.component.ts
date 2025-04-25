@@ -1,12 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import {
   FormBuilder,
+  FormGroup,
   FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -15,20 +17,40 @@ import { Router } from '@angular/router';
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   @ViewChild('password') password: ElementRef | undefined;
+  loginForm!: FormGroup;
+
   constructor(
     private readonly fb: FormBuilder,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly _authService: AuthService
   ) {}
 
-  loginForm = this.fb.group({
-    user: ['', Validators.required],
-    password: ['', Validators.required],
-  });
+  ngOnInit(): void {
+    this.iniciarForm();
+  }
+
+  iniciarForm() {
+    this.loginForm = this.fb.group({
+      correo: ['av058554@gmail.com', Validators.required],
+      clave: ['666135', Validators.required],
+    });
+  }
+
   login() {
     if (this.loginForm.valid) {
-      this.router.navigate(['/']);
+      this._authService.login(this.loginForm.value).subscribe({
+        next: (res) => {
+          console.log('res', res);
+          if (res.accessToken) {
+            this.router.navigate(['/']);
+          }
+        },
+        error: (err) => {
+          console.log(err);
+        },
+      });
     }
   }
   viewPasswordFormlogin = false;
