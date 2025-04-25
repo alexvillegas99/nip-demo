@@ -160,7 +160,7 @@
                 <h4>Valores</h4>
             </div>
             <div class="col-3">
-                <button class="btn btn-primary" (click)="abrirModalAgregarEditarValores(modalAgregarValores)">
+                <button style="margin-bottom: .5rem;" class="btn btn-primary" (click)="abrirModalAgregarEditarValores(modalAgregarValores)">
                     Agregar
                 </button>
             </div>
@@ -234,7 +234,7 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-cancel" (click)="modalAgregarValoresRef?.hide()">
+            <button class="btn btn-cancel" (click)="modalAgregarValoresRef?.close()">
                 Cancelar
             </button>
             <button class="btn btn-primary" [disabled]="formDispositivo.invalid" (click)="createDevice()">

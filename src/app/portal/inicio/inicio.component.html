@@ -11,9 +11,11 @@
 
     <div class="card-list">
       @for (item of arrayEquipos; track $index) {
-        <div class="card-body container-card-info" style="cursor: pointer;" 
-             [routerLink]="['../../monitoreo/instrumentacion', item.ip, 'pantalla-variadores','variador']"
-             routerLinkActive="router-link-active"> 
+        <div class="card-body container-card-info"
+        style="cursor: pointer;"
+        [routerLink]="getRuta(item)"
+        routerLinkActive="router-link-active">
+   
       
           <div class="informacion">
             <h6>Nombre del equipo:</h6>

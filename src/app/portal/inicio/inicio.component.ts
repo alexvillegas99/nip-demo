@@ -183,4 +183,14 @@ export class InicioComponent implements OnInit, OnDestroy {
   addMarker(lng: number, lat: number) {
     console.log('Se hizo clic en el marcador existente:', lng, lat);
   }
+
+  getRuta(item: any): any[] {
+    if (item.tipo === 'variador') {
+      return ['../../monitoreo/instrumentacion', item.ip, 'pantalla-variadores', 'variador'];
+    } else if (item.tipo === 'pm') {
+      return ['../../monitoreo/instrumentacion', item.ip, 'pantalla-medidores', 'medidor'];
+    }
+    return [];
+  }
+  
 }

@@ -35,6 +35,10 @@ export class ConfiguracionComponent implements OnInit {
   private readonly alert = inject(AlertService);
   private readonly _modalService = inject(NgbModal);
 
+
+  modalValoresTemplateRef!: TemplateRef<any>;
+
+
   filtrosTipo = [
     {
       nombre: 'VARIADOR',
@@ -124,50 +128,47 @@ export class ConfiguracionComponent implements OnInit {
 
   abrirModalValores(template: TemplateRef<any>, valores?: any) {
     this.valoresSeleccionados = valores;
-
+    this.modalValoresTemplateRef = template; // 🔑 Guardamos referencia al template
     this.modalValoresRef = this.modalService.show(template, {
       class: 'modal-md modal-dialog-centered',
     });
   }
+  
 
   abrirModalAgregarEditarValores(
     template: TemplateRef<any>,
     valor?: any,
     index?: number
   ) {
-    console.log();
-
     if (valor) {
       this.valorSeleccionado = { ...valor, index };
       this.formValores.patchValue(valor);
-      //const formattedTime = this.formatTime(valor.duracionEstimada);
-      //this.formActividades.controls['duracionEstimada'].setValue(formattedTime);
-      // this.formActividades.controls.duracionEstimada.setValue()
+    } else {
+      this.formValores.reset();
+      this.valorSeleccionado = null;
     }
-
+  
     if (this.modalValoresRef) {
-      this.modalValoresRef.close(); // Cierra el modal 1 antes de abrir el 2
+      this.modalValoresRef.hide(); // Cierra el modal de valores correctamente
     }
+  
     this.modalAgregarValoresRef = this._modalService.open(template, {
       ariaLabelledBy: 'modal-basic-title',
       size: 'lg',
       centered: true,
     });
+  
     this.modalAgregarValoresRef.result.then(
-      (result: any) => {
-        // Abrir modal 1 de nuevo cuando se cierre el modal 2
-        if (this.modalValoresRef) {
-          this.abrirModalValores(this.modalValoresRef); // Reemplaza `content1` con el contenido del modal 1
-        }
+      () => {
+        // ✅ Reabre el modal de valores con su template
+        this.abrirModalValores(this.modalValoresTemplateRef, this.valoresSeleccionados);
       },
-      (reason: any) => {
-        // Abrir modal 1 de nuevo cuando se rechace el modal 2
-        if (this.modalValoresRef) {
-          this.abrirModalValores(this.modalValoresRef); // Reemplaza `content1` con el contenido del modal 1
-        }
+      () => {
+        this.abrirModalValores(this.modalValoresTemplateRef, this.valoresSeleccionados);
       }
     );
   }
+  
 
   createDevice() {
     const data = this.formDispositivo.value;
