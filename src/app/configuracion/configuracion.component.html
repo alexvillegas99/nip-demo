@@ -160,7 +160,8 @@
                 <h4>Valores</h4>
             </div>
             <div class="col-3">
-                <button style="margin-bottom: .5rem;" class="btn btn-primary" (click)="abrirModalAgregarEditarValores(modalAgregarValores)">
+                <button style="margin-bottom: .5rem;" class="btn btn-primary"
+                    (click)="abrirModalAgregarEditarValores(modalAgregarValores)">
                     Agregar
                 </button>
             </div>
@@ -192,7 +193,7 @@
                     </td>
 
                     <td>
-                        <button class="btn btn-primary" title="Editar" (click)="editarValor(modalAgregarValores, item)
+                        <button class="btn btn-primary" title="Editar" (click)="editarModalValor(modalAgregarValores, item)
                         ">
                             <i class="fa fa-pencil" aria-hidden="true"></i>
                         </button>
@@ -216,7 +217,7 @@
 
     <form [formGroup]="formValores">
         <div class="modal-body">
-            <h4>{{ dipositivoSeleccionado ? "Editar Dispositivo" : "Nuevo Dispositivo" }}</h4>
+            <h4>{{ dipositivoSeleccionado ? "Editar Valor" : "Nuevo Valor" }}</h4>
 
             <div class="form-group">
                 <label for="Description">Descripción:</label>
@@ -237,9 +238,21 @@
             <button class="btn btn-cancel" (click)="modalAgregarValoresRef?.close()">
                 Cancelar
             </button>
-            <button class="btn btn-primary" [disabled]="formDispositivo.invalid" (click)="createDevice()">
+
+            @if (valorSeleccionado) {
+            <button class="btn btn-primary" (click)="editarValor(dipositivoSeleccionado)">
+                Editar
+            </button>
+
+            } @else {
+            <!--  [disabled]="formDispositivo.invalid" -->
+            <button class="btn btn-primary" (click)="crearValor(dipositivoSeleccionado)">
                 Guardar
             </button>
+            }
+
+
+
         </div>
     </form>
 </ng-template>

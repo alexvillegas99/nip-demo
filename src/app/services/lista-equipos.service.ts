@@ -20,4 +20,12 @@ export class ListaEquiposService {
   updateDevice(id: number, data: any) {
     return this.http.put<any>(`${this.API}/${id}`, data);
   }
+
+  createValor(data: any) {
+    return this.http.post<any>(`${this.API}/create-valor`, data);
+  }
+
+  updateValor(id: number, data: any) {
+    return this.http.put<any>(`${this.API}/valor/${id}`, data);
+  }
 }

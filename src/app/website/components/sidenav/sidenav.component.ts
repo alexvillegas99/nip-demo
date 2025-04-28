@@ -21,6 +21,7 @@ import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { SublevelMenuComponent } from './sublevel-menu.component';
 import { CommonModule } from '@angular/common';
 import { SearchComponent } from '../../../shared/components/search/search.component';
+import { AuthService } from '../../../services/auth.service';
 
 interface SideNavToggle {
   screenWidth: number;
@@ -46,8 +47,8 @@ interface SideNavToggle {
     ]),
   ],
   standalone: true,
-  imports: [RouterModule, RouterOutlet, CommonModule, SublevelMenuComponent, SearchComponent],
-  encapsulation: ViewEncapsulation.None // Para desactivar el encapsulamiento
+  imports: [RouterModule, CommonModule, SublevelMenuComponent],
+  encapsulation: ViewEncapsulation.None, // Para desactivar el encapsulamiento
 })
 export class SidenavComponent implements OnInit {
   @Input() navDatas: any;
@@ -55,7 +56,7 @@ export class SidenavComponent implements OnInit {
 
   collapsed = false;
   screenWidth = 0;
-  navData = NAVBARDATA;
+  navData: any = [];
   multiple: boolean = false;
 
   @HostListener('window:resize', ['$event'])
@@ -70,9 +71,17 @@ export class SidenavComponent implements OnInit {
     }
   }
 
-  constructor(public router: Router) {}
+  constructor(
+    private readonly router: Router,
+    private readonly _authService: AuthService
+  ) {}
 
   ngOnInit(): void {
+    for (let nav of NAVBARDATA) {
+      if (nav.roles?.includes(this._authService.getRole())) {
+        this.navData.push(nav);
+      }
+    }
     this.screenWidth = window.innerWidth;
   }
 

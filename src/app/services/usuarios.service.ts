@@ -4,9 +4,9 @@ import { environment } from '../env/env';
 
 @Injectable({ providedIn: 'root' })
 export class UsuariosService {
-  private readonly API =  environment.apiUrl + '/usuarios';
+  private readonly API = environment.apiUrl + '/usuarios';
 
-  constructor(private http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {}
 
   getUsuarios(rol?: string, estado?: string) {
     const params: any = {};
