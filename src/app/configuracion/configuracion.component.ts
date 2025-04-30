@@ -125,7 +125,8 @@ export class ConfiguracionComponent implements OnInit {
   }
 
   abrirModalValores(template: TemplateRef<any>, valores?: any) {
-    this.valoresSeleccionados = valores;
+    this.valoresSeleccionados = valores.data;
+    this.dipositivoSeleccionado = valores;
     this.modalValoresTemplateRef = template; // 🔑 Guardamos referencia al template
     this.modalValoresRef = this.modalService.show(template, {
       class: 'modal-md modal-dialog-centered',
@@ -289,20 +290,23 @@ export class ConfiguracionComponent implements OnInit {
   }
 
   editarValor(dipositivo: any) {
-    console.log(this.formValores, 'crearValor....');
-
     const data = this.formValores.value;
+    data._id = this.valorSeleccionado._id;
 
-    this._listaEquiposService.createDevice(data).subscribe({
-      next: (response) => {
-        this.alert.showToast('success', 'Valor creado correctamente');
-        this.getDevices();
-        this.modalValoresRef?.hide();
-      },
-      error: (error) => {
-        console.log(error);
-        this.alert.showToast('error', 'Error al crear el valor');
-      },
-    });
+    console.log(this.valorSeleccionado._id, 'editarValor....', data);
+
+    this._listaEquiposService
+      .updateValor(this.dipositivoSeleccionado._id, data)
+      .subscribe({
+        next: (response) => {
+          this.alert.showToast('success', 'Valor editado correctamente');
+          this.getDevices();
+          this.modalValoresRef?.hide();
+        },
+        error: (error) => {
+          console.log(error);
+          this.alert.showToast('error', 'Error al editar el valor');
+        },
+      });
   }
 }

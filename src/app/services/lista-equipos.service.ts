@@ -13,7 +13,6 @@ export class ListaEquiposService {
   }
 
   createDevice(data: any) {
-    console.log(data, '-data a cre');
     return this.http.post<any>(this.API, data);
   }
 
@@ -26,6 +25,6 @@ export class ListaEquiposService {
   }
 
   updateValor(id: number, data: any) {
-    return this.http.put<any>(`${this.API}/valor/${id}`, data);
+    return this.http.put<any>(`${this.API}/register/${id}`, data);
   }
 }
