@@ -13,11 +13,18 @@ export class ListaEquiposService {
   }
 
   createDevice(data: any) {
-    console.log(data, '-data a cre');
     return this.http.post<any>(this.API, data);
   }
 
   updateDevice(id: number, data: any) {
     return this.http.put<any>(`${this.API}/${id}`, data);
+  }
+
+  createValor(data: any) {
+    return this.http.post<any>(`${this.API}/create-valor`, data);
+  }
+
+  updateValor(id: number, data: any) {
+    return this.http.put<any>(`${this.API}/register/${id}`, data);
   }
 }

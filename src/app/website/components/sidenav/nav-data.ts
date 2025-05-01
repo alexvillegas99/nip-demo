@@ -6,7 +6,7 @@ export const NAVBARDATA: INavbarData[] = [
     icon: 'assets/imgs/navbar/portal-d.svg',
     label: 'Portal',
     items: [],
-    // roles: ['ADMIN']
+    roles: ['Administrador', 'Operador'],
   },
   {
     routeLink: 'monitoreo',
@@ -48,7 +48,7 @@ export const NAVBARDATA: INavbarData[] = [
             label: 'Medidores',
             icon: '',
             items: [],
-          }, 
+          },
           {
             routeLink: 'monitoreo/instrumentacion/gestion/variadores',
             label: 'Variadores',
@@ -57,7 +57,7 @@ export const NAVBARDATA: INavbarData[] = [
           },
         ],
       },
-     /*  {
+      /*  {
         routeLink: '',
         label: 'Procesos',
         icon: 'assets/imgs/navbar/procesos.svg',
@@ -70,7 +70,7 @@ export const NAVBARDATA: INavbarData[] = [
           },
         ],
       }, */
-     /*  {
+      /*  {
         routeLink: './monitoreo/reportes',
         icon: 'assets/imgs/navbar/reporteria-d.svg',
         label: 'Reportes',
@@ -78,7 +78,7 @@ export const NAVBARDATA: INavbarData[] = [
         // roles: ['ADMIN', 'BASIC']
       }, */
     ],
-    // roles: ['ADMIN', 'BASIC']
+    // roles: ['Administrador', 'Operador'],
   },
   {
     routeLink: 'mantenimiento',
@@ -89,19 +89,16 @@ export const NAVBARDATA: INavbarData[] = [
         routeLink: './mantenimiento/gestion-mantenimiento',
         label: 'Gestión de Mantenimiento',
         icon: 'assets/imgs/navbar/gest-mantenimiento-d.svg',
-        items: [
-        ],
+        items: [],
       },
       {
         routeLink: './mantenimiento/orometro',
         label: 'Gestión de  Horometro',
         icon: 'assets/imgs/navbar/gest-mantenimiento-d.svg',
-        items: [
-        ],
+        items: [],
       },
-    
-    
-     /*  {
+
+      /*  {
         routeLink: '',
         label: 'Maquinaria y Equipos',
         icon: 'assets/imgs/navbar/maquinaria-d.svg',
@@ -166,20 +163,20 @@ export const NAVBARDATA: INavbarData[] = [
         // roles: ['ADMIN', 'BASIC']
       }, */
     ],
-    // roles: ['ADMIN', 'BASIC']
+    roles: ['Administrador', 'Operador'],
   },
   {
     routeLink: './configuracion',
     icon: 'assets/imgs/navbar/configuracion-d.svg',
     label: 'Configuración',
     items: [],
-    // roles: ['ADMIN', 'BASIC']
+    roles: ['Administrador', 'Operador'],
   },
   {
     routeLink: './usuarios',
     icon: 'assets/imgs/navbar/user.svg',
     label: 'Usuarios',
     items: [],
-    // roles: ['ADMIN', 'BASIC']
+    roles: ['Administrador'],
   },
 ];

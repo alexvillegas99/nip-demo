@@ -35,9 +35,7 @@ export class ConfiguracionComponent implements OnInit {
   private readonly alert = inject(AlertService);
   private readonly _modalService = inject(NgbModal);
 
-
   modalValoresTemplateRef!: TemplateRef<any>;
-
 
   filtrosTipo = [
     {
@@ -127,13 +125,13 @@ export class ConfiguracionComponent implements OnInit {
   }
 
   abrirModalValores(template: TemplateRef<any>, valores?: any) {
-    this.valoresSeleccionados = valores;
+    this.valoresSeleccionados = valores.data;
+    this.dipositivoSeleccionado = valores;
     this.modalValoresTemplateRef = template; // 🔑 Guardamos referencia al template
     this.modalValoresRef = this.modalService.show(template, {
       class: 'modal-md modal-dialog-centered',
     });
   }
-  
 
   abrirModalAgregarEditarValores(
     template: TemplateRef<any>,
@@ -147,28 +145,33 @@ export class ConfiguracionComponent implements OnInit {
       this.formValores.reset();
       this.valorSeleccionado = null;
     }
-  
+
     if (this.modalValoresRef) {
       this.modalValoresRef.hide(); // Cierra el modal de valores correctamente
     }
-  
+
     this.modalAgregarValoresRef = this._modalService.open(template, {
       ariaLabelledBy: 'modal-basic-title',
       size: 'lg',
       centered: true,
     });
-  
+
     this.modalAgregarValoresRef.result.then(
       () => {
         // ✅ Reabre el modal de valores con su template
-        this.abrirModalValores(this.modalValoresTemplateRef, this.valoresSeleccionados);
+        this.abrirModalValores(
+          this.modalValoresTemplateRef,
+          this.valoresSeleccionados
+        );
       },
       () => {
-        this.abrirModalValores(this.modalValoresTemplateRef, this.valoresSeleccionados);
+        this.abrirModalValores(
+          this.modalValoresTemplateRef,
+          this.valoresSeleccionados
+        );
       }
     );
   }
-  
 
   createDevice() {
     const data = this.formDispositivo.value;
@@ -230,16 +233,17 @@ export class ConfiguracionComponent implements OnInit {
     );
   }
 
-  editarValor(template: TemplateRef<any>, valorEditar: any) {
+  editarModalValor(template: TemplateRef<any>, valorEditar: any) {
     if (valorEditar) {
       this.valorSeleccionado = valorEditar;
-
       this.formValores.patchValue(valorEditar);
+      console.log(
+        this.dipositivoSeleccionado,
+        'valorSeleccionado....',
+        this.valorSeleccionado
+      );
     }
 
-    /*if (this.modalRef1) {
-      this.modalRef1.close(); // Cierra el modal 1 antes de abrir el 2
-    }*/
     this.modalAgregarValoresRef = this._modalService.open(template, {
       ariaLabelledBy: 'modal-basic-title',
       size: 'lg',
@@ -247,6 +251,8 @@ export class ConfiguracionComponent implements OnInit {
     });
     this.modalAgregarValoresRef.result.then(
       (result: any) => {
+        console.log(result, 'data uptdate....');
+
         // Abrir modal 1 de nuevo cuando se cierre el modal 2
         /*if (this.modal1Referencia) {
           this.openModal1(this.modal1Referencia); // Reemplaza `content1` con el contenido del modal 1
@@ -259,5 +265,48 @@ export class ConfiguracionComponent implements OnInit {
         }*/
       }
     );
+  }
+
+  crearValor(dipositivo: any) {
+    console.log(
+      this.formValores.value,
+      'crearValor....',
+      this.dipositivoSeleccionado
+    );
+
+    const data = this.formValores.value;
+
+    this._listaEquiposService.createDevice(data).subscribe({
+      next: (response) => {
+        this.alert.showToast('success', 'Valor creado correctamente');
+        this.getDevices();
+        this.modalValoresRef?.hide();
+      },
+      error: (error) => {
+        console.log(error);
+        this.alert.showToast('error', 'Error al crear el valor');
+      },
+    });
+  }
+
+  editarValor(dipositivo: any) {
+    const data = this.formValores.value;
+    data._id = this.valorSeleccionado._id;
+
+    console.log(this.valorSeleccionado._id, 'editarValor....', data);
+
+    this._listaEquiposService
+      .updateValor(this.dipositivoSeleccionado._id, data)
+      .subscribe({
+        next: (response) => {
+          this.alert.showToast('success', 'Valor editado correctamente');
+          this.getDevices();
+          this.modalValoresRef?.hide();
+        },
+        error: (error) => {
+          console.log(error);
+          this.alert.showToast('error', 'Error al editar el valor');
+        },
+      });
   }
 }
