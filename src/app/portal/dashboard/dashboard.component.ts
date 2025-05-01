@@ -120,7 +120,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
         }));
 
       const equipoConDatos = this.historicoData.find((e) => e.data && e.data.length > 0);
-      this.fechas = equipoConDatos?.data.map((d: any) => new Date(d.fecha).toLocaleTimeString()) || [];
+      this.fechas = equipoConDatos?.data.map((d: any) =>
+        new Date(d.fecha).toLocaleString('es-EC', {
+          day: '2-digit',
+          month: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false,
+        })
+      ) || [];
+      
 
       this.chartOptions.length === 0 ? this.generarGraficos() : this.actualizarGraficos();
     });
@@ -147,11 +156,21 @@ export class DashboardComponent implements OnInit, OnDestroy {
     const tipos = this.tipoSeleccionado === 'variador'
       ? ['corriente', 'voltaje', 'potencia', 'frecuencia', 'rpm']
       : [
-          'corriente_A', 'corriente_B', 'corriente_C',
-          'voltaje_AB', 'voltaje_BC', 'voltaje_CA',
-          'potencia_A', 'potencia_B', 'potencia_C',
-          'frecuencia_A', 'frecuencia_B', 'frecuencia_C'
-        ];
+        'CORRIENTE_TOT',
+        'VOLTAJE_TOT',
+        'POT_TOT',
+        'FPOT_TOT',
+        'FHZ_TOT',
+        'ENERG',
+      
+        'CORRIENTE_A', 'CORRIENTE_B', 'CORRIENTE_C',
+        'VOLTAJE_AB', 'VOLTAJE_BC', 'VOLTAJE_CA',
+        'POT_A', 'POT_B', 'POT_C',
+        'FPOT_A', 'FPOT_B', 'FPOT_C',
+        'THD_COR_A', 'THD_COR_B', 'THD_COR_C',
+        'TH_DBA', 'TH_DBC', 'TH_DCA'
+      ];
+      
 
     for (const tipo of tipos) {
       const series = this.historicoData.map((equipo) => {
@@ -194,11 +213,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
   actualizarGraficos() {
     const tipos = this.tipoSeleccionado === 'pm'
       ? [
-          'corriente_A', 'corriente_B', 'corriente_C',
-          'voltaje_AB', 'voltaje_BC', 'voltaje_CA',
-          'potencia_A', 'potencia_B', 'potencia_C',
-          'frecuencia_A', 'frecuencia_B', 'frecuencia_C',
-        ]
+        'CORRIENTE_TOT',
+        'VOLTAJE_TOT',
+        'POT_TOT',
+        'FPOT_TOT',
+        'FHZ_TOT',
+        'ENERG',
+      
+        'CORRIENTE_A', 'CORRIENTE_B', 'CORRIENTE_C',
+        'VOLTAJE_AB', 'VOLTAJE_BC', 'VOLTAJE_CA',
+        'POT_A', 'POT_B', 'POT_C',
+        'FPOT_A', 'FPOT_B', 'FPOT_C',
+        'THD_COR_A', 'THD_COR_B', 'THD_COR_C',
+        'TH_DBA', 'TH_DBC', 'TH_DCA'
+      ]      
       : ['corriente', 'voltaje', 'potencia', 'frecuencia', 'rpm'];
 
     if (this.chartComponents.length !== tipos.length) {

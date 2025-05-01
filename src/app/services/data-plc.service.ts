@@ -22,4 +22,10 @@ export class DataPlcService {
   getListaEquipos() {
     return this.http.get<any>(`${environment.apiUrl}/lista-equipos`);
   }
+
+
+  getHistoricoEnergia(data: any) {
+    return this.http.post<any>(`${environment.apiUrl}/historico-plc/energia-promedio`, data);
+  }
+
 }

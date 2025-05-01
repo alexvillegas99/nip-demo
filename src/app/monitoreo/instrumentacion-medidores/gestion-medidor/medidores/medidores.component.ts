@@ -26,6 +26,7 @@ import {
   ApexGrid,
 } from 'ng-apexcharts';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TabViewModule } from 'primeng/tabview';
 
 @Component({
   selector: 'app-medidores',
@@ -36,6 +37,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     FormsModule,
     RouterModule,
     NgApexchartsModule,
+    TabViewModule
   ],
   templateUrl: './medidores.component.html',
   styleUrl: './medidores.component.scss',
@@ -59,7 +61,7 @@ export class MedidoresComponent implements OnInit, OnDestroy {
     legend: ApexLegend;
     dataLabels: ApexDataLabels;
   }>[] = [];
-  
+
   fechasHistorico: string[] = [];
   tiempoHistorico: string = '5m';
   refresco: number = 5000;
@@ -69,7 +71,9 @@ export class MedidoresComponent implements OnInit, OnDestroy {
   fechaHoraActual: string = '';
 
   ngOnInit(): void {
-    const ipMatch = window.location.href.match(/instrumentacion\/([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)/);
+    const ipMatch = window.location.href.match(
+      /instrumentacion\/([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)/
+    );
     if (ipMatch) {
       this.ip = ipMatch[1];
       this.getDataMedidor();
@@ -78,9 +82,11 @@ export class MedidoresComponent implements OnInit, OnDestroy {
         this._socketService.sendFindPlcData(this.ip!, 'pm');
       });
 
-      this.plcDataSub = this._socketService.receivePlcData().subscribe((data) => {
-        this.plcInfo = this.redondearTodo(data);
-      });
+      this.plcDataSub = this._socketService
+        .receivePlcData()
+        .subscribe((data) => {
+          this.plcInfo = this.redondearTodo(data);
+        });
     }
 
     this.actualizarFechaHora();
@@ -103,14 +109,22 @@ export class MedidoresComponent implements OnInit, OnDestroy {
   getDataMedidor() {
     this._plcData.getListaEquipos().subscribe({
       next: (resp) => {
-        this.plcMedidor = resp.find((plc: any) => plc.ip === this.ip && plc.tipo === 'pm');
+        this.plcMedidor = resp.find(
+          (plc: any) => plc.ip === this.ip && plc.tipo === 'pm'
+        );
         this.obtenerDataHistoricoPlc();
         this._socketService.receiveHistoricoPlcData().subscribe((data) => {
           const historicoEquipo = data.find((item: any) => item.ip === this.ip);
           if (!historicoEquipo) return;
 
           const datosReversados = [...historicoEquipo.data].reverse();
-          this.generarGraficosHistoricosPM(datosReversados);
+
+          if (this.chartOptions.length === 0) {
+            this.generarGraficosHistoricosPM(datosReversados);
+          } else {
+            console.log('actualizando graficos');
+            this.actualizarSeriesGraficosPM(datosReversados);
+          }
         });
       },
       error: (err) => {},
@@ -121,40 +135,156 @@ export class MedidoresComponent implements OnInit, OnDestroy {
     clearInterval(this.actualizacionInterval);
     if (!this.plcMedidor?.ip) return;
 
-    this._socketService.sendFindHistoricoPlcData([this.plcMedidor.ip], this.tiempoHistorico, 'pm');
+    this._socketService.sendFindHistoricoPlcData(
+      [this.plcMedidor.ip],
+      this.tiempoHistorico,
+      'pm'
+    );
     this.actualizacionInterval = setInterval(() => {
-      this._socketService.sendFindHistoricoPlcData([this.plcMedidor.ip], this.tiempoHistorico, 'pm');
+      this._socketService.sendFindHistoricoPlcData(
+        [this.plcMedidor.ip],
+        this.tiempoHistorico,
+        'pm'
+      );
     }, this.refresco);
   }
   generarGraficosHistoricosPM(data: any[]) {
-    const tipos = [
-      'corriente_A', 'corriente_B', 'corriente_C',
-      'voltaje_AB', 'voltaje_BC', 'voltaje_CA',
-      'potencia_A', 'potencia_B', 'potencia_C',
-      'frecuencia_A', 'frecuencia_B', 'frecuencia_C',
-    ];
-  
+    const categorias: Record<
+      string,
+      { campos: string[]; total?: string; unidad: string }
+    > = {
+      Corriente: {
+        campos: ['CORRIENTE_A', 'CORRIENTE_B', 'CORRIENTE_C'],
+        total: 'CORRIENTE_TOT',
+        unidad: 'A',
+      },
+      Voltaje: {
+        campos: ['VOLTAJE_AB', 'VOLTAJE_BC', 'VOLTAJE_CA'],
+        total: 'VOLTAJE_TOT',
+        unidad: 'V',
+      },
+      Potencia: {
+        campos: ['POT_A', 'POT_B', 'POT_C'],
+        total: 'POT_TOT',
+        unidad: 'kW',
+      },
+      Frecuencia: { campos: ['FHZ_TOT'], unidad: 'Hz' },
+      'Factor de Potencia': {
+        campos: ['FPOT_A', 'FPOT_B', 'FPOT_C'],
+        total: 'FPOT_TOT',
+        unidad: '',
+      },
+      Energía: { campos: ['ENERG'], unidad: 'kWh' }, // ✅ agregado
+    };
+
     const fechas = data.map((d: any) => new Date(d.fecha).toLocaleTimeString());
     this.fechasHistorico = fechas;
-  
-    if (this.chartOptions.length === 0) {
-      this.chartOptions = tipos.map((tipo) => {
-        const series = this.generarSerie(tipo, data);
-        return this.generarOpcionGrafico(tipo, series);
-      });
-    } else {
-      tipos.forEach((tipo, index) => {
-        const nuevasSeries = this.generarSerie(tipo, data);
-        const chart = this.chartRefs?.get(index);
-        if (chart) {
-          chart.updateSeries(nuevasSeries, true);
-        }
-      });
+    this.chartOptions = [];
+
+    for (const [titulo, grupo] of Object.entries(categorias)) {
+      const series: any[] = [];
+
+      for (const campo of grupo.campos) {
+        series.push({
+          name: campo.replace(/_/g, ' '),
+          data: data.map((d: any) => this.redondear(d[campo])),
+        });
+      }
+
+      if (grupo.total) {
+        const campoTotal = grupo.total;
+        series.push({
+          name: campoTotal.replace(/_/g, ' ') + ' (Total)',
+          data: data.map((d: any) => this.redondear(d[campoTotal])),
+          color: '#FF0000',
+        });
+      }
+
+      this.chartOptions.push(
+        this.generarOpcionGrafico(titulo, series, grupo.unidad)
+      );
     }
   }
+
+  actualizarSeriesGraficosPM(data: any[]) {
+    this.fechasHistorico = data.map((d: any) =>
+      new Date(d.fecha).toLocaleString('es-EC', {
+        day: '2-digit',
+        month: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      })
+    );
+    
+
+    const categorias: Record<string, { campos: string[]; total?: string }> = {
+      Corriente: {
+        campos: ['CORRIENTE_A', 'CORRIENTE_B', 'CORRIENTE_C'],
+        total: 'CORRIENTE_TOT',
+      },
+      Voltaje: {
+        campos: ['VOLTAJE_AB', 'VOLTAJE_BC', 'VOLTAJE_CA'],
+        total: 'VOLTAJE_TOT',
+      },
+      Potencia: { campos: ['POT_A', 'POT_B', 'POT_C'], total: 'POT_TOT' },
+      Frecuencia: { campos: ['FHZ_TOT'] },
+      'Factor de Potencia': {
+        campos: ['FPOT_A', 'FPOT_B', 'FPOT_C'],
+        total: 'FPOT_TOT',
+      },
+      Energía: { campos: ['ENERG']}, // ✅ agregado
+    };
+
+    const titulos = Object.keys(categorias);
+
+    if (this.chartRefs.length !== titulos.length) {
+      console.warn(
+        'Gráficos aún no renderizados completamente. Se omite actualización.'
+      );
+      return;
+    }
+
+    this.chartRefs.forEach((chart, index) => {
+      const { campos, total } = categorias[titulos[index]];
+      const nuevasSeries: any[] = [];
+
+      for (const campo of campos) {
+        nuevasSeries.push({
+          name: campo.replace(/_/g, ' '),
+          data: data.map((d: any) => this.redondear(d[campo])),
+        });
+      }
+
+      if (total) {
+        nuevasSeries.push({
+          name: total.replace(/_/g, ' ') + ' (Total)',
+          data: data.map((d: any) => this.redondear(d[total])),
+          color: '#FF0000',
+        });
+      }
+
+      chart.updateOptions({
+        series: nuevasSeries,
+        xaxis: {
+          categories: this.fechasHistorico,
+          tickAmount: 6,
+          labels: {
+            show: true,
+            rotate: -45,
+            formatter: (val: string) => val,
+          }
+        }
+      }, false, true);
+      
+      
+      
+    });
+  }
+
   generarSerie(tipo: string, data: any[]) {
     const valores = data.map((d: any) => this.redondear(d[tipo]));
-  
+
     return [
       {
         name: this.plcMedidor?.nombre || 'Equipo',
@@ -167,7 +297,11 @@ export class MedidoresComponent implements OnInit, OnDestroy {
       },
     ];
   }
-  generarOpcionGrafico(tipo: string, series: ApexAxisChartSeries): Partial<{
+  generarOpcionGrafico(
+    titulo: string,
+    series: ApexAxisChartSeries,
+    unidad: string = ''
+  ): Partial<{
     series: ApexAxisChartSeries;
     chart: ApexChart;
     xaxis: ApexXAxis;
@@ -179,9 +313,9 @@ export class MedidoresComponent implements OnInit, OnDestroy {
   }> {
     return {
       series,
-      title: { text: tipo.replace(/_/g, ' ').toUpperCase() },
+      title: { text: titulo },
       chart: {
-        type: 'line' as ChartType, // <- solución aquí
+        type: 'line' as ChartType,
         height: 300,
         animations: { enabled: false },
         toolbar: { show: false },
@@ -193,18 +327,17 @@ export class MedidoresComponent implements OnInit, OnDestroy {
         forceNiceScale: true,
         tickAmount: 5,
         labels: {
-          formatter: (val: number) => val?.toFixed(2) ?? '0',
+          formatter: (val: number) =>
+            `${val?.toFixed(2)}${unidad ? ' ' + unidad : ''}`,
         },
       },
       legend: {
         show: true,
         labels: { colors: ['#000'] },
-        formatter: (name: string) => (name === 'Base' ? '' : name),
       },
       dataLabels: { enabled: false },
     };
   }
-  
 
   redondear(valor: any) {
     return valor !== undefined ? Math.round(valor * 100) / 100 : 0;
@@ -231,15 +364,71 @@ export class MedidoresComponent implements OnInit, OnDestroy {
 
   onCambioTiempo(valor: string) {
     this.tiempoHistorico = valor;
-    if (valor !== 'personalizado') {
-      this.obtenerDataHistoricoPlc();
+    this.obtenerDataHistoricoPlc(); // siempre se aplica de inmediato
+  }
+  
+
+  onCambioRefresco(): void {
+    clearInterval(this.actualizacionInterval);
+  
+    if (this.refresco > 0 && this.plcMedidor?.ip) {
+      this.actualizacionInterval = setInterval(() => {
+        this._socketService.sendFindHistoricoPlcData(
+          [this.plcMedidor.ip],
+          this.tiempoHistorico,
+          'pm'
+        );
+      }, this.refresco);
     }
   }
-
-  onCambioRefresco() {
-    this.obtenerDataHistoricoPlc();
-  }
+  
+  
 
   @ViewChildren('chartRef') chartRefs!: QueryList<any>;
+
+  showCorriente = false;
+  showVoltaje = false;
+  showPotencia = false;
+  showEnergia = false;
+  showFp = false;
+
+  fechaDesde: string = '';
+fechaHasta: string = '';
+consumoTotal: number | null = null;
+costoTotal: number | null = null;
+
+
+async calcularConsumoEnergia() {
+  if (!this.fechaDesde || !this.fechaHasta) return;
+
+  const body = {
+    ips: [this.plcMedidor?.ip],
+    desde: this.fechaDesde,
+    hasta: this.fechaHasta
+  };
+
+  try {
+    this._plcData.getHistoricoEnergia(body).subscribe({
+      next: (resultado) => {
+        if (resultado?.length) {
+          this.consumoTotal = resultado[0].consumo;
+          this.costoTotal = resultado[0].costo;
+        } else {
+          this.consumoTotal = null;
+          this.costoTotal = null;
+        }
+      },
+      error: (err) => {
+        console.error('Error consultando energía:', err);
+        this.consumoTotal = null;
+        this.costoTotal = null;
+      }
+    })
+ 
+  } catch (err) {
+    console.error('Error consultando energía:', err);
+  }
+}
+
 
 }
