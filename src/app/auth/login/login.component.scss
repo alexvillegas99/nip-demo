@@ -1,100 +1,113 @@
 @import './../../../styles.scss';
 
-.container {
-  margin-top: 4rem;
-  position: relative;
-  max-width: 700px;
-  width: 100%;
-  background: #fff;
-  padding: 2rem;
-  border-radius: 12px;
-  border: none;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-}
+.header {
+  text-align: center;
 
-.container .form {
-  margin-top: 30px;
-
-  .header {
+  .logo {
     text-align: center;
+    width: 5rem;
+    padding: 0.313rem;
+    font-size: 24px;
+    font-weight: 900;
+    cursor: pointer;
+    border: 2px solid $color-borde-icono;
+    border-radius: 50%;
+    margin-bottom: 2rem;
+  }
 
-    .logo {
-      text-align: center;
-      width: 5rem;
-      padding: 0.313rem;
-      font-size: 24px;
-      font-weight: 900;
-      cursor: pointer;
-      border: 2px solid $color-borde-icono;
-      border-radius: 50%;
-      margin-bottom: 2rem;
+  h1,
+  h2 {
+    font-size: 28px;
+    font-weight: 500;
+    line-height: 38.09px;
+    text-align: center;
+  }
+
+  h2 {
+    font-size: 16px;
+  }
+}
+
+// Extra Small devices (phones, less than 576px)
+@media screen and (max-width: 575.98px) {
+
+  .card {
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  .form {
+    .column {
+      flex-wrap: wrap;
     }
 
-    h1,
-    h2 {
-      font-size: 28px;
-      font-weight: 500;
-      line-height: 38.09px;
-      text-align: center;
-    }
-
-    h2 {
-      font-size: 16px;
+    .input-group {
+      margin-bottom: 1rem;
     }
   }
 }
 
-/*Responsive*/
-@media screen and (max-width: 500px) {
-  .form .column {
-    flex-wrap: wrap;
+// Small devices (landscape phones, 576px and up)
+@media screen and (min-width: 576px) and (max-width: 767.98px) {
+  .card {
+    margin-inline: 3rem;
   }
 
-  .form :where(.gender-option, .gender) {
-    row-gap: 15px;
+  .form {
+    .input-group {
+      margin-bottom: 1.2rem;
+    }
   }
 }
+
+// Medium devices (tablets, 768px and up)
+@media screen and (min-width: 768px) and (max-width: 991.98px) {
+  .card {
+    margin-inline: 6rem;
+  }
+
+  .form {
+    .input-group {
+      margin-bottom: 1.4rem;
+    }
+  }
+}
+
+// Large devices (desktops, 992px and up)
+@media screen and (min-width: 992px) and (max-width: 1199.98px) {
+  .card {
+    margin-inline: 10rem;
+  }
+  .form {
+    .input-group {
+      margin-bottom: 1.6rem;
+    }
+  }
+}
+
+// Extra large devices (large desktops, 1200px and up)
+@media screen and (min-width: 1200px) {
+  .card {
+    margin-inline: 15rem;
+  }
+
+  .form {
+    .input-group {
+      margin-bottom: 1.8rem;
+    }
+  }
+}
+
+.card {
+  // box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  border-radius: 14px;
+  padding: 1rem;
+}
+
 
 .boton-1 {
   height: 46px;
-}
-
-.divider {
-  display: flex;
-  align-items: center;
-  text-align: center;
   width: 100%;
-  border-bottom: 1px solid #ccc;
-  /* Línea del divisor */
-  margin: 20px 0;
-  /* Espacio superior e inferior */
-  position: relative;
-}
 
-.divider span {
-  background-color: #fff;
-  /* Fondo del texto para que se superponga al divisor */
-  padding: 0 10px;
-  /* Espacio alrededor del texto */
-  font-weight: bold;
-  color: #7A7A9D;
-  font-size: 12px;
-  /* Color del texto */
-  position: relative;
-  z-index: 1;
-  /* Asegura que el texto esté por encima del divisor */
-}
-
-.divider::before {
-  content: "";
-  flex-grow: 1;
-  border-bottom: 1px solid #7A7A9D;
-  margin-right: 10px;
-}
-
-.divider::after {
-  content: "";
-  flex-grow: 1;
-  border-bottom: 1px solid #7A7A9D;
-  margin-left: 10px;
 }

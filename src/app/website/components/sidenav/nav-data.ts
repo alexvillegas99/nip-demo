@@ -78,7 +78,7 @@ export const NAVBARDATA: INavbarData[] = [
         // roles: ['ADMIN', 'BASIC']
       }, */
     ],
-    // roles: ['Administrador', 'Operador'],
+    roles: ['Administrador', 'Operador'],
   },
   {
     routeLink: 'mantenimiento',

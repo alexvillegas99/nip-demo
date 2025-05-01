@@ -30,29 +30,22 @@
     <div class="row">
       @for (item of equipos; track $index) {
 
-      <div
-        class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-6 mb-2"
-      >
+      <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-6 mb-2">
         <div class="card">
           <div class="card-body card-mantenimiento">
             <div class="imagen">
-              <img
-                [src]="item.imagen"
-                alt="img_comprensor"
-                style="width: 75px; height: 100px; object-fit: contain"
-              />
+              <img [src]="item.imagen" alt="img_comprensor" style="width: 75px; height: 100px; object-fit: contain" />
             </div>
             <div class="info-1">
+
               <h1>{{ this.id === "variadores" ? "Variadores" : "PM" }}:</h1>
               <h2>{{ item.nombre }}</h2>
 
               <p>
-                <img
-                  src="assets/imgs/icons/clock.svg"
-                  alt="img_clock"
-                  style="margin-right: 0.4rem"
-                />{{ fechaActual | date : "dd/MM/yyyy | hh:mm:ss" }}
+                <img src="assets/imgs/icons/clock.svg" alt="img_clock" style="margin-right: 0.4rem" />{{ fechaActual |
+                date : "dd/MM/yyyy | hh:mm:ss" }}
               </p>
+
 
               <button class="btn boton-1" (click)="navegar(item.ip)">
                 Visualizar {{ this.id === "variadores" ? "Variador" : "PM" }}
@@ -62,25 +55,17 @@
               <h1>Modelo:</h1>
               <h2>{{ item.modelo }}</h2>
 
-              <div
-                *ngIf="item.tipo === 'variador'"
-                class="estado-variador mt-2"
-              >
-                <span
-                  [ngClass]="{
+              <div *ngIf="item.tipo === 'variador'" class="estado-variador mt-2">
+                <span [ngClass]="{
                     'estado-run': item.estado === 'RUN',
                     'estado-falla': item.estado === 'FALLA',
                     'estado-ready': item.estado === 'READY'
-                  }"
-                >
-                  <i
-                    class="fa-solid"
-                    [ngClass]="{
+                  }">
+                  <i class="fa-solid" [ngClass]="{
                       ' text-success': item.estado === 'RUN',
                       ' text-danger': item.estado === 'FALLA',
                       'text-warning': item.estado === 'READY'
-                    }"
-                  ></i>
+                    }"></i>
                   Estado: {{ item.estado }}
                 </span>
               </div>

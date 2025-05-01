@@ -6,45 +6,45 @@
       <div class="equipo-img">
         <img [src]="plcMedidor.imagen" alt="Equipo" />
       </div>
-  
+
       <!-- Datos -->
       <div class="equipo-info">
         <div class="titulo-nombre">
           <h2>{{ plcMedidor.nombre }}</h2>
         </div>
-  
+
         <div class="info-line">
           <label>Product Range</label>
           <span>{{ plcMedidor.tipo?.toUpperCase() }}5000</span>
         </div>
-  
+
         <div class="info-line">
           <label>Product Model</label>
           <span>{{ plcMedidor.modelo }}</span>
         </div>
-  
+
         <div class="info-line">
           <label>Serial Number</label>
           <span>{{ plcMedidor.serie }}</span>
         </div>
-  
+
         <div class="info-line">
           <label>Date/Time</label>
           <span>{{ plcInfo?.fecha | date:'dd/MMMM/yyyy HH:mm:ss' }}</span>
 
         </div>
-  
+
         <div class="info-line connection">
           <button class="btn-disconnect">CONNECT</button>
-         
+
         </div>
       </div>
     </div>
   </div>
   <p-tabView>
     <!-- Tab: Información del Medidor -->
-    <p-tabPanel header="Información" >
-      <div class="tarjetas-grid" *ngIf="plcInfo"> 
+    <p-tabPanel header="Información">
+      <div class="tarjetas-grid" *ngIf="plcInfo">
         <!-- Corriente -->
         <div class="card-tarjeta">
           <div class="card-header">
@@ -55,16 +55,36 @@
           </div>
           <table>
             <tr class="destacado">
-              <td><strong>Total</strong></td><td><strong>{{ plcInfo.CORRIENTE_TOT }} A</strong></td></tr>
-            <tr><td>Corriente A</td><td>{{ plcInfo.CORRIENTE_A }} A</td></tr>
-            <tr><td>Corriente B</td><td>{{ plcInfo.CORRIENTE_B }} A</td></tr>
-            <tr><td>Corriente C</td><td>{{ plcInfo.CORRIENTE_C }} A</td></tr>
-            <tr *ngIf="showCorriente"><td>THD A</td><td>{{ plcInfo.THD_COR_A }} %</td></tr>
-            <tr *ngIf="showCorriente"><td>THD B</td><td>{{ plcInfo.THD_COR_B }} %</td></tr>
-            <tr *ngIf="showCorriente"><td>THD C</td><td>{{ plcInfo.THD_COR_C }} %</td></tr>
+              <td><strong>Total</strong></td>
+              <td><strong>{{ plcInfo.CORRIENTE_TOT }} A</strong></td>
+            </tr>
+            <tr>
+              <td>Corriente A</td>
+              <td>{{ plcInfo.CORRIENTE_A }} A</td>
+            </tr>
+            <tr>
+              <td>Corriente B</td>
+              <td>{{ plcInfo.CORRIENTE_B }} A</td>
+            </tr>
+            <tr>
+              <td>Corriente C</td>
+              <td>{{ plcInfo.CORRIENTE_C }} A</td>
+            </tr>
+            <tr *ngIf="showCorriente">
+              <td>THD A</td>
+              <td>{{ plcInfo.THD_COR_A }} %</td>
+            </tr>
+            <tr *ngIf="showCorriente">
+              <td>THD B</td>
+              <td>{{ plcInfo.THD_COR_B }} %</td>
+            </tr>
+            <tr *ngIf="showCorriente">
+              <td>THD C</td>
+              <td>{{ plcInfo.THD_COR_C }} %</td>
+            </tr>
           </table>
         </div>
-      
+
         <!-- Voltaje -->
         <div class="card-tarjeta">
           <div class="card-header">
@@ -74,77 +94,128 @@
             </button>
           </div>
           <table>
-            <tr class="destacado"><td><strong>Total</strong></td><td><strong>{{ plcInfo.VOLTAJE_TOT }} V</strong></td></tr>
-            <tr><td>Voltaje AB</td><td>{{ plcInfo.VOLTAJE_AB }} V</td></tr>
-            <tr><td>Voltaje BC</td><td>{{ plcInfo.VOLTAJE_BC }} V</td></tr>
-            <tr><td>Voltaje CA</td><td>{{ plcInfo.VOLTAJE_CA }} V</td></tr>
-            <tr *ngIf="showVoltaje"><td>THD AB</td><td>{{ plcInfo.TH_DBA }} %</td></tr>
-            <tr *ngIf="showVoltaje"><td>THD BC</td><td>{{ plcInfo.TH_DBC }} %</td></tr>
-            <tr *ngIf="showVoltaje"><td>THD CA</td><td>{{ plcInfo.TH_DCA }} %</td></tr>
+            <tr class="destacado">
+              <td><strong>Total</strong></td>
+              <td><strong>{{ plcInfo.VOLTAJE_TOT }} V</strong></td>
+            </tr>
+            <tr>
+              <td>Voltaje AB</td>
+              <td>{{ plcInfo.VOLTAJE_AB }} V</td>
+            </tr>
+            <tr>
+              <td>Voltaje BC</td>
+              <td>{{ plcInfo.VOLTAJE_BC }} V</td>
+            </tr>
+            <tr>
+              <td>Voltaje CA</td>
+              <td>{{ plcInfo.VOLTAJE_CA }} V</td>
+            </tr>
+            <tr *ngIf="showVoltaje">
+              <td>THD AB</td>
+              <td>{{ plcInfo.TH_DBA }} %</td>
+            </tr>
+            <tr *ngIf="showVoltaje">
+              <td>THD BC</td>
+              <td>{{ plcInfo.TH_DBC }} %</td>
+            </tr>
+            <tr *ngIf="showVoltaje">
+              <td>THD CA</td>
+              <td>{{ plcInfo.TH_DCA }} %</td>
+            </tr>
           </table>
         </div>
-      
+
         <!-- Potencia -->
         <div class="card-tarjeta">
           <div class="card-header">
             <h2>Potencia</h2>
-         <!--    <button (click)="showPotencia = !showPotencia">
+            <!--    <button (click)="showPotencia = !showPotencia">
               {{ showPotencia ? 'Ocultar' : '› Más' }}
             </button> -->
           </div>
           <table>
-            <tr class="destacado"><td><strong>Total</strong></td><td><strong>{{ plcInfo.POT_TOT }} kW</strong></td></tr>
-            <tr><td>Potencia A</td><td>{{ plcInfo.POT_A }} kW</td></tr>
-            <tr><td>Potencia B</td><td>{{ plcInfo.POT_B }} kW</td></tr>
-            <tr><td>Potencia C</td><td>{{ plcInfo.POT_C }} kW</td></tr>
+            <tr class="destacado">
+              <td><strong>Total</strong></td>
+              <td><strong>{{ plcInfo.POT_TOT }} kW</strong></td>
+            </tr>
+            <tr>
+              <td>Potencia A</td>
+              <td>{{ plcInfo.POT_A }} kW</td>
+            </tr>
+            <tr>
+              <td>Potencia B</td>
+              <td>{{ plcInfo.POT_B }} kW</td>
+            </tr>
+            <tr>
+              <td>Potencia C</td>
+              <td>{{ plcInfo.POT_C }} kW</td>
+            </tr>
           </table>
         </div>
-      
+
         <!-- Factor de Potencia -->
         <div class="card-tarjeta">
           <div class="card-header">
             <h2>Factor de Potencia</h2>
-          <!--   <button (click)="showFp = !showFp">
+            <!--   <button (click)="showFp = !showFp">
               {{ showFp ? 'Ocultar' : '› Más' }}
             </button> -->
           </div>
           <table>
-            <tr class="destacado"><td><strong>Total</strong></td><td><strong>{{ plcInfo.FPOT_TOT }}</strong></td></tr>
-            <tr><td>FP A</td><td>{{ plcInfo.FPOT_A }}</td></tr>
-            <tr><td>FP B</td><td>{{ plcInfo.FPOT_B }}</td></tr>
-            <tr><td>FP C</td><td>{{ plcInfo.FPOT_C }}</td></tr>
+            <tr class="destacado">
+              <td><strong>Total</strong></td>
+              <td><strong>{{ plcInfo.FPOT_TOT }}</strong></td>
+            </tr>
+            <tr>
+              <td>FP A</td>
+              <td>{{ plcInfo.FPOT_A }}</td>
+            </tr>
+            <tr>
+              <td>FP B</td>
+              <td>{{ plcInfo.FPOT_B }}</td>
+            </tr>
+            <tr>
+              <td>FP C</td>
+              <td>{{ plcInfo.FPOT_C }}</td>
+            </tr>
           </table>
         </div>
-      
+
         <!-- Frecuencia -->
         <div class="card-tarjeta">
           <div class="card-header">
             <h2>Frecuencia</h2>
           </div>
           <table>
-            <tr class="destacado"><td><strong>FHZ Total</strong></td><td><strong>{{ plcInfo.FHZ_TOT }} Hz</strong></td></tr>
+            <tr class="destacado">
+              <td><strong>FHZ Total</strong></td>
+              <td><strong>{{ plcInfo.FHZ_TOT }} Hz</strong></td>
+            </tr>
           </table>
         </div>
-      
+
         <!-- Energía -->
         <div class="card-tarjeta">
           <div class="card-header">
             <h2>Energía</h2>
           </div>
           <table>
-            <tr class="destacado"><td><strong>Energia Total</strong></td><td><strong>{{ plcInfo.ENERG }} kWh</strong></td></tr>
+            <tr class="destacado">
+              <td><strong>Energia Total</strong></td>
+              <td><strong>{{ plcInfo.ENERG }} kWh</strong></td>
+            </tr>
           </table>
         </div>
       </div>
     </p-tabPanel>
-  
+
     <!-- Tab: Gráficos -->
-    <p-tabPanel header="Gráficos"> 
+    <p-tabPanel header="Gráficos">
       <!-- 🔍 Filtros SOLO para gráficos -->
       <div class="filtro-equipos">
         <div class="filtro-linea">
           <!-- Tipo de equipo -->
-         
+
           <!-- Tiempo -->
           <div class="selector-inline">
             <label for="tiempoHistorico">Tiempo:</label>
@@ -158,7 +229,7 @@
               <option value="7d">7 días</option>
             </select>
           </div>
-    
+
           <!-- Refresco -->
           <div class="selector-inline">
             <label for="refresco">Actualizar:</label>
@@ -174,56 +245,34 @@
           </div>
         </div>
       </div>
-    
+
       <!-- 📊 Gráficos -->
       <div class="grid-graficos" *ngIf="chartOptions.length > 0">
         <div class="grafico" *ngFor="let chart of chartOptions; let i = index">
-          <apx-chart
-          #chartRef
-          *ngIf="chart"
-          [series]="chart.series!"
-          [chart]="chart.chart!"
-          [xaxis]="chart.xaxis!"
-          [title]="chart.title!"
-          [stroke]="chart.stroke!"
-          [legend]="chart.legend!"
-          [dataLabels]="chart.dataLabels!"
-          [tooltip]="{ theme: 'dark' }"
-        ></apx-chart>
-        
+          <apx-chart #chartRef *ngIf="chart" [series]="chart.series!" [chart]="chart.chart!" [xaxis]="chart.xaxis!"
+            [title]="chart.title!" [stroke]="chart.stroke!" [legend]="chart.legend!" [dataLabels]="chart.dataLabels!"
+            [tooltip]="{ theme: 'dark' }"></apx-chart>
+
         </div>
       </div>
-    </p-tabPanel >
+    </p-tabPanel>
     <p-tabPanel header="Consumo Energía">
       <div class="filtro-equipos">
         <div class="filtro-linea">
           <div class="selector-inline">
             <label for="fechaDesde">Desde:</label>
-            <input
-              type="date"
-              id="fechaDesde"
-              [(ngModel)]="fechaDesde"
-              class="p-inputtext p-component"
-            />
+            <input type="date" id="fechaDesde" [(ngModel)]="fechaDesde" class="p-inputtext p-component" />
           </div>
           <div class="selector-inline">
             <label for="fechaHasta">Hasta:</label>
-            <input
-              type="date"
-              id="fechaHasta"
-              [(ngModel)]="fechaHasta"
-              class="p-inputtext p-component"
-            />
+            <input type="date" id="fechaHasta" [(ngModel)]="fechaHasta" class="p-inputtext p-component" />
           </div>
-          <button
-            class="p-button p-component p-button-success"
-            (click)="calcularConsumoEnergia()"
-          >
+          <button class="p-button p-component p-button-success" (click)="calcularConsumoEnergia()">
             Consultar
           </button>
         </div>
       </div>
-    
+
       <div class="card-consumo" *ngIf="consumoTotal !== null">
         <div class="resumen-energia">
           <h3>📊 Resumen de Consumo</h3>
@@ -234,12 +283,7 @@
         </div>
       </div>
     </p-tabPanel>
-    
-    
+
+
   </p-tabView>
-  
-
-  
-
 </div>
- 

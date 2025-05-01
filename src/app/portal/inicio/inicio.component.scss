@@ -20,7 +20,7 @@
 
 .screen1 {
   display: grid;
-  grid-template-columns: 2fr 1.3fr;
+  grid-template-columns: 1.5fr 1fr;
   grid-template-rows: 4fr;
   grid-auto-columns: 1fr;
   grid-auto-rows: 1fr;
@@ -63,13 +63,10 @@
     .card-list {
       margin-top: 1rem;
       overflow-y: auto;
-      // max-width: 400px;
       width: 100%;
       display: flex;
       flex-direction: column;
       gap: 1rem;
-      // overflow-y: auto;
-      // -webkit-overflow-scrolling: touch;
       max-height: 75vh;
 
       .container-card-info {
@@ -79,13 +76,14 @@
         border: 2px solid $color-borde;
         display: grid;
         grid-template-columns: 3fr 1.5fr;
-        grid-template-rows: 1fr .5fr;
+        grid-template-rows: 1fr .5fr .5fr;
         grid-auto-columns: 1fr;
         gap: 0px 0px;
         grid-auto-flow: row;
         grid-template-areas:
           "informacion imagen"
-          "ubicacion imagen";
+          "ubicacion imagen"
+          "estado-variador estado-variador";
 
         .informacion {
           align-self: end;
@@ -137,6 +135,125 @@
   }
 }
 
+// Extra Small devices (phones, less than 576px)
+@media screen and (max-width: 575.98px) {
+  .screen1 {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 0px 0px;
+    grid-auto-flow: column;
+    grid-template-areas:
+    "map-container"
+    "derecha";
+  
+    .mapmap-container {
+      margin-bottom: 10rem;
+      grid-area: map-container;
+      width: 100%;
+      position: inherit;
+    }
+  
+    .derecha {
+      grid-area: derecha;
+      border: 2px solid $color-borde;
+      border-top: none;
+      padding-inline: 1rem;
+  
+      .titulo {
+        display: none;
+        border-top: none;
+        border-right: none;
+        border-bottom: 2px solid $color-borde;
+        border-left: none;
+        margin-inline: -1rem;
+        padding-inline: 1rem;
+  
+        h2 {
+          padding: 1rem;
+          font-size: 18px;
+          font-weight: 300;
+          line-height: 23.4px;
+          text-align: left;
+        }
+      }
+  
+      .card-list {
+        margin-top: 1rem;
+        overflow-y: auto;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        max-height: 75vh;
+  
+        .container-card-info {
+          border-radius: 6px;
+          padding: 1.5rem;
+          width: 100%;
+          border: 2px solid $color-borde;
+          display: grid;
+          grid-template-columns: 1fr;
+          grid-template-rows: 1fr .5fr .5fr .5fr;
+          grid-auto-columns: 1fr;
+          gap: 0px 0px;
+          grid-auto-flow: column;
+          grid-template-areas:
+           "imagen"
+            "informacion"
+            "ubicacion"
+            "estado-variador";
+  
+          .informacion {
+            align-self: end;
+            grid-area: informacion;
+  
+            h6 {
+              color: #909498;
+              font-size: 14px;
+              font-weight: 500;
+              line-height: 18.2px;
+              text-align: left;
+              margin-bottom: 0px;
+            }
+  
+            h4 {
+              font-size: 18px;
+              font-weight: 600;
+              line-height: 23.4px;
+              text-align: left;
+              color: $color-texto-2;
+            }
+          }
+  
+          .ubicacion {
+            align-self: start;
+            grid-area: ubicacion;
+  
+            p {
+              font-size: 14px;
+              font-weight: 300;
+              line-height: 18.2px;
+              text-align: left;
+              color: #727272;
+              margin-bottom: 0px;
+            }
+          }
+  
+          .imagen {
+            grid-area: imagen;
+            justify-self: center; 
+            align-self: center; 
+  
+            img {
+              width: 66px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
 
 @media (max-width: 1159px) {
   .screen1 {
@@ -170,6 +287,7 @@
   }
 }
 
+/** Valores de popup **/
 .estado-variador {
   margin-top: 8px;
   font-weight: 500;
@@ -192,6 +310,7 @@
     color: #facc15;
   }
 }
+
 .popup-card-body {
   padding: 0.75rem;
   font-family: 'Segoe UI', sans-serif;
