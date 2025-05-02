@@ -1,70 +1,123 @@
-<div class="filtro-equipos">
-  <div class="filtro-linea">
-    <!-- Selector de tipo -->
-    <div class="selector-inline">
-      <label for="tipoEquipo">Equipo:</label>
-      <select id="tipoEquipo" [(ngModel)]="tipoSeleccionado" (change)="cambiarTipoEquipo()">
-        <option value="variador">Variador</option>
-        <option value="pm">PM</option>
-      </select>
-    </div>
+<!-- 🔹 Filtros de selección -->
+<div class="chart-card">
 
-    <!-- Selector de tiempo -->
-    <div class="selector-inline">
-      <label for="tiempoHistorico">Tiempo:</label>
-      <select id="tiempoHistorico" [(ngModel)]="tiempoHistorico" (change)="onCambioTiempo(tiempoHistorico)">
-        <option value="5m">5m</option>
-        <option value="10m">10m</option>
-        <option value="1h">1h</option>
-        <option value="3h">3h</option>
-        <option value="12h">12h</option>
-        <option value="1d">1 día</option>
-        <option value="7d">7 días</option>
-        <option value="personalizado">Personalizado</option>
-      </select>
-    </div>
+  
+  
+</div>
 
-    <!-- Tiempo personalizado -->
-    <div class="selector-inline" *ngIf="tiempoHistorico === 'personalizado'">
-      <label>Valor:</label>
-      <input type="number" min="1" [(ngModel)]="cantidadTiempo" />
-      <select [(ngModel)]="unidadTiempo" (change)="onCambioTiempoPersonalizado()">
-        <option value="s">seg</option>
-        <option value="m">min</option>
-        <option value="h">hora</option>
-        <option value="d">día</option>
-      </select>
-    </div>
+<div class="filtros-bar">
+  <div class="filtro-item">
+    <label><strong>Equipo:</strong> {{ tipoSeleccionado | titlecase }}</label>
+  </div>
+  <div class="filtro-item">
+    <label for="tiempoHistorico">Tiempo:</label>
+    <select id="tiempoHistorico" [(ngModel)]="tiempoHistorico" (change)="onCambioTiempo(tiempoHistorico)">
+      <option value="5m">5m</option>
+      <option value="10m">10m</option>
+      <option value="1h">1h</option>
+      <option value="3h">3h</option>
+      <option value="12h">12h</option>
+      <option value="1d">1 día</option>
+      <option value="7d">7 días</option>
+      <option value="personalizado">Personalizado</option>
+    </select>
+  </div>
+  <div class="filtro-item" *ngIf="tiempoHistorico === 'personalizado'">
+    <label>Valor:</label>
+    <input type="number" min="1" [(ngModel)]="cantidadTiempo" />
+    <select [(ngModel)]="unidadTiempo" (change)="onCambioTiempoPersonalizado()">
+      <option value="s">seg</option>
+      <option value="m">min</option>
+      <option value="h">hora</option>
+      <option value="d">día</option>
+    </select>
+  </div>
+</div>
 
-    <!-- Selector de refresco -->
-    <div class="selector-inline">
-      <label for="refresco">Actualizar:</label>
-      <select id="refresco" [(ngModel)]="refresco" (change)="onCambioRefresco(refresco)">
-        <option [value]="0">No</option>
-        <option [value]="5000">5s</option>
-        <option [value]="10000">10s</option>
-        <option [value]="15000">15s</option>
-        <option [value]="30000">30s</option>
-        <option [value]="60000">1min</option>
-        <option [value]="300000">5min</option>
-      </select>
+<!-- 🔸 TabView principal -->
+<p-tabView (onChange)="tipoSeleccionado = $event.index === 0 ? 'variador' : 'pm'">
+  <p-tabPanel header="Variadores">
+    <div class="dashboard-layout">
+      
+ 
+
+      <!-- ⏱️ Horómetro -->
+      <div class="widget-card">
+        <h3 class="widget-title">⏱️ Uso total del horómetro (últimos 5 días)</h3>
+        <apx-chart
+          [series]="horometroPieChart.series"
+          [chart]="horometroPieChart.chart"
+          [labels]="horometroPieChart.labels"
+          [tooltip]="horometroPieChart.tooltip"
+          [legend]="horometroPieChart.legend"
+          [dataLabels]="horometroPieChart.dataLabels">
+        </apx-chart>
+      </div>
+
+      <!-- 🔌 Voltaje promedio -->
+      <div class="widget-card">
+        <h3 class="widget-title">🔌 Voltaje promedio</h3>
+        <apx-chart
+          [series]="voltajeChart.series"
+          [chart]="voltajeChart.chart"
+          [xaxis]="voltajeChart.xaxis"
+          [yaxis]="voltajeChart.yaxis"
+          [plotOptions]="voltajeChart.plotOptions"
+          [dataLabels]="voltajeChart.dataLabels"
+          [tooltip]="voltajeChart.tooltip">
+        </apx-chart>
+      </div>
+
+      <!-- ⚡ Corriente promedio -->
+      <div class="widget-card">
+        <h3 class="widget-title">⚡ Corriente promedio</h3>
+        <apx-chart
+          [series]="corrienteChart.series"
+          [chart]="corrienteChart.chart"
+          [xaxis]="corrienteChart.xaxis"
+          [yaxis]="corrienteChart.yaxis"
+          [plotOptions]="corrienteChart.plotOptions"
+          [dataLabels]="corrienteChart.dataLabels"
+          [tooltip]="corrienteChart.tooltip">
+        </apx-chart>
+      </div>
+
+      <!-- 💡 Potencia promedio -->
+      <div class="widget-card">
+        <h3 class="widget-title">💡 Potencia promedio</h3>
+        <apx-chart
+          [series]="potenciaChart.series"
+          [chart]="potenciaChart.chart"
+          [xaxis]="potenciaChart.xaxis"
+          [yaxis]="potenciaChart.yaxis"
+          [plotOptions]="potenciaChart.plotOptions"
+          [dataLabels]="potenciaChart.dataLabels"
+          [tooltip]="potenciaChart.tooltip">
+        </apx-chart>
+      </div>
+     <!-- Estado actual de equipos -->
+<!-- Estado actual de equipos -->
+<div class="widget-card">
+  <h3 class="widget-title">
+    <i class="pi pi-server" style="margin-right: 0.5rem"></i>Estado actual de equipos
+  </h3>
+
+  <div class="estado-equipos-grid">
+    <div *ngFor="let equipo of estadoEquiposDetalle" class="estado-item" [ngClass]="equipo.estado.toLowerCase().replace(' ', '-')">
+      <div class="estado-header">
+        <div class="estado-circle">{{ equipo.estado === 'EN MARCHA' ? '✔' : equipo.estado === 'FALLA' ? '⚠' : '⏸' }}</div>
+        <div class="estado-nombre">{{ equipo.nombre }}</div>
+      </div>
+      <div class="estado-text">{{ equipo.estado }}</div>
     </div>
   </div>
 </div>
 
+      
+    </div>
+  </p-tabPanel>
 
-<div class="grid-graficos" *ngIf="chartOptions.length > 0">
-  <div class="grafico" *ngFor="let chart of chartOptions; index as i">
-    <apx-chart
-      *ngIf="chart"
-      [series]="chart.series!"
-      [chart]="chart.chart!"
-      [xaxis]="chart.xaxis!"
-      [title]="chart.title!"
-      [stroke]="chart.stroke!"
-      [legend]="chart.legend!"
-      [dataLabels]="chart.dataLabels!"
-      [tooltip]="{ theme: 'dark' }"
-    ></apx-chart>
-  </div>
-</div>
+  <p-tabPanel header="PM">
+    <p class="text-muted p-4">Próximamente los gráficos de PM...</p>
+  </p-tabPanel>
+</p-tabView>

@@ -1,356 +1,611 @@
-// Angular + ApexCharts DashboardComponent refactorizado
+import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
 import {
-  Component,
-  OnDestroy,
-  OnInit,
-  QueryList,
-  ViewChildren,
-  ViewEncapsulation,
-} from '@angular/core';
-import {
-  ApexAxisChartSeries,
   ApexChart,
-  ApexDataLabels,
-  ApexLegend,
-  ApexStroke,
-  ApexTitleSubtitle,
+  ApexAxisChartSeries,
   ApexXAxis,
-  ChartComponent,
+  ApexYAxis,
+  ChartType,
+  ApexPlotOptions,
 } from 'ng-apexcharts';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { TabViewModule } from 'primeng/tabview';
 
 import { SocketService } from '../../services/socket.service';
 import { DataPlcService } from '../../services/data-plc.service';
+import { HorometroService } from '../../services/horometro.service';
 
-// Tipado personalizado para las opciones de gráfico
-export type ChartOptions = {
-  series: ApexAxisChartSeries;
+type GraficoPromedio = {
   chart: ApexChart;
-  xaxis: ApexXAxis;
-  stroke: ApexStroke;
-  title: ApexTitleSubtitle;
+  xaxis?: any;
+  yaxis: ApexYAxis;
+  series: ApexAxisChartSeries;
+  plotOptions?: any;
+  dataLabels?: any;
+  tooltip?: any;
+};
+type GraficoPie = {
+  series: number[];
+  chart: ApexChart;
+  labels: string[];
+  tooltip: {
+    y: { formatter: (val: number) => string };
+  };
+  dataLabels: {
+    enabled: boolean;
+    formatter: (val: number) => string;
+  };
   legend: ApexLegend;
-  dataLabels: ApexDataLabels;
-  colors: string[];
-  yaxis: any;
 };
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, NgApexchartsModule, FormsModule],
+  imports: [CommonModule, FormsModule, NgApexchartsModule, TabViewModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
   encapsulation: ViewEncapsulation.None,
 })
 export class DashboardComponent implements OnInit, OnDestroy {
+
+  horometroPieChart: GraficoPie = {
+    series: [],
+    chart: {
+      type: 'pie',
+      height: 300,
+      toolbar: {
+        show: true,
+        tools: {
+          download: true,
+        },
+      },
+    },
+    labels: [],
+    tooltip: {
+      y: {
+        formatter: (val: number) => `${val} min`,
+      },
+    },
+    dataLabels: {
+      enabled: true,
+      formatter: (val: number) => `${val.toFixed(1)}%`,
+    },
+    legend: {
+      show: true,
+      position: 'right',
+      formatter: (label: string, opts: any) => {
+        const minutos = opts.w.globals.series[opts.seriesIndex];
+        const horas = (minutos / 60).toFixed(2);
+        return `${label}: ${horas} h`;
+      },
+    },
+  };
+  
+  
+  voltajeChart: GraficoPromedio = {
+    chart: { type: 'bar', height: 250 },
+    xaxis: { categories: [] },
+    yaxis: {},
+    series: [],
+  };
+
+  corrienteChart: GraficoPromedio = {
+    chart: { type: 'bar', height: 250 },
+    xaxis: { categories: [] },
+    yaxis: {},
+    series: [],
+  };
+
+  potenciaChart: GraficoPromedio = {
+    chart: { type: 'bar', height: 250 },
+    xaxis: { categories: [] },
+    yaxis: {},
+    series: [],
+  };
+
+  tipoSeleccionado: 'variador' | 'pm' = 'variador';
+  tiempoHistorico = '5m';
+  cantidadTiempo = 1;
+  unidadTiempo: 's' | 'm' | 'h' | 'd' = 'h';
+
   plcList: any[] = [];
   historicoData: any[] = [];
-  fechas: string[] = [];
-  chartOptions: Partial<ChartOptions>[] = [];
-  tipoSeleccionado: string = 'variador';
-  historicoSub!: Subscription;
-  actualizacionInterval: any;
   equiposSeleccionados: string[] = [];
 
-  tiempoHistorico: string = '5m';
-  refresco: number = 5000;
+  historicoSub!: Subscription;
 
-  @ViewChildren(ChartComponent) chartComponents!: QueryList<ChartComponent>;
+  
+
+  visitorType: {
+    series: ApexAxisChartSeries;
+    chart: ApexChart;
+    xaxis: ApexXAxis;
+  } = {
+    series: [],
+    chart: { type: 'bar', height: 250 },
+    xaxis: { categories: [] },
+  };
 
   constructor(
-    private readonly _socketService: SocketService,
-    private readonly dataPlc: DataPlcService
+    private readonly socketService: SocketService,
+    private readonly dataPlc: DataPlcService,
+    private horometroService: HorometroService
   ) {}
 
   ngOnInit(): void {
     this.getListaEquipos();
-    this.iniciarIntervalo();
+    this.iniciarEstadoEquiposInterval();
   }
 
+  estadoInterval: any;
+
+iniciarEstadoEquiposInterval(): void {
+  this.actualizarEstadoEquipos(); // llamada inmediata
+  this.estadoInterval = setInterval(() => {
+    this.actualizarEstadoEquipos();
+  }, 10000);
+}
+
+  datosAgrupadosPorIp: any = {};
+  buscarHorometro(): void {
+    this.horometroService.obtenerPorFechas(this.equiposSeleccionados).subscribe({
+      next: (data) => {
+        console.log('✅ Datos agrupados por IP:', data);
+        this.datosAgrupadosPorIp = data;
+        console.log('Datos agrupados por IP:', this.datosAgrupadosPorIp);
+        this.generarGraficoHorometroPie();
+      },
+      error: (err) => console.error('❌ Error al obtener datos:', err)
+    });
+  }
+
+  estadoEquiposChart = {
+    series: [] as number[],
+    chart: {
+      type: 'pie' as ChartType,
+      height: 300,
+      toolbar: { show: true }
+    },
+    
+    labels: ['Activo (RUN)', 'Falla', 'Listo (READY)'],
+    legend: {
+      position: 'bottom' as 'bottom'
+    },
+    tooltip: {
+      y: { formatter: (val: number) => `${val.toFixed(1)}%` }
+    },
+    dataLabels: {
+      enabled: true,
+      formatter: (val: number, opts: any) =>
+        `${opts.w.globals.labels[opts.seriesIndex]}: ${val.toFixed(1)}%`
+    }
+  };
+  
   ngOnDestroy(): void {
-    clearInterval(this.actualizacionInterval);
-    if (this.historicoSub) this.historicoSub.unsubscribe();
+    this.historicoSub?.unsubscribe();
+    clearInterval(this.estadoInterval); // <- DETENER INTERVALO
   }
-
-  iniciarIntervalo() {
-    clearInterval(this.actualizacionInterval);
-    if (this.refresco > 0) {
-      this.actualizacionInterval = setInterval(() => {
-        this._socketService.sendFindHistoricoPlcData(
-          this.equiposSeleccionados,
-          this.tiempoHistorico,
-          this.tipoSeleccionado
-        );
-      }, this.refresco);
+  estadoEquiposDetalle: { ip: string; nombre: string; estado: 'EN MARCHA' | 'FALLA' | 'DETENIDO' }[] = [];
+  actualizarEstadoEquipos(): void {
+    const estadoCount: Record<'EN MARCHA' | 'FALLA' | 'DETENIDO', number> = {
+      'EN MARCHA': 0,
+      FALLA: 0,
+      DETENIDO: 0,
+    };
+  
+    // Mapa temporal de resultados por IP
+    const resultadosPorIp: Record<string, { ip: string; nombre: string; estado: 'EN MARCHA' | 'FALLA' | 'DETENIDO' }> = {};
+  
+    for (const ip of this.equiposSeleccionados) {
+      this.socketService.sendFindPlcData(ip, 'variador');
+    }
+  
+    this.socketService.receivePlcData().subscribe((data) => {
+      if (!data || !data.IP) return;
+  
+      const ip = data.IP;
+      const estado: 'EN MARCHA' | 'FALLA' | 'DETENIDO' =
+        data.RUN === 1 ? 'EN MARCHA' : data.FLT === 1 ? 'FALLA' : 'DETENIDO';
+  
+      const nombre =
+        this.plcList.find((e) => e.ip === ip)?.nombre.replace(/^VARIADOR\s*-\s*/i, '').trim() || ip;
+  
+      resultadosPorIp[ip] = { ip, nombre, estado };
+  
+      // Obtener todos los valores únicos
+      const valoresUnicos = Object.values(resultadosPorIp);
+  
+      // Resetear conteo
+      estadoCount['EN MARCHA'] = 0;
+      estadoCount.FALLA = 0;
+      estadoCount.DETENIDO = 0;
+  
+      for (const equipo of valoresUnicos) {
+        estadoCount[equipo.estado]++;
+      }
+  
+      const total = valoresUnicos.length;
+      this.estadoEquiposChart.series = total
+        ? Object.values(estadoCount).map((v) => Math.round((v / total) * 1000) / 10)
+        : [0, 0, 0];
+  
+      // 🔄 Actualizar solo los datos existentes (sin recrear el array completo)
+      for (const equipo of valoresUnicos) {
+        const existente = this.estadoEquiposDetalle.find((e) => e.ip === equipo.ip);
+        if (existente) {
+          if (existente.estado !== equipo.estado) {
+            existente.estado = equipo.estado;
+          }
+        } else {
+          this.estadoEquiposDetalle.push(equipo);
+        }
+      }
+    });
+  }
+  
+  
+  
+  
+  
+  onCambioTiempo(valor: string): void {
+    this.tiempoHistorico = valor;
+    if (valor !== 'personalizado') {
+      this.enviarPeticionHistorico();
     }
   }
 
-  onCambioRefresco(valor: number) {
-    this.refresco = valor;
-    this.iniciarIntervalo();
+  onCambioTiempoPersonalizado(): void {
+    if (this.cantidadTiempo > 0 && this.unidadTiempo) {
+      this.tiempoHistorico = `${this.cantidadTiempo}${this.unidadTiempo}`;
+      this.enviarPeticionHistorico();
+    }
   }
 
- 
-  getListaEquipos() {
+  cambiarTipoEquipo(): void {
+    this.historicoData = [];
+   
+    this.getListaEquipos();
+  }
+
+  getListaEquipos(): void {
     this.dataPlc.getListaEquipos().subscribe({
       next: (data) => {
-        this.plcList = data.filter((item: any) => item.tipo === this.tipoSeleccionado);
+        this.plcList = data.filter(
+          (item: any) => item.tipo === this.tipoSeleccionado
+        );
         this.equiposSeleccionados = this.plcList.map((item) => item.ip);
-        const ips = this.plcList.map((item) => item.ip);
-        this._socketService.sendFindHistoricoPlcData(ips, this.tiempoHistorico, this.tipoSeleccionado);
-        this.listenHistorico();
+        this.enviarPeticionHistorico();
+        this.escucharHistorico();
+        this.buscarHorometro();
       },
-      error: (err) => console.error('Error:', err),
+      error: (err) => console.error('Error al obtener equipos:', err),
     });
   }
 
-  listenHistorico() {
-    if (this.historicoSub) this.historicoSub.unsubscribe();
-
-    this.historicoSub = this._socketService.receiveHistoricoPlcData().subscribe((data) => {
-      this.historicoData = data
-        .filter((equipo: any) => this.equiposSeleccionados.includes(equipo.ip))
-        .map((equipo: any) => ({
-          ...equipo,
-          data: [...equipo.data].reverse().map((d: any) => this.formatearDatos(d)),
-        }));
-
-      const equipoConDatos = this.historicoData.find((e) => e.data && e.data.length > 0);
-      this.fechas = equipoConDatos?.data.map((d: any) =>
-        new Date(d.fecha).toLocaleString('es-EC', {
-          day: '2-digit',
-          month: '2-digit',
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: false,
-        })
-      ) || [];
-      
-
-      this.chartOptions.length === 0 ? this.generarGraficos() : this.actualizarGraficos();
-    });
-  }
-
-  private formatearDatos(d: any) {
-    return {
-      ...d,
-      frecuencia: this.redondear(d.frecuencia),
-      voltaje: this.redondear(d.voltaje),
-      corriente: this.redondear(d.corriente),
-      potencia: this.redondear(d.potencia),
-      rpm: this.redondear(d.rpm),
-    };
-  }
-
-  private redondear(valor: any) {
-    return valor !== undefined ? Math.round(valor * 100) / 100 : null;
-  }
-
-  generarGraficos() {
-    this.chartOptions = [];
-
-    const tipos = this.tipoSeleccionado === 'variador'
-      ? ['corriente', 'voltaje', 'potencia', 'frecuencia', 'rpm']
-      : [
-        'CORRIENTE_TOT',
-        'VOLTAJE_TOT',
-        'POT_TOT',
-        'FPOT_TOT',
-        'FHZ_TOT',
-        'ENERG',
-      
-        'CORRIENTE_A', 'CORRIENTE_B', 'CORRIENTE_C',
-        'VOLTAJE_AB', 'VOLTAJE_BC', 'VOLTAJE_CA',
-        'POT_A', 'POT_B', 'POT_C',
-        'FPOT_A', 'FPOT_B', 'FPOT_C',
-        'THD_COR_A', 'THD_COR_B', 'THD_COR_C',
-        'TH_DBA', 'TH_DBC', 'TH_DCA'
-      ];
-      
-
-    for (const tipo of tipos) {
-      const series = this.historicoData.map((equipo) => {
-        const nombre = this.plcList.find((p) => p.ip === equipo.ip)?.nombre || equipo.ip;
-        const datos = equipo.data.map((d: any) =>
-          tipo === 'rpm'
-            ? this.calcularRPM(equipo.ip, d.frecuencia)
-            : this.redondear(d[tipo])
-        );
-        return { name: nombre, data: datos };
-      });
-
-      this.chartOptions.push({
-        series: [...series, this.serieBase()],
-        title: { text: tipo.replace(/_/g, ' ').toUpperCase() },
-        chart: {
-          type: 'line',
-          height: 300,
-          animations: { enabled: false },
-          toolbar: { show: false },
-        },
-        stroke: { curve: 'smooth', width: 3 },
-        xaxis: { categories: [...this.fechas] },
-        yaxis: {
-          min: 0,
-          forceNiceScale: true,
-          tickAmount: 5,
-          labels: { formatter: (value: number) => value?.toFixed(2) ?? '0' },
-        },
-        legend: {
-          show: true,
-          labels: { colors: ['#000'] },
-          formatter: (name) => (name === 'Base' ? '' : name),
-        },
-        dataLabels: { enabled: false },
-      });
-    }
-  }
-
-  actualizarGraficos() {
-    const tipos = this.tipoSeleccionado === 'pm'
-      ? [
-        'CORRIENTE_TOT',
-        'VOLTAJE_TOT',
-        'POT_TOT',
-        'FPOT_TOT',
-        'FHZ_TOT',
-        'ENERG',
-      
-        'CORRIENTE_A', 'CORRIENTE_B', 'CORRIENTE_C',
-        'VOLTAJE_AB', 'VOLTAJE_BC', 'VOLTAJE_CA',
-        'POT_A', 'POT_B', 'POT_C',
-        'FPOT_A', 'FPOT_B', 'FPOT_C',
-        'THD_COR_A', 'THD_COR_B', 'THD_COR_C',
-        'TH_DBA', 'TH_DBC', 'TH_DCA'
-      ]      
-      : ['corriente', 'voltaje', 'potencia', 'frecuencia', 'rpm'];
-
-    if (this.chartComponents.length !== tipos.length) {
-      console.warn('Gráficos aún no renderizados completamente. Se omite actualización.');
-      return;
-    }
-
-    this.chartComponents.forEach((chart, index) => {
-      const tipo = tipos[index];
-
-      const nuevasSeries = this.historicoData.map((equipo) => {
-        const nombre = this.plcList.find((p) => p.ip === equipo.ip)?.nombre || equipo.ip;
-
-        const datos = equipo.data.map((d: any) =>
-          tipo === 'rpm'
-            ? this.calcularRPM(equipo.ip, d.frecuencia)
-            : this.redondear(d[tipo])
-        );
-
-        return { name: nombre, data: datos };
-      });
-
-      chart.updateOptions(
-        {
-          series: [...nuevasSeries, this.serieBase()],
-          xaxis: { categories: [...this.fechas] },
-          yaxis: {
-            min: 0,
-            forceNiceScale: true,
-            tickAmount: 5,
-            labels: {
-              formatter: (value: number) => value?.toFixed(2) ?? '0',
-            },
-          },
-          legend: {
-            show: true,
-            labels: { colors: ['#000'] },
-            formatter: (name: any) => (name === 'Base' ? '' : name),
-          },
-        },
-        false,
-        true
-      );
-    });
-  }
-
-  private serieBase() {
-    return { name: 'Base', data: Array(this.fechas.length).fill(0), color: 'transparent' };
-  }
-
-  private calcularRPM(ip: string, frecuencia: number) {
-    const maxRPM = this.getMaxRPM(ip);
-    return Math.round((frecuencia / 60) * maxRPM * 100) / 100;
-  }
-
-  private getMaxRPM(ip: string): number {
-    const rpmMap: Record<string, number> = {
-      '172.16.8.9': 3450,
-      '172.16.107.5': 1785,
-    };
-    return rpmMap[ip] || 1780;
-  }
-
-  cambiarTipoEquipo() {
-    this.chartOptions = [];
-    this.fechas = [];
-    this.historicoData = [];
-    if (this.historicoSub) this.historicoSub.unsubscribe();
-    setTimeout(() => this.getListaEquipos(), 0);
-  }
-
-  toggleEquipoSeleccion(ip: string, checked: boolean) {
-    this.equiposSeleccionados = checked
-      ? [...this.equiposSeleccionados, ip]
-      : this.equiposSeleccionados.filter((i) => i !== ip);
-
-    if (this.equiposSeleccionados.length === 0) {
-      this.historicoData = [];
-      this.chartOptions = [];
-      return;
-    }
-
-    if (this.historicoSub) this.historicoSub.unsubscribe();
-
-    this._socketService.sendFindHistoricoPlcData(this.equiposSeleccionados, this.tiempoHistorico, this.tipoSeleccionado);
-    this.listenHistorico();
-  }
-
-  onCheckboxChange(event: Event, ip: string) {
-    const checked = (event.target as HTMLInputElement).checked;
-    this.toggleEquipoSeleccion(ip, checked);
-  }
-
-  cantidadTiempo: number = 1;
-unidadTiempo: string = 'h';
-
-onCambioTiempo(valor: string) {
-  console.log('Cambio de tiempo:', valor);
-  this.tiempoHistorico = valor;
-
-  // No dispares aún si es personalizado
-  if (valor !== 'personalizado') {
-    this._socketService.sendFindHistoricoPlcData(
+  enviarPeticionHistorico(): void {
+    this.socketService.sendFindHistoricoPlcData(
       this.equiposSeleccionados,
       this.tiempoHistorico,
       this.tipoSeleccionado
     );
   }
-}
 
+  escucharHistorico(): void {
+    this.historicoSub?.unsubscribe();
+    this.historicoSub = this.socketService
+      .receiveHistoricoPlcData()
+      .subscribe((data) => {
+        this.historicoData = data
+          .filter((equipo: any) =>
+            this.equiposSeleccionados.includes(equipo.ip)
+          )
+          .map((equipo: any) => ({
+            ...equipo,
+            data: [...equipo.data].reverse(),
+          }));
+        this.generarGraficosSeparados();
+      });
+  }
+  generarGraficoHorometroPie(): void {
+    const series: number[] = [];
+    const labels: string[] = [];
   
-  onCambioTiempoPersonalizado() {
-    if (this.cantidadTiempo > 0 && this.unidadTiempo) {
-      this.tiempoHistorico = `${this.cantidadTiempo}${this.unidadTiempo}`;
-      console.log('Tiempo personalizado aplicado:', this.tiempoHistorico);
+    // Acumular tiempo total por equipo
+    for (const ip in this.datosAgrupadosPorIp) {
+      const registros = this.datosAgrupadosPorIp[ip];
+      const nombre = registros[0]?.nombre || ip;
   
-      this._socketService.sendFindHistoricoPlcData(
-        this.equiposSeleccionados,
-        this.tiempoHistorico,
-        this.tipoSeleccionado
-      );
+      const minutosTotales = registros.reduce((sum: number, r: any) => {
+        return sum + (r.minutosEncendido || 0);
+      }, 0);
+  
+      series.push(minutosTotales);
+      labels.push(nombre.replace(/^VARIADOR\s*-\s*/i, '').trim());
     }
+  
+    // Configurar el gráfico
+    this.horometroPieChart = {
+      series,
+      labels,
+      chart: {
+        type: 'pie',
+        height: 320,
+        toolbar: {
+          show: true,
+          tools: {
+            download: true
+          }
+        }
+      },
+      tooltip: {
+        y: {
+          formatter: (val: number) => `${(val / 60).toFixed(2)} h`
+        }
+      },
+      dataLabels: {
+        enabled: true,
+        formatter: (val: number) => `${val.toFixed(1)}%`
+      },
+      legend: {
+        position: 'right',
+        fontSize: '14px',
+        formatter: (label: string, opts: any) => {
+          const minutos = series[opts.seriesIndex] || 0;
+          const horas = (minutos / 60).toFixed(2);
+          return `${label}: ${horas} h`;
+        }
+      }
+    };
   }
   
-  
-  
+
+  generarGraficosSeparados(): void {
+    const base: {
+      chart: ApexChart;
+      xaxis: ApexXAxis;
+    } = {
+      chart: { type: 'bar' as ChartType, height: 250 },
+      xaxis: {
+        categories: [], // <- Tipado correctamente por ApexXAxis
+        labels: {
+          rotate: -15,
+          style: { fontSize: '12px' },
+        },
+      },
+    };
+
+    const voltajeSeries: number[] = [];
+    const corrienteSeries: number[] = [];
+    const potenciaSeries: number[] = [];
+    const categorias: string[] = [];
+
+    for (const equipo of this.historicoData) {
+      const nombreCompleto =
+        this.plcList.find((p) => p.ip === equipo.ip)?.nombre || equipo.ip;
+      const nombreLimpio = nombreCompleto
+        .replace(/^VARIADOR\s*-\s*/i, '')
+        .trim();
+      categorias.push(nombreLimpio);
+
+      const voltajes = equipo.data
+        .map((d: any) => d.voltaje)
+        .filter((v: number) => v !== undefined);
+      const corrientes = equipo.data
+        .map((d: any) => d.corriente)
+        .filter((v: number) => v !== undefined);
+      const potencias = equipo.data
+        .map((d: any) => d.potencia)
+        .filter((v: number) => v !== undefined);
+
+      const avg = (arr: number[]) =>
+        arr.length
+          ? Math.round(
+              (arr.reduce((a: number, b: number) => a + b, 0) / arr.length) *
+                100
+            ) / 100
+          : 0;
+
+      voltajeSeries.push(avg(voltajes));
+      corrienteSeries.push(avg(corrientes));
+      potenciaSeries.push(avg(potencias));
+    }
+
+    this.voltajeChart = {
+      chart: {
+        type: 'bar',
+        height: 300,
+        toolbar: {
+          show: true,
+          tools: {
+            download: true,
+            selection: true,
+            zoom: true,
+            zoomin: true,
+            zoomout: true,
+            pan: true,
+            reset: true,
+            customIcons: [],
+          },
+          autoSelected: 'zoom',
+        },
+        animations: { enabled: false },
+      },
+      plotOptions: {
+        bar: {
+          borderRadius: 4,
+          columnWidth: '50%',
+          dataLabels: {
+            position: 'top',
+          },
+        },
+      },
+      dataLabels: {
+        enabled: true,
+        offsetY: -20,
+        style: {
+          fontSize: '12px',
+          colors: ['#304758'],
+        },
+        formatter: (val: number) => `${val.toFixed(1)} V`,
+      },
+      xaxis: {
+        categories: categorias,
+        labels: {
+          rotate: -15,
+          style: { fontSize: '12px' },
+        },
+      },
+      yaxis: {
+        title: { text: 'Voltaje (V)' },
+        labels: { formatter: (val: number) => `${val.toFixed(1)} V` },
+      },
+      series: [
+        {
+          name: 'Voltaje promedio',
+          data: voltajeSeries,
+        },
+      ],
+      tooltip: {
+        y: {
+          formatter: (val: number) => `${val.toFixed(2)} V`,
+        },
+      },
+    };
+
+    this.corrienteChart = {
+      chart: {
+        type: 'bar',
+        height: 300,
+        toolbar: {
+          show: true,
+          tools: {
+            download: true,
+            selection: true,
+            zoom: true,
+            zoomin: true,
+            zoomout: true,
+            pan: true,
+            reset: true,
+            customIcons: [],
+          },
+          autoSelected: 'zoom',
+        },
+        animations: { enabled: false },
+      },
+      plotOptions: {
+        bar: {
+          borderRadius: 4,
+          columnWidth: '50%',
+          dataLabels: {
+            position: 'top',
+          },
+        },
+      },
+      dataLabels: {
+        enabled: true,
+        offsetY: -20,
+        style: {
+          fontSize: '12px',
+          colors: ['#304758'],
+        },
+        formatter: (val: number) => `${val.toFixed(1)} A`,
+      },
+      yaxis: {
+        title: { text: 'Corriente (A)' },
+        labels: {
+          formatter: (val: number) => `${val.toFixed(1)} A`,
+        },
+      },
+      series: [
+        {
+          name: 'Corriente promedio',
+          data: corrienteSeries,
+        },
+      ],
+      tooltip: {
+        y: {
+          formatter: (val: number) => `${val.toFixed(2)} A`,
+        },
+      },
+      xaxis: {
+        categories: categorias,
+        labels: {
+          rotate: -15,
+          style: { fontSize: '12px' },
+        },
+      },
+    };
+
+    this.potenciaChart = {
+      chart: {
+        type: 'bar',
+        height: 300,
+        toolbar: {
+          show: true,
+          tools: {
+            download: true,
+            selection: true,
+            zoom: true,
+            zoomin: true,
+            zoomout: true,
+            pan: true,
+            reset: true,
+            customIcons: [],
+          },
+          autoSelected: 'zoom',
+        },
+
+        animations: { enabled: false },
+      },
+      plotOptions: {
+        bar: {
+          borderRadius: 4,
+          columnWidth: '50%',
+          dataLabels: {
+            position: 'top',
+          },
+        },
+      },
+      dataLabels: {
+        enabled: true,
+        offsetY: -20,
+        style: {
+          fontSize: '12px',
+          colors: ['#304758'],
+        },
+        formatter: (val: number) => `${val.toFixed(2)} kW`,
+      },
+      yaxis: {
+        title: { text: 'Potencia (kW)' },
+        labels: {
+          formatter: (val: number) => `${val.toFixed(2)} kW`,
+        },
+      },
+      series: [
+        {
+          name: 'Potencia promedio',
+          data: potenciaSeries,
+        },
+      ],
+      tooltip: {
+        y: {
+          formatter: (val: number) => `${val.toFixed(2)} kW`,
+        },
+      },
+      xaxis: {
+        categories: categorias,
+        labels: {
+          rotate: -15,
+          style: { fontSize: '12px' },
+        },
+      },
+    };
+  }
+
+  get metricasPromedio(): string[] {
+    return ['voltaje', 'corriente', 'potencia'];
+  }
+  tiempoPromedioVariadores = 0;
 }
