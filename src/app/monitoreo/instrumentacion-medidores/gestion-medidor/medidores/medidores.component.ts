@@ -1,5 +1,6 @@
 import {
   Component,
+  Inject,
   inject,
   OnDestroy,
   OnInit,
@@ -13,6 +14,8 @@ import { SocketService } from '../../../../services/socket.service';
 import { interval, Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { ChartType, NgApexchartsModule } from 'ng-apexcharts';
+import { ChangeDetectorRef } from '@angular/core';
+
 import {
   ApexAxisChartSeries,
   ApexChart,
@@ -27,7 +30,29 @@ import {
 } from 'ng-apexcharts';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TabViewModule } from 'primeng/tabview';
-
+type GraficoPromedio = {
+  chart: ApexChart;
+  xaxis?: any;
+  yaxis: ApexYAxis;
+  series: ApexAxisChartSeries;
+  plotOptions?: any;
+  dataLabels?: any;
+  tooltip?: any;
+  colors?: string[]; // ✅ Agrega esta línea
+};
+type GraficoPie = {
+  series: number[];
+  chart: ApexChart;
+  labels: string[];
+  tooltip: {
+    y: { formatter: (val: number) => string };
+  };
+  dataLabels: {
+    enabled: boolean;
+    formatter: (val: number) => string;
+  };
+  legend: ApexLegend;
+};
 @Component({
   selector: 'app-medidores',
   standalone: true,
@@ -37,7 +62,7 @@ import { TabViewModule } from 'primeng/tabview';
     FormsModule,
     RouterModule,
     NgApexchartsModule,
-    TabViewModule
+    TabViewModule,
   ],
   templateUrl: './medidores.component.html',
   styleUrl: './medidores.component.scss',
@@ -47,6 +72,10 @@ export class MedidoresComponent implements OnInit, OnDestroy {
   private readonly _router = inject(Router);
   private readonly _plcData = inject(DataPlcService);
   private readonly _socketService = inject(SocketService);
+  constructor(
+    private cdr: ChangeDetectorRef
+  ) {}
+  
 
   ip: string | null = null;
   plcInfo: any;
@@ -105,7 +134,7 @@ export class MedidoresComponent implements OnInit, OnDestroy {
     const hora = ahora.toLocaleTimeString('es-EC', { hour12: false });
     this.fechaHoraActual = `${fecha} | ${hora}`;
   }
-
+  historicoData: any;
   getDataMedidor() {
     this._plcData.getListaEquipos().subscribe({
       next: (resp) => {
@@ -114,229 +143,188 @@ export class MedidoresComponent implements OnInit, OnDestroy {
         );
         this.obtenerDataHistoricoPlc();
         this._socketService.receiveHistoricoPlcData().subscribe((data) => {
+          console.log('historico', data);
           const historicoEquipo = data.find((item: any) => item.ip === this.ip);
           if (!historicoEquipo) return;
-
-          const datosReversados = [...historicoEquipo.data].reverse();
-
-          if (this.chartOptions.length === 0) {
-            this.generarGraficosHistoricosPM(datosReversados);
-          } else {
-            console.log('actualizando graficos');
-            this.actualizarSeriesGraficosPM(datosReversados);
-          }
+          this.historicoData = historicoEquipo;
+          this.generarGraficosPm();
+          this.calcularConsumoEnergia()
         });
       },
       error: (err) => {},
     });
   }
 
+
+
+
+  generarGraficosPm(): void {
+    const equipo = this.historicoData;
+    const data = equipo.data;
+  
+    const avg = (arr: number[], ignorarNegativos = false) => {
+      const filtrados = arr.filter((v) => v !== undefined && v !== null && (!ignorarNegativos || v >= 0));
+      return filtrados.length
+        ? Math.round((filtrados.reduce((a, b) => a + b, 0) / filtrados.length) * 100) / 100
+        : 0;
+    };
+    
+    const metricas = {
+      corriente: ['CORRIENTE_A', 'CORRIENTE_B', 'CORRIENTE_C', 'CORRIENTE_TOT'],
+      voltaje: ['VOLTAJE_AB', 'VOLTAJE_BC', 'VOLTAJE_CA', 'VOLTAJE_TOT'],
+      potencia: ['POT_A', 'POT_B', 'POT_C', 'POT_TOT'],
+      frecuencia: ['FHZ_TOT'],
+      fp: ['FPOT_A', 'FPOT_B', 'FPOT_C', 'FPOT_TOT'],
+    };
+  
+    const procesar = (keys: string[]) =>
+      keys.map((k) => {
+        const valores = data
+          .map((d: any) => d[k])
+          .filter((v: any) => v !== undefined && v !== null);
+    
+        const promedio = avg(valores);
+    
+        console.log(`🔍 Métrica: ${k}`);
+        console.log(`   Valores:`, valores);
+        console.log(`   Promedio: ${promedio}`);
+    
+        return promedio;
+      });
+    
+  
+    this.corrienteChart = this.generarGraficoBarra(
+      'Corriente por Fase (A)',
+      ['A', 'B', 'C', 'TOTAL'],
+      procesar(metricas.corriente),
+      'A'
+    );
+  
+    this.voltajeChart = this.generarGraficoBarra(
+      'Voltaje por Fase (V)',
+      ['AB', 'BC', 'CA', 'TOTAL'],
+      procesar(metricas.voltaje),
+      'V'
+    );
+  
+    this.potenciaChart = this.generarGraficoBarra(
+      'Potencia por Fase (kW)',
+      ['A', 'B', 'C', 'TOTAL'],
+      procesar(metricas.potencia),
+      'kW'
+    );
+    console.log('potencia', this.potenciaChart);
+  
+    this.frecuenciaChart = this.generarGraficoBarra(
+      'Frecuencia (Hz)',
+      ['TOTAL'],
+      procesar(metricas.frecuencia),
+      'Hz'
+    );
+  
+    this.fpChart = this.generarGraficoBarra(
+      'Factor de Potencia',
+      ['A', 'B', 'C', 'TOTAL'],
+      procesar(metricas.fp),
+      ''
+    );
+  
+    this.cdr.detectChanges();
+  }
+  
+  
+  
+  generarGraficoBarra(
+    titulo: string,
+    categorias: string[],
+    data: number[],
+    unidad: string
+  ): GraficoPromedio {
+    return {
+      chart: {
+        type: 'bar',
+        height: 300,
+        toolbar: {
+          show: true,
+          tools: {
+            download: true,
+            selection: true,
+            zoom: true,
+            zoomin: true,
+            zoomout: true,
+            pan: true,
+            reset: true,
+          },
+          autoSelected: 'zoom',
+        },
+        animations: { enabled: false },
+      },
+      colors: ['#FF6384', '#36A2EB', '#FFCE56', '#2ECC71'], // ✅ Aquí defines los colores
+      plotOptions: {
+        bar: {
+          borderRadius: 4,
+          columnWidth: '50%',
+          distributed: true, // ✅ Esto aplica un color por barra
+          dataLabels: {
+            position: 'top',
+          },
+        },
+      },
+      
+      dataLabels: {
+        enabled: true,
+        offsetY: -20,
+        style: {
+          fontSize: '12px',
+          colors: ['#304758'],
+        },
+        formatter: (val: number) => `${val.toFixed(2)} ${unidad}`,
+      },
+      xaxis: {
+        categories: categorias,
+        labels: {
+          rotate: -15,
+          style: { fontSize: '12px' },
+        },
+      },
+      yaxis: {
+        title: { text: titulo },
+        labels: {
+          formatter: (val: number) => `${val.toFixed(2)} ${unidad}`,
+        },
+      },
+      series: [
+        {
+          name: titulo,
+          data,
+        },
+      ],
+      tooltip: {
+        y: {
+          formatter: (val: number) => `${val.toFixed(2)} ${unidad}`,
+        },
+      },
+    };
+  }
+  
+
+    // por defecto las fechas son del día actual
+    fechaActual: Date = new Date();
+    fechaInicio: Date = new Date(
+      this.fechaActual.getTime() - 24 * 60 * 60 * 1000
+    ); // hace 24 horas
+    fechaFin: Date = new Date(this.fechaActual.getTime() + 24 * 60 * 60 * 1000); // dentro de 24 horas
   obtenerDataHistoricoPlc() {
     clearInterval(this.actualizacionInterval);
     if (!this.plcMedidor?.ip) return;
 
     this._socketService.sendFindHistoricoPlcData(
       [this.plcMedidor.ip],
-      this.tiempoHistorico,
+      this.fechaInicio,
+      this.fechaFin,
       'pm'
     );
-    this.actualizacionInterval = setInterval(() => {
-      this._socketService.sendFindHistoricoPlcData(
-        [this.plcMedidor.ip],
-        this.tiempoHistorico,
-        'pm'
-      );
-    }, this.refresco);
-  }
-  generarGraficosHistoricosPM(data: any[]) {
-    const categorias: Record<
-      string,
-      { campos: string[]; total?: string; unidad: string }
-    > = {
-      Corriente: {
-        campos: ['CORRIENTE_A', 'CORRIENTE_B', 'CORRIENTE_C'],
-        total: 'CORRIENTE_TOT',
-        unidad: 'A',
-      },
-      Voltaje: {
-        campos: ['VOLTAJE_AB', 'VOLTAJE_BC', 'VOLTAJE_CA'],
-        total: 'VOLTAJE_TOT',
-        unidad: 'V',
-      },
-      Potencia: {
-        campos: ['POT_A', 'POT_B', 'POT_C'],
-        total: 'POT_TOT',
-        unidad: 'kW',
-      },
-      Frecuencia: { campos: ['FHZ_TOT'], unidad: 'Hz' },
-      'Factor de Potencia': {
-        campos: ['FPOT_A', 'FPOT_B', 'FPOT_C'],
-        total: 'FPOT_TOT',
-        unidad: '',
-      },
-      Energía: { campos: ['ENERG'], unidad: 'kWh' }, // ✅ agregado
-    };
-
-    const fechas = data.map((d: any) => new Date(d.fecha).toLocaleTimeString());
-    this.fechasHistorico = fechas;
-    this.chartOptions = [];
-
-    for (const [titulo, grupo] of Object.entries(categorias)) {
-      const series: any[] = [];
-
-      for (const campo of grupo.campos) {
-        series.push({
-          name: campo.replace(/_/g, ' '),
-          data: data.map((d: any) => this.redondear(d[campo])),
-        });
-      }
-
-      if (grupo.total) {
-        const campoTotal = grupo.total;
-        series.push({
-          name: campoTotal.replace(/_/g, ' ') + ' (Total)',
-          data: data.map((d: any) => this.redondear(d[campoTotal])),
-          color: '#FF0000',
-        });
-      }
-
-      this.chartOptions.push(
-        this.generarOpcionGrafico(titulo, series, grupo.unidad)
-      );
-    }
-  }
-
-  actualizarSeriesGraficosPM(data: any[]) {
-    this.fechasHistorico = data.map((d: any) =>
-      new Date(d.fecha).toLocaleString('es-EC', {
-        day: '2-digit',
-        month: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false,
-      })
-    );
-    
-
-    const categorias: Record<string, { campos: string[]; total?: string }> = {
-      Corriente: {
-        campos: ['CORRIENTE_A', 'CORRIENTE_B', 'CORRIENTE_C'],
-        total: 'CORRIENTE_TOT',
-      },
-      Voltaje: {
-        campos: ['VOLTAJE_AB', 'VOLTAJE_BC', 'VOLTAJE_CA'],
-        total: 'VOLTAJE_TOT',
-      },
-      Potencia: { campos: ['POT_A', 'POT_B', 'POT_C'], total: 'POT_TOT' },
-      Frecuencia: { campos: ['FHZ_TOT'] },
-      'Factor de Potencia': {
-        campos: ['FPOT_A', 'FPOT_B', 'FPOT_C'],
-        total: 'FPOT_TOT',
-      },
-      Energía: { campos: ['ENERG']}, // ✅ agregado
-    };
-
-    const titulos = Object.keys(categorias);
-
-    if (this.chartRefs.length !== titulos.length) {
-      console.warn(
-        'Gráficos aún no renderizados completamente. Se omite actualización.'
-      );
-      return;
-    }
-
-    this.chartRefs.forEach((chart, index) => {
-      const { campos, total } = categorias[titulos[index]];
-      const nuevasSeries: any[] = [];
-
-      for (const campo of campos) {
-        nuevasSeries.push({
-          name: campo.replace(/_/g, ' '),
-          data: data.map((d: any) => this.redondear(d[campo])),
-        });
-      }
-
-      if (total) {
-        nuevasSeries.push({
-          name: total.replace(/_/g, ' ') + ' (Total)',
-          data: data.map((d: any) => this.redondear(d[total])),
-          color: '#FF0000',
-        });
-      }
-
-      chart.updateOptions({
-        series: nuevasSeries,
-        xaxis: {
-          categories: this.fechasHistorico,
-          tickAmount: 6,
-          labels: {
-            show: true,
-            rotate: -45,
-            formatter: (val: string) => val,
-          }
-        }
-      }, false, true);
-      
-      
-      
-    });
-  }
-
-  generarSerie(tipo: string, data: any[]) {
-    const valores = data.map((d: any) => this.redondear(d[tipo]));
-
-    return [
-      {
-        name: this.plcMedidor?.nombre || 'Equipo',
-        data: valores,
-      },
-      {
-        name: 'Base',
-        data: Array(valores.length).fill(0),
-        color: 'transparent',
-      },
-    ];
-  }
-  generarOpcionGrafico(
-    titulo: string,
-    series: ApexAxisChartSeries,
-    unidad: string = ''
-  ): Partial<{
-    series: ApexAxisChartSeries;
-    chart: ApexChart;
-    xaxis: ApexXAxis;
-    yaxis: ApexYAxis;
-    stroke: ApexStroke;
-    title: ApexTitleSubtitle;
-    legend: ApexLegend;
-    dataLabels: ApexDataLabels;
-  }> {
-    return {
-      series,
-      title: { text: titulo },
-      chart: {
-        type: 'line' as ChartType,
-        height: 300,
-        animations: { enabled: false },
-        toolbar: { show: false },
-      },
-      stroke: { curve: 'smooth', width: 3 },
-      xaxis: { categories: this.fechasHistorico },
-      yaxis: {
-        min: 0,
-        forceNiceScale: true,
-        tickAmount: 5,
-        labels: {
-          formatter: (val: number) =>
-            `${val?.toFixed(2)}${unidad ? ' ' + unidad : ''}`,
-        },
-      },
-      legend: {
-        show: true,
-        labels: { colors: ['#000'] },
-      },
-      dataLabels: { enabled: false },
-    };
+  
   }
 
   redondear(valor: any) {
@@ -366,11 +354,10 @@ export class MedidoresComponent implements OnInit, OnDestroy {
     this.tiempoHistorico = valor;
     this.obtenerDataHistoricoPlc(); // siempre se aplica de inmediato
   }
-  
 
   onCambioRefresco(): void {
     clearInterval(this.actualizacionInterval);
-  
+
     if (this.refresco > 0 && this.plcMedidor?.ip) {
       this.actualizacionInterval = setInterval(() => {
         this._socketService.sendFindHistoricoPlcData(
@@ -381,8 +368,6 @@ export class MedidoresComponent implements OnInit, OnDestroy {
       }, this.refresco);
     }
   }
-  
-  
 
   @ViewChildren('chartRef') chartRefs!: QueryList<any>;
 
@@ -393,42 +378,159 @@ export class MedidoresComponent implements OnInit, OnDestroy {
   showFp = false;
 
   fechaDesde: string = '';
-fechaHasta: string = '';
-consumoTotal: number | null = null;
-costoTotal: number | null = null;
+  fechaHasta: string = '';
+  consumoTotal: number | null = null;
+  costoTotal: number | null = null;
 
+  async calcularConsumoEnergia() {
+    //validar si fecha es date o string y convertir a string con variable solo const para este caso
+    const fechaInicioString = new Date(this.fechaInicio)
+      .toISOString()
+      .split('T')[0];
+    const fechaFinString = new Date(this.fechaFin).toISOString().split('T')[0];
 
-async calcularConsumoEnergia() {
-  if (!this.fechaDesde || !this.fechaHasta) return;
+    console.log('📤 Enviando histórico de energía desde');
+    console.log(fechaInicioString, 'hasta', fechaFinString);
+    const body = {
+      ips: [this.plcMedidor.ip],
+      desde: fechaInicioString,
+      hasta: fechaFinString,
+    };
 
-  const body = {
-    ips: [this.plcMedidor?.ip],
-    desde: this.fechaDesde,
-    hasta: this.fechaHasta
-  };
-
-  try {
-    this._plcData.getHistoricoEnergia(body).subscribe({
-      next: (resultado) => {
-        if (resultado?.length) {
-          this.consumoTotal = resultado[0].consumo;
-          this.costoTotal = resultado[0].costo;
-        } else {
+    try {
+      this._plcData.getHistoricoEnergia(body).subscribe({
+        next: (resultado) => {
+          console.log('Resultado:', resultado);
+          this.generarGraficoConsumoEnergiaPie(resultado);
+        },
+        error: (err) => {
+          console.error('Error consultando energía:', err);
           this.consumoTotal = null;
           this.costoTotal = null;
-        }
-      },
-      error: (err) => {
-        console.error('Error consultando energía:', err);
-        this.consumoTotal = null;
-        this.costoTotal = null;
-      }
-    })
- 
-  } catch (err) {
-    console.error('Error consultando energía:', err);
+        },
+      });
+    } catch (err) {
+      console.error('Error consultando energía:', err);
+    }
   }
-}
+
+  generarGraficoConsumoEnergiaPie(resultado: any[]): void {
+    const series: number[] = [];
+    const labels: string[] = [];
+    let totalConsumo = 0;
+    let totalCosto = 0;
+  
+    for (const item of resultado) {
+      const consumo = item.dias.reduce((sum: number, d: any) => sum + d.consumo, 0);
+      const costo = item.dias.reduce((sum: number, d: any) => sum + d.costo, 0);
+  
+      if (consumo <= 0) continue;
+  
+  
+  
+      series.push(consumo);
+
+  
+      totalConsumo += consumo;
+      totalCosto += costo;
+    }
+  
+    this.totalEnergiaKwh = totalConsumo.toFixed(2);
+    this.totalCostoEnergia = totalCosto.toFixed(2);
+  
+    this.consumoEnergiaPieChart = {
+      series: [totalConsumo],
+      labels: ['Energía Consumida (kWh)'],
+      chart: {
+        type: 'donut',
+        height: 320,
+        toolbar: {
+          show: true,
+          tools: { download: true },
+        },
+      },
+      tooltip: {
+        y: {
+          formatter: (val: number, opts?: any) =>
+            opts?.seriesIndex === 1 ? `$${val.toFixed(2)}` : `${val.toFixed(2)} kWh`,
+        },
+      },
+      dataLabels: {
+        enabled: true,
+        formatter: (val: number) => `${val.toFixed(1)}%`,
+      },
+      legend: {
+        position: 'bottom',
+        fontSize: '14px',
+        formatter: (label: string, opts: any) =>
+          opts?.seriesIndex === 1
+            ? `${label}: $${opts.w.globals.series[opts.seriesIndex].toFixed(2)}`
+            : `${label}: ${opts.w.globals.series[opts.seriesIndex].toFixed(2)} kWh`,
+      },
+    };
+    
+  }
+  voltajeChart: GraficoPromedio = {
+    chart: { type: 'bar', height: 250 },
+    xaxis: { categories: [] },
+    yaxis: {},
+    series: [],
+  };
+
+  corrienteChart: GraficoPromedio = {
+    chart: { type: 'bar', height: 250 },
+    xaxis: { categories: [] },
+    yaxis: {},
+    series: [],
+  };
+
+  potenciaChart: GraficoPromedio = {
+    chart: { type: 'bar', height: 250 },
+    xaxis: { categories: [] },
+    yaxis: {},
+    series: [],
+  };
+  consumoEnergiaPieChart: GraficoPie = {
+    series: [],
+    chart: { type: 'pie', height: 300 },
+    labels: [],
+    tooltip: {
+      y: { formatter: (val: number) => `${val} kWh` },
+    },
+    dataLabels: {
+      enabled: true,
+      formatter: (val: number) => `${val.toFixed(1)}%`,
+    },
+    legend: {
+      show: true,
+      position: 'right',
+      formatter: (label: string, opts: any) =>
+        `${label}: ${opts.w.globals.series[opts.seriesIndex].toFixed(2)} kWh`,
+    },
+  };
+
+  frecuenciaChart: GraficoPromedio = {
+    chart: { type: 'bar', height: 250 },
+    xaxis: { categories: [] },
+    yaxis: {},
+    series: [],
+  };
+  fpChart: GraficoPromedio = {
+    chart: { type: 'bar', height: 250 },
+    xaxis: { categories: [] },
+    yaxis: {},
+    series: [],
+  };
+
+  totalEnergiaKwh: string;
+  totalCostoEnergia: string;
+
+  onTabChange(index: number): void {
+
+    this.getDataMedidor();
+   
+  }
 
 
+  
 }

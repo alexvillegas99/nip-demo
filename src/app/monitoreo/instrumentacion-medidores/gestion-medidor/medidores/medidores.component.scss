@@ -20,7 +20,7 @@
 }
 .pm-quick-view-card {
   background: #ffffff;
-  border-radius: 12px;
+  border-radius: 12px; 
   padding: 1.5rem;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
   font-family: 'Poppins', sans-serif;
@@ -284,4 +284,84 @@
   input[type='number'] {
     width: 70px;
   }
+}
+.dashboard-layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 1.5rem;
+  padding: 1rem;
+}
+
+.widget-card {
+  background-color: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 1.5rem;
+  transition: transform 0.2s ease-in-out;
+}
+
+.widget-card:hover {
+  transform: translateY(-4px);
+}
+
+.widget-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.totales {
+  margin-top: 1rem;
+  font-size: 1rem;
+  color: #444;
+
+  p {
+    margin: 0.3rem 0;
+  }
+
+  strong {
+    color: #111;
+  }
+}
+
+.filtros-horizontales {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: #f9fbfc;
+  padding: 1rem 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  flex-wrap: wrap;
+  max-width: 100%;
+  margin-bottom: 1.5rem;
+}
+
+.filtros-horizontales label {
+  font-weight: 600;
+  color: #2d3e50;
+}
+
+.filtros-horizontales input[type='datetime-local'] {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  min-width: 220px;
+}
+
+.btn-consultar {
+  padding: 0.6rem 1.2rem;
+  background-color: #004d99;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-consultar:hover {
+  background-color: #003366;
 }

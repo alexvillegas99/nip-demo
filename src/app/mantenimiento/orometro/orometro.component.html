@@ -1,136 +1,78 @@
-<div class="container-fluid" *ngIf="!screenOrometro">
-    <div class="flex-container">
-      <div class="item">
-        <h1>MANTENIMIENTO</h1>
-      </div>
-      <div class="item"></div>
-    </div>
+<div class="container-fluid" *ngIf="!screenOrometro" style="margin-top: 1.5rem;">
+  <div class="titulo-seccion">
+    <h1>MANTENIMIENTO</h1>
+    <h2>Lista de Variadores</h2>
+  </div>
+  <div class="filtros-horizontales">
+    <label for="fechaInicio">🗓️ Inicio:</label>
+    <input id="fechaInicio" type="datetime-local" [(ngModel)]="fechaInicio" />
   
-
+    <label for="fechaFin">🗓️ Fin:</label>
+    <input id="fechaFin" type="datetime-local" [(ngModel)]="fechaFin" />
   
-    <div class="flex-container">
-      <div class="item">
-        <h1>Lista de varidores</h1>
-      </div>
-      <div class="item"></div>
-    </div>
+    <button class="btn-consultar" (click)="buscarHorometro()">🔍 Consultar</button>
+  </div>
   
-    <div class="compresores">
-      @if (screen1) {
-      <div class="row">
-        @for (item of equipos; track $index) {
-  
-        <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 col-6 mb-2">
-          <div class="card">
-            <div class="card-body card-mantenimiento">
-              <div class="imagen">
-                <img [src]="item.imagen" alt="img_comprensor" style="width: 75px; height: 100px; object-fit: contain;"  />
+  <div class="row">
+    @for (item of equipos; track $index) {
+      <div class="col-12 col-md-6 col-lg-4 mb-4">
+        <div class="card shadow tarjeta-equipo">
+          <div class="card-body card-mantenimiento d-flex flex-column flex-md-row align-items-center">
+            <div class="imagen me-3 text-center">
+              <img
+                [src]="item.imagen"
+                alt="img_comprensor"
+                class="img-fluid"
+                style="max-height: 100px; object-fit: contain"
+              />
+              <div class="horas-trabajadas">
+                <h3>{{ item?.totalHoras }}</h3>
+                <p>Horas trabajadas</p>
               </div>
-              <div class="info-1">
-                <h1>{{this.id ==='variadores' ? 'Variadores' : 'PM'}}:</h1>
-                <h2>{{item.nombre}}</h2>
-  
-                <p> <img src="assets/imgs/icons/clock.svg" alt="img_clock" style="margin-right: .4rem;">{{fechaActual | date:'dd/mm/yyyy | hh:mm:ss'}}</p>
-  
-                <button class="btn boton-1" (click)="navegar(item.ip)">
-                  Gestionar 
+            </div>
+
+            <div class="flex-fill">
+              <div class="d-flex justify-content-between flex-wrap">
+                <div class="info-block mb-2">
+                  <h5 class="text-muted">Nombre</h5>
+                  <h4>{{ item.nombre }}</h4>
+                </div>
+
+                <div class="info-block mb-2">
+                  <h5 class="text-muted">Modelo</h5>
+                  <h4>{{ item.modelo }}</h4>
+                </div>
+
+                <div class="info-block mb-2">
+                  <h5 class="text-muted">Serie</h5>
+                  <h4>{{ item.serie }}</h4>
+                </div>
+
+                <div class="info-block mb-2">
+                  <h5 class="text-muted">Área</h5>
+                  <h4>{{ item.area | uppercase }}</h4>
+                </div>
+
+                <div class="info-block mb-2">
+                  <h5 class="text-muted">IP</h5>
+                  <h4>{{ item.ip }}</h4>
+                </div>
+
+                <div class="info-block mb-2">
+                  <h5 class="text-muted">Conexión</h5>
+                  <h4>Remota</h4>
+                </div>
+              </div>
+
+              <div class="text-end mt-3">
+                <button class="btn btn-primary">
+                  <i class="bi bi-arrow-clockwise me-1"></i> Reiniciar
                 </button>
               </div>
-              <div class="info-2">
-                <h1>Modelo:</h1>
-                <h2>{{item.modelo}}</h2> 
-  
-                <p><img src="assets/imgs/icons/current.svg" alt="img_current">Conexión: Remota</p>
-              </div>
-              <div class="info-3">
-                <h1>Número de serie:</h1>
-                <h2>{{item.serie}}</h2>
-  
-                <h1>Nombre Equipo:</h1>
-                <h2>{{item.nombre}}</h2>
-              </div>
-              <div class="info-4">
-                <h1>Área:</h1>
-                <h2>#{{item.area | uppercase}}</h2>
-  
-                 <h1>IP:</h1>
-                <h2>{{item.ip}}</h2> 
-              </div>
-  
             </div>
           </div>
         </div>
-        }
       </div>
-      }
-    </div>
+    }
   </div>
-
-  <div class="container-fluid mt-3" *ngIf="screenOrometro">
-    <button class="btn btn-outline-secondary mb-3" (click)="screen1 = true; screenOrometro = false">
-      ← Volver
-    </button>
-  
-    <div class="card shadow-sm p-4">
-      <h4 class="mb-3">
-        <strong>Gestión de Orómetro para</strong> {{ selectedEquipo?.nombre?.toUpperCase() }}
-      </h4>
-  
-      <div class="row mb-3">
-        <div class="col-md-4">
-          <p><strong>IP:</strong> {{ selectedEquipo?.ip }}</p>
-        </div>
-        <div class="col-md-4">
-          <p><strong>Modelo:</strong> {{ selectedEquipo?.modelo }}</p>
-        </div>
-        <div class="col-md-4">
-          <p><strong>Área:</strong> {{ selectedEquipo?.area }}</p>
-        </div>
-      </div>
-  
-      <form (ngSubmit)="guardarOrometro()" #formOrometro="ngForm">
-        <div class="row g-3">
-          <div class="col-md-4">
-            <label class="form-label">Tiempo Total (horas):</label>
-            <input
-              type="number"
-              class="form-control"
-              [(ngModel)]="orometroData.tiempoTotalSegundos"
-              name="tiempoTotalSegundos"
-              [value]="orometro?.tiempoTotalSegundos || 0"
-              required
-            />
-          </div>
-  
-          <div class="col-md-4">
-            <label class="form-label">Próximo Mantenimiento:</label>
-            <input
-              type="date"
-              class="form-control"
-              [(ngModel)]="orometroData.proximoMantenimiento"
-              name="proximoMantenimiento"
-              required
-            />
-          </div>
-  
-          <div class="col-md-4">
-            <label class="form-label">Tarea Programada:</label>
-            <input
-              type="text"
-              class="form-control"
-              [(ngModel)]="orometroData.tareaProgramada"
-              name="tareaProgramada"
-              required
-            />
-          </div>
-        </div>
-  
-        <div class="mt-4 d-flex justify-content-end">
-          <button class="btn btn-primary px-4" type="submit">
-            {{ orometro ? 'Actualizar' : 'Crear' }} Orómetro
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-  
+</div>

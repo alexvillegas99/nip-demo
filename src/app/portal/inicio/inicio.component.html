@@ -45,7 +45,7 @@
                      'fa-circle text-danger': item.estado === 'FALLA',
                      'fa-circle text-warning': item.estado === 'READY'
                    }"></i>
-              Estado: {{ item.estado }}
+              Estado: {{ traducirNombre(item.estado) }}
             </span>
             }
 
