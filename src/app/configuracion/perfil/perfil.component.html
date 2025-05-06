@@ -1,1 +1,30 @@
-<p>perfil works!</p>
+<div class="filters">
+    <div class="item">
+        <app-search [label]="'Buscar por nombre'" (searchText)="textoFiltrado($event)"></app-search>
+    </div>
+
+    <div class="item">
+        <button type="button" class="btn boton-1 " (click)="abrirModal(modalDispositivo)">
+            <i class="fa fa-plus" aria-hidden="true"></i> Crear nuevo perfil
+        </button>
+    </div>
+</div>
+
+
+
+
+<ng-template #modalDispositivo let-modal>
+    <form [formGroup]="formDispositivo">
+        <div class="modal-body">
+
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-cancel" (click)="modalDispositivoRef?.hide()">
+                Cancelar
+            </button>
+            <button class="btn btn-primary" [disabled]="formDispositivo.invalid">
+                Guardar
+            </button>
+        </div>
+    </form>
+</ng-template>
