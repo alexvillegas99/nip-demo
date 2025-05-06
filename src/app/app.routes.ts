@@ -1,4 +1,3 @@
-
 import { Routes } from '@angular/router';
 import { InicioComponent } from './portal/inicio/inicio.component';
 import { AlarmasComponent } from './portal/alarmas/alarmas.component';
@@ -25,6 +24,8 @@ import { UsuariosComponent } from './usuarios/usuarios.component';
 import { PantallaVariadoresComponent } from './monitoreo/instrumentacion-medidores/gestion-variadores/pantalla-variadores/pantalla-variadores.component';
 import { VariadoresComponent } from './monitoreo/instrumentacion-medidores/gestion-variadores/variadores/variadores.component';
 import { OrometroComponent } from './mantenimiento/orometro/orometro.component';
+import { ListaEquipoComponent } from './configuracion/lista-equipo/lista-equipo.component';
+import { PerfilComponent } from './configuracion/perfil/perfil.component';
 
 export const routes: Routes = [
   {
@@ -152,8 +153,6 @@ export const routes: Routes = [
                     title: 'Variador',
                     component: VariadoresComponent,
                   },
-                
-                
                 ],
               },
             ],
@@ -190,7 +189,7 @@ export const routes: Routes = [
             title: 'Gestión de Orometro',
             component: OrometroComponent,
           },
-         /*  {
+          /*  {
             path: '',
             redirectTo: 'gestion-mantenimiento',
             pathMatch: 'full', // Esto asegura que solo redirija cuando la URL es exactamente vacía
@@ -201,6 +200,23 @@ export const routes: Routes = [
         path: 'configuracion',
         title: 'Configuracion',
         component: ConfiguracionComponent,
+        children: [
+          {
+            path: 'gestion-equipos',
+            title: 'Gestión de equipos',
+            component: ListaEquipoComponent,
+          },
+          {
+            path: 'gestion-perfiles',
+            title: 'Gestión de Perfiles',
+            component: PerfilComponent,
+          },
+          {
+            path: '',
+            redirectTo: 'gestion-equipos',
+            pathMatch: 'full', // Esto asegura que solo redirija cuando la URL es exactamente vacía
+          },
+        ],
       },
       {
         path: 'usuarios',
@@ -212,7 +228,6 @@ export const routes: Routes = [
         redirectTo: 'portal',
         pathMatch: 'full', // Esto asegura que solo redirija cuando la URL es exactamente vacía
       },
-      
     ],
   },
 ];

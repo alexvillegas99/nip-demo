@@ -1,14 +1,34 @@
-import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Component, inject, OnInit, TemplateRef } from '@angular/core';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ListaEquiposService } from '../../services/lista-equipos.service';
+import { AlertService } from '../../services/alert.service';
+import { CommonModule } from '@angular/common';
+import { SearchComponent } from '../../shared/components/search/search.component';
+import { SelectComponent } from '../../shared/components/select/select.component';
 
 @Component({
-  selector: 'app-configuracion',
+  selector: 'app-lista-equipo',
   standalone: true,
-  imports: [RouterModule],
-  templateUrl: './configuracion.component.html',
-  styleUrl: './configuracion.component.scss',
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    CommonModule,
+    SearchComponent,
+    SelectComponent,
+  ],
+  templateUrl: './lista-equipo.component.html',
+  styleUrl: './lista-equipo.component.scss',
 })
-export class ConfiguracionComponent implements OnInit {
+export class ListaEquipoComponent implements OnInit {
   private readonly _listaEquiposService = inject(ListaEquiposService);
   private readonly fb = inject(FormBuilder);
   private readonly modalService = inject(BsModalService);

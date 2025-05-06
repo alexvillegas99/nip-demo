@@ -169,7 +169,20 @@ export const NAVBARDATA: INavbarData[] = [
     routeLink: './configuracion',
     icon: 'assets/imgs/navbar/configuracion-d.svg',
     label: 'Configuración',
-    items: [],
+    items: [
+      {
+        routeLink: './configuracion/gestion-equipos',
+        label: 'Gestión de Equipos',
+        icon: 'assets/imgs/navbar/inst-medidores-d.svg',
+        items: [],
+      },
+      {
+        routeLink: './configuracion/gestion-perfiles',
+        label: 'Gestión de Perfiles',
+        icon: 'assets/imgs/navbar/inst-medidores-d.svg',
+        items: [],
+      },
+    ],
     roles: ['Administrador', 'Operador'],
   },
   {
