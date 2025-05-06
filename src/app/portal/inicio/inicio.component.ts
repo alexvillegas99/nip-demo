@@ -1,12 +1,12 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import * as mapboxgl from 'mapbox-gl';
-import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import { environment } from '../../env/env';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DataPlcService } from '../../services/data-plc.service';
 import { NgxGaugeModule } from 'ngx-gauge';
 import { SocketService } from '../../services/socket.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-inicio',
@@ -17,6 +17,7 @@ import { SocketService } from '../../services/socket.service';
   encapsulation: ViewEncapsulation.None,
 })
 export class InicioComponent implements OnInit, OnDestroy {
+
   map: mapboxgl.Map;
   screen1 = true;
   screen2 = false;
@@ -40,7 +41,8 @@ export class InicioComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly dataPlc: DataPlcService,
-    private readonly socketService: SocketService
+    private readonly socketService: SocketService,
+    private readonly router: Router
   ) {}
 
   ngOnInit(): void {
@@ -165,7 +167,7 @@ export class InicioComponent implements OnInit, OnDestroy {
           </h3>
           <p class="popup-card-text">${marker.description}</p>
           <p class="popup-card-estado">
-            <strong>Estado:</strong> ${equipoEstado?.estado || '---'}
+            <strong>Estado:</strong> ${this.traducirNombre(equipoEstado?.estado) || '---'}
           </p>
         </div>
       `);
@@ -176,6 +178,13 @@ export class InicioComponent implements OnInit, OnDestroy {
       mapMarker.getElement().addEventListener('mouseleave', () => mapMarker.togglePopup());
       mapMarker.getElement().addEventListener('click', () => {
         console.log('Clic en el marcador:', marker);
+        const ruta =  this.getRuta(marker);
+        if (ruta.length > 0) {
+          this.router.navigate(ruta, { queryParams: { ip: marker.ip } });
+        } else {
+          console.log('Ruta no válida para el marcador:', marker);
+        }
+
       });
     });
   }
@@ -191,6 +200,18 @@ export class InicioComponent implements OnInit, OnDestroy {
       return ['../../monitoreo/instrumentacion', item.ip, 'pantalla-medidores', 'medidor'];
     }
     return [];
+  }
+
+  traducirNombre(arg0: any) {
+    if(arg0 === 'RUN') {
+      return 'EN MARCHA';
+    }else if(arg0 === 'FALLA') {
+      return 'FALLA';
+    }else if(arg0 === 'READY') {
+      return 'DETENIDO';
+    }else{
+      return '';
+    }
   }
   
 }

@@ -43,7 +43,7 @@ export class ConfiguracionComponent implements OnInit {
       code: 'variador',
     },
     {
-      nombre: 'PM',
+      nombre: 'Medidores de energía',
       code: 'pm',
     },
   ];

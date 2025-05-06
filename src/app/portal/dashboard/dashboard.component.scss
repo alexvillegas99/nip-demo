@@ -266,3 +266,144 @@ apx-chart {
 .estado-item.detenido .estado-circle {
   background-color: rgb(233, 233, 32);
 }
+.filtros-horizontales {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: #f9fbfc;
+  padding: 1rem 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  flex-wrap: wrap;
+  max-width: 100%;
+  margin-bottom: 1.5rem;
+}
+
+.filtros-horizontales label {
+  font-weight: 600;
+  color: #2d3e50;
+}
+
+.filtros-horizontales input[type='datetime-local'] {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  min-width: 220px;
+}
+
+.btn-consultar {
+  padding: 0.6rem 1.2rem;
+  background-color: #004d99;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-consultar:hover {
+  background-color: #003366;
+}
+.totales {
+  text-align: center;
+  font-size: 16px;
+  padding-top: 10px;
+
+  p {
+    margin: 0;
+    line-height: 1.8;
+  }
+}
+/* 🔻 Ajustes generales */
+.widget-card {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* 🔻 Filtros horizontales responsivos */
+.filtros-horizontales {
+  flex-wrap: wrap;
+  justify-content: center;
+
+  input[type='datetime-local'] {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+
+    input[type='datetime-local'] {
+      width: 100%;
+    }
+
+    .btn-consultar {
+      width: 100%;
+    }
+  }
+}
+
+/* 🔻 Totales responsivos */
+.totales {
+  text-align: center;
+  font-size: 16px;
+  padding-top: 10px;
+
+  p {
+    margin: 0;
+    line-height: 1.8;
+    font-size: 0.95rem;
+  }
+
+  @media (max-width: 600px) {
+    font-size: 14px;
+
+    p {
+      font-size: 0.9rem;
+    }
+  }
+}
+
+/* 🔻 Estado de equipos en móviles */
+.estado-equipos-grid {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 🔻 Layout general de dashboard */
+.dashboard-layout {
+  grid-template-columns: repeat(3, 1fr);
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 🔻 Gráficos adaptables */
+.chart-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 1.5rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+apx-chart {
+  @media (max-width: 480px) {
+    padding: 0.5rem;
+    font-size: 12px;
+  }
+}

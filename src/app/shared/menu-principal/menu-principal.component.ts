@@ -21,7 +21,7 @@ export class MenuPrincipalComponent implements OnInit {
       isSelected: false,
     },
     {
-      nombre: 'ESTADÍSTICAS',
+      nombre: 'INDICADORES',
       url: './portal/dashboard',
       icono: 'assets/imgs/icons/dashboard.png',
       isSelected: false,

@@ -139,3 +139,94 @@ label.form-label {
   font-weight: 500;
   color: #333;
 }
+.titulo-seccion h1 {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.titulo-seccion h2 {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+  color: #555;
+}
+
+.tarjeta-equipo {
+  border-radius: 1rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.tarjeta-equipo:hover {
+  transform: scale(1.01);
+}
+
+.horas-trabajadas {
+  margin-top: 1rem;
+  background-color: #f0f8ff;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 0 0 2px #007bff20;
+}
+
+.horas-trabajadas h3 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #007bff;
+  margin: 0;
+}
+
+.horas-trabajadas p {
+  font-size: 0.9rem;
+  margin: 0;
+  color: #333;
+}
+
+.info-block h5 {
+  margin-bottom: 0;
+  font-size: 0.85rem;
+}
+
+.info-block h4 {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.filtros-horizontales {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: #f9fbfc;
+  padding: 1rem 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  flex-wrap: wrap;
+  max-width: 100%;
+  margin-bottom: 1.5rem;
+}
+
+.filtros-horizontales label {
+  font-weight: 600;
+  color: #2d3e50;
+}
+
+.filtros-horizontales input[type='datetime-local'] {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  min-width: 220px;
+}
+
+.btn-consultar {
+  padding: 0.6rem 1.2rem;
+  background-color: #004d99;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-consultar:hover {
+  background-color: #003366;
+}

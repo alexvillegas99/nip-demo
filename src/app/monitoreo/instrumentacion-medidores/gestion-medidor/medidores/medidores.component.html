@@ -41,7 +41,7 @@
       </div>
     </div>
   </div>
-  <p-tabView>
+  <p-tabView (onChange)="onTabChange($event.index)">
     <!-- Tab: Información del Medidor -->
     <p-tabPanel header="Información">
       <div class="tarjetas-grid" *ngIf="plcInfo">
@@ -209,81 +209,113 @@
       </div>
     </p-tabPanel>
 
-    <!-- Tab: Gráficos -->
-    <p-tabPanel header="Gráficos">
-      <!-- 🔍 Filtros SOLO para gráficos -->
-      <div class="filtro-equipos">
-        <div class="filtro-linea">
-          <!-- Tipo de equipo -->
+    <!-- Tab: Gráficos --> 
+    <p-tabPanel header="Indicadores">
 
-          <!-- Tiempo -->
-          <div class="selector-inline">
-            <label for="tiempoHistorico">Tiempo:</label>
-            <select id="tiempoHistorico" [(ngModel)]="tiempoHistorico" (change)="onCambioTiempo(tiempoHistorico)">
-              <option value="5m">5m</option>
-              <option value="10m">10m</option>
-              <option value="1h">1h</option>
-              <option value="3h">3h</option>
-              <option value="12h">12h</option>
-              <option value="1d">1 día</option>
-              <option value="7d">7 días</option>
-            </select>
-          </div>
-
-          <!-- Refresco -->
-          <div class="selector-inline">
-            <label for="refresco">Actualizar:</label>
-            <select id="refresco" [(ngModel)]="refresco" (change)="onCambioRefresco()">
-              <option [value]="0">No</option>
-              <option [value]="5000">5s</option>
-              <option [value]="10000">10s</option>
-              <option [value]="15000">15s</option>
-              <option [value]="30000">30s</option>
-              <option [value]="60000">1min</option>
-              <option [value]="300000">5min</option>
-            </select>
-          </div>
-        </div>
+      <div class="filtros-horizontales">
+        <label for="fechaInicio">🗓️ Inicio:</label>
+        <input id="fechaInicio" type="datetime-local" [(ngModel)]="fechaInicio" />
+      
+        <label for="fechaFin">🗓️ Fin:</label>
+        <input id="fechaFin" type="datetime-local" [(ngModel)]="fechaFin" />
+      
+        <button class="btn-consultar" (click)="getDataMedidor()">🔍 Consultar</button>
       </div>
-
-      <!-- 📊 Gráficos -->
-      <div class="grid-graficos" *ngIf="chartOptions.length > 0">
-        <div class="grafico" *ngFor="let chart of chartOptions; let i = index">
-          <apx-chart #chartRef *ngIf="chart" [series]="chart.series!" [chart]="chart.chart!" [xaxis]="chart.xaxis!"
-            [title]="chart.title!" [stroke]="chart.stroke!" [legend]="chart.legend!" [dataLabels]="chart.dataLabels!"
-            [tooltip]="{ theme: 'dark' }"></apx-chart>
-
+      <div class="dashboard-layout">
+        <div class="widget-card">
+          <h3  class="widget-title">Consumo total de energía por equipo</h3>
+          
+          <apx-chart
+          *ngIf="consumoEnergiaPieChart"
+          [series]="consumoEnergiaPieChart.series"
+          [chart]="consumoEnergiaPieChart.chart"
+          [labels]="consumoEnergiaPieChart.labels"
+          [tooltip]="consumoEnergiaPieChart.tooltip"
+          [dataLabels]="consumoEnergiaPieChart.dataLabels"
+          [legend]="consumoEnergiaPieChart.legend"
+        ></apx-chart>
+        <div class="totales mt-3">
+          <p><strong>🔋 Total energía:</strong> {{ totalEnergiaKwh }} kWh</p>
+          <p><strong>💵 Total costo:</strong> ${{ totalCostoEnergia }}</p>
+        </div>
+        </div>
+        <!-- 🔌 Voltaje total PM -->
+        <div class="widget-card">
+          <h3 class="widget-title">🔌 Voltaje total</h3>
+          <apx-chart
+            [series]="voltajeChart.series"
+            [chart]="voltajeChart.chart"
+            [xaxis]="voltajeChart.xaxis"
+            [yaxis]="voltajeChart.yaxis"
+            [plotOptions]="voltajeChart.plotOptions"
+            [dataLabels]="voltajeChart.dataLabels"
+            [tooltip]="voltajeChart.tooltip" 
+          >
+          </apx-chart>
+        </div>
+    
+        <!-- ⚡ Corriente total PM -->
+        <div class="widget-card">
+          <h3 class="widget-title">⚡ Corriente total</h3>
+          <apx-chart
+            [series]="corrienteChart.series"
+            [chart]="corrienteChart.chart"
+            [xaxis]="corrienteChart.xaxis"
+            [yaxis]="corrienteChart.yaxis"
+            [plotOptions]="corrienteChart.plotOptions"
+            [dataLabels]="corrienteChart.dataLabels"
+            [tooltip]="corrienteChart.tooltip"
+          >
+          </apx-chart>
+        </div>
+    
+        <!-- 💡 Potencia total PM -->
+        <div class="widget-card">
+          <h3 class="widget-title">💡 Potencia total</h3>
+          <apx-chart
+            [series]="potenciaChart.series"
+            [chart]="potenciaChart.chart"
+            [xaxis]="potenciaChart.xaxis"
+            [yaxis]="potenciaChart.yaxis"
+            [plotOptions]="potenciaChart.plotOptions"
+            [dataLabels]="potenciaChart.dataLabels"
+            [tooltip]="potenciaChart.tooltip"
+          >
+          </apx-chart>
+        </div>
+    
+        <!-- 🔄 Frecuencia total PM -->
+        <div class="widget-card">
+          <h3 class="widget-title">🔄 Frecuencia total</h3>
+          <apx-chart
+            [series]="frecuenciaChart.series"
+            [chart]="frecuenciaChart.chart"
+            [xaxis]="frecuenciaChart.xaxis"
+            [yaxis]="frecuenciaChart.yaxis"
+            [plotOptions]="frecuenciaChart.plotOptions"
+            [dataLabels]="frecuenciaChart.dataLabels"
+            [tooltip]="frecuenciaChart.tooltip"
+          >
+          </apx-chart>
+        </div>
+    
+        <!-- ⚖️ Factor de potencia total PM -->
+        <div class="widget-card">
+          <h3 class="widget-title">⚖️ Factor de Potencia</h3>
+          <apx-chart
+            [series]="fpChart.series"
+            [chart]="fpChart.chart"
+            [xaxis]="fpChart.xaxis"
+            [yaxis]="fpChart.yaxis"
+            [plotOptions]="fpChart.plotOptions"
+            [dataLabels]="fpChart.dataLabels"
+            [tooltip]="fpChart.tooltip"
+          >
+          </apx-chart>
         </div>
       </div>
     </p-tabPanel>
-    <p-tabPanel header="Consumo Energía">
-      <div class="filtro-equipos">
-        <div class="filtro-linea">
-          <div class="selector-inline">
-            <label for="fechaDesde">Desde:</label>
-            <input type="date" id="fechaDesde" [(ngModel)]="fechaDesde" class="p-inputtext p-component" />
-          </div>
-          <div class="selector-inline">
-            <label for="fechaHasta">Hasta:</label>
-            <input type="date" id="fechaHasta" [(ngModel)]="fechaHasta" class="p-inputtext p-component" />
-          </div>
-          <button class="p-button p-component p-button-success" (click)="calcularConsumoEnergia()">
-            Consultar
-          </button>
-        </div>
-      </div>
-
-      <div class="card-consumo" *ngIf="consumoTotal !== null">
-        <div class="resumen-energia">
-          <h3>📊 Resumen de Consumo</h3>
-          <p><strong>Desde:</strong> {{ fechaDesde }}</p>
-          <p><strong>Hasta:</strong> {{ fechaHasta }}</p>
-          <p><strong>Consumo total:</strong> {{ consumoTotal }} kWh</p>
-          <p><strong>Valor estimado:</strong> ${{ costoTotal }}</p>
-        </div>
-      </div>
-    </p-tabPanel>
-
+   
 
   </p-tabView>
 </div>

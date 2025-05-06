@@ -6,7 +6,7 @@ import {
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { BrowserAnimationsModule, provideAnimations } from '@angular/platform-browser/animations';
 
 import { provideToastr } from 'ngx-toastr';
@@ -17,10 +17,11 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxGaugeModule } from 'ngx-gauge';
 import { LinearGaugeModule } from '@syncfusion/ej2-angular-lineargauge';
 import { NgApexchartsModule } from 'ng-apexcharts';
+import { loaderInterceptor } from './core/interceptors/loader.interceptor';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
-    provideHttpClient(),
+    provideHttpClient(withInterceptors([loaderInterceptor])),
     provideAnimations(),
     provideToastr(),
     provideServiceWorker('ngsw-worker.js', {

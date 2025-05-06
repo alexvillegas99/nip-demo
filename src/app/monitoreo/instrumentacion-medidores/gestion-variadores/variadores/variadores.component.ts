@@ -16,6 +16,31 @@ import {
 } from 'ng-apexcharts';
 import ApexCharts from 'apexcharts';
 import { FormsModule } from '@angular/forms';
+import { HorometroService } from '../../../../services/horometro.service';
+type GraficoPie = {
+  series: number[];
+  chart: ApexChart;
+  labels: string[];
+  tooltip: {
+    y: { formatter: (val: number) => string };
+  };
+  dataLabels: {
+    enabled: boolean;
+    formatter: (val: number) => string;
+  };
+  legend: ApexLegend;
+};
+
+type GraficoPromedio = {
+  chart: ApexChart;
+  xaxis?: any;
+  yaxis: ApexYAxis;
+  series: ApexAxisChartSeries;
+  plotOptions?: any;
+  dataLabels?: any;
+  tooltip?: any;
+  colors?: string[];
+};
 
 export type ChartOptions = {
   series: ApexNonAxisChartSeries;
@@ -55,7 +80,7 @@ export type HistoricoChartOptions = {
 @Component({
   selector: 'app-variadores',
   standalone: true,
-  imports: [CommonModule, NgApexchartsModule,FormsModule],
+  imports: [CommonModule, NgApexchartsModule, FormsModule],
   templateUrl: './variadores.component.html',
   styleUrl: './variadores.component.scss',
 })
@@ -63,9 +88,9 @@ export class VariadoresComponent implements OnInit, OnDestroy {
   private readonly _router = inject(Router);
   private readonly _plcData = inject(DataPlcService);
   private readonly _socketService = inject(SocketService);
+  constructor(private horometroService: HorometroService) {}
 
   items = ['Current', 'Power', 'Voltage', 'Power Factor'];
-
 
   ip: string | null = null;
   fullUrl: string = '';
@@ -96,59 +121,53 @@ export class VariadoresComponent implements OnInit, OnDestroy {
 
       // Escuchar la respuesta del servidor
       this.plcDataSub = this._socketService
-      .receivePlcData()
-      .subscribe((data) => {
-        console.log(data, 'data....');
-    
-        this.plcInfo = {
-          ...data,
-          corriente: Math.round(data.corriente * 100) / 100,
-          voltaje: Math.round(data.voltaje * 100) / 100,
-          potencia: Math.round(data.potencia * 100) / 100,
-          frecuencia: Math.round(data.frecuencia * 100) / 100,
-        };
-    
-        let maxRPM = 1780;
-        if (this.plcMedidor?.ip === '172.16.8.9') {
-          maxRPM = 3450;
-        } else if (this.plcMedidor?.ip === '172.16.107.5') {
-          maxRPM = 1785;
-        }
-    
-        const currentRPM =
-          Math.round((this.plcInfo.frecuencia / 60) * maxRPM * 100) / 100;
-        console.log(currentRPM, 'currentRPM');
-    
-        this.updateRPM(currentRPM);
-        this.updateLinear(this.plcInfo.potencia);
-      });
-    
+        .receivePlcData()
+        .subscribe((data) => {
+          console.log(data, 'data....');
+
+          this.plcInfo = {
+            ...data,
+            corriente: Math.round(data.corriente * 100) / 100,
+            voltaje: Math.round(data.voltaje * 100) / 100,
+            potencia: Math.round(data.potencia * 100) / 100,
+            frecuencia: Math.round(data.frecuencia * 100) / 100,
+          };
+
+          let maxRPM = 1780;
+          if (this.plcMedidor?.ip === '172.16.8.9') {
+            maxRPM = 3450;
+          } else if (this.plcMedidor?.ip === '172.16.107.5') {
+            maxRPM = 1785;
+          }
+
+          const currentRPM =
+            Math.round((this.plcInfo.frecuencia / 60) * maxRPM * 100) / 100;
+          console.log(currentRPM, 'currentRPM');
+
+          this.updateRPM(currentRPM);
+          this.updateLinear(this.plcInfo.potencia);
+        });
     }
   }
   obtenerDataHistoricoPlc() {
-    clearInterval(this.actualizacionInterval); // limpiar si ya hay uno
-  
     const ip = this.plcMedidor?.ip;
     if (!ip) return;
-  
+
     // Consulta inicial
     this._socketService.sendFindHistoricoPlcData(
-      [ip],
-      this.tiempoHistorico,
+      [this.plcMedidor.ip],
+      this.fechaInicio,
+      this.fechaFin,
       'variador'
     );
-  
-    // Auto-actualización
-    this.actualizacionInterval = setInterval(() => {
-      this._socketService.sendFindHistoricoPlcData(
-        [ip],
-        this.tiempoHistorico,
-        'variador'
-      );
-    }, this.refresco);
   }
-  
 
+  // por defecto las fechas son del día actual
+  fechaActual: Date = new Date();
+  fechaInicio: Date = new Date(
+    this.fechaActual.getTime() - 24 * 60 * 60 * 1000
+  ); // hace 24 horas
+  fechaFin: Date = new Date(this.fechaActual.getTime() + 24 * 60 * 60 * 1000); // dentro de 24 horas
   @ViewChild('rpmChart', { static: false }) rpmChart!: any;
 
   updateRPM(currentRPM: number) {
@@ -178,7 +197,7 @@ export class VariadoresComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.intervalSub?.unsubscribe();
     this.plcDataSub?.unsubscribe();
-    clearInterval(this.actualizacionInterval);
+
     console.log('🔌 Socket desconectado desde componente');
   }
 
@@ -186,7 +205,9 @@ export class VariadoresComponent implements OnInit, OnDestroy {
     this._plcData.getListaEquipos().subscribe({
       next: (resp) => {
         console.log(resp);
-        this.plcMedidor = resp.find((plc: any) => plc.ip === this.ip && plc.tipo === 'variador');
+        this.plcMedidor = resp.find(
+          (plc: any) => plc.ip === this.ip && plc.tipo === 'variador'
+        );
         this.chartLinear();
         this.chart(0);
         this.obtenerDataHistoricoPlc();
@@ -201,115 +222,120 @@ export class VariadoresComponent implements OnInit, OnDestroy {
           );
 
           this.generarGraficosHistoricos(datosReversados);
+          this.buscarHorometro();
         });
       },
       error: (err) => {},
     });
   }
   generarGraficosHistoricos(data: any[]) {
-    this.otrosChartOptions = [];
-    const tipos = ['corriente', 'voltaje', 'potencia', 'frecuencia', 'rpm'];
-  
-    const fechasReducidas: string[] = data.map((d: any) =>
-      new Date(d.fecha).toLocaleTimeString()
-    );
-  
-    for (const tipo of tipos) {
-      const datos = data.map((d: any) => {
-        if (tipo === 'rpm') {
-          const maxRPM = this.getMaxRPM(this.ip!);
-          return Math.round((d.frecuencia / 60) * maxRPM * 100) / 100;
-        }
-        return Math.round(d[tipo] * 100) / 100;
+    // Utilidad para promediar arrays
+    const avg = (arr: number[]) =>
+      arr.length
+        ? Math.round((arr.reduce((a, b) => a + b, 0) / arr.length) * 100) / 100
+        : 0;
+
+    // Filtramos los valores válidos
+    const valoresVoltaje = data
+      .map((d) => d.voltaje)
+      .filter((v) => v !== null && v !== undefined);
+    const valoresCorriente = data
+      .map((d) => d.corriente)
+      .filter((v) => v !== null && v !== undefined);
+    const valoresPotencia = data
+      .map((d) => d.potencia)
+      .filter((v) => v !== null && v !== undefined);
+    const valoresHorometro = data
+      .map((d) => d.horometro)
+      .filter((v) => v !== null && v !== undefined); // solo si hay
+
+    // 🎨 Colores aleatorios para cada gráfico
+    const colores = (cantidad: number) =>
+      Array.from({ length: cantidad }, () => {
+        const r = Math.floor(Math.random() * 156) + 100;
+        const g = Math.floor(Math.random() * 156) + 100;
+        const b = Math.floor(Math.random() * 156) + 100;
+        return `rgb(${r}, ${g}, ${b})`;
       });
-  
-      let guideValue = 0;
-      switch (tipo) {
-        case 'corriente':
-          guideValue = Number(this.plcMedidor?.Inom?.replace(' A', '') || 0);
-          break;
-        case 'voltaje':
-          guideValue = Number(this.plcMedidor?.Vnom?.replace(' V', '') || 0);
-          break;
-        case 'potencia':
-          const hp = Number(this.plcMedidor?.Pnom?.replace(' HP', '') || 0);
-          guideValue = Number((hp * 0.7457).toFixed(2));
-          break;
-        case 'rpm':
-          guideValue = Number(this.plcMedidor?.Nnom?.replace(' rpm', '') || 0);
-          break;
-        case 'frecuencia':
-          guideValue = 60;
-          break;
-      }
-  
-      const equipoSerie = {
-        name: this.plcMedidor?.nombre || 'Equipo',
-        data: datos,
-      };
-  
-      const nominalSerie = {
-        name: 'Nominal',
-        data: Array(datos.length).fill(guideValue),
-      };
-  
-      const baseSerie = {
-        name: 'Base',
-        data: Array(datos.length).fill(0),
-        color: 'transparent',
-      };
-  
-      const minSerie = {
-        name: 'Mínimo permitido (49 Hz)',
-        data: Array(datos.length).fill(49),
-        color: '#e74c3c',
-      };
-  
-      const seriesFinal =
-        tipo === 'frecuencia'
-          ? [equipoSerie, nominalSerie, minSerie, baseSerie]
-          : [equipoSerie, nominalSerie, baseSerie];
-  
-      this.otrosChartOptions.push({
-        series: seriesFinal,
-        title: { text: tipo.toUpperCase() },
-        chart: {
-          type: 'line',
-          height: 280,
-          animations: { enabled: false },
-          toolbar: { show: false },
-          zoom: { enabled: false },
+
+    // 🔌 Voltaje
+    this.voltajeChart = {
+      chart: { type: 'bar', height: 250 },
+      xaxis: { categories: ['Promedio'] },
+      yaxis: { title: { text: 'Voltaje (V)' } },
+      series: [{ name: 'Voltaje', data: [avg(valoresVoltaje)] }],
+      colors: colores(1),
+      plotOptions: { bar: { columnWidth: '40%', borderRadius: 4 } },
+      dataLabels: {
+        enabled: true,
+        formatter: (val: any) => `${val.toFixed(2)} V`,
+      },
+      tooltip: {
+        y: { formatter: (val: any) => `${val.toFixed(2)} V` },
+      },
+    };
+
+    // ⚡ Corriente
+    this.corrienteChart = {
+      chart: { type: 'bar', height: 250 },
+      xaxis: { categories: ['Promedio'] },
+      yaxis: { title: { text: 'Corriente (A)' } },
+      series: [{ name: 'Corriente', data: [avg(valoresCorriente)] }],
+      colors: colores(1),
+      plotOptions: { bar: { columnWidth: '40%', borderRadius: 4 } },
+      dataLabels: {
+        enabled: true,
+        formatter: (val: any) => `${val.toFixed(2)} A`,
+      },
+      tooltip: {
+        y: { formatter: (val: any) => `${val.toFixed(2)} A` },
+      },
+    };
+
+    // 💡 Potencia
+    this.potenciaChart = {
+      chart: { type: 'bar', height: 250 },
+      xaxis: { categories: ['Promedio'] },
+      yaxis: { title: { text: 'Potencia (kW)' } },
+      series: [{ name: 'Potencia', data: [avg(valoresPotencia)] }],
+      colors: colores(1),
+      plotOptions: { bar: { columnWidth: '40%', borderRadius: 4 } },
+      dataLabels: {
+        enabled: true,
+        formatter: (val: any) => `${val.toFixed(2)} kW`,
+      },
+      tooltip: {
+        y: { formatter: (val: any) => `${val.toFixed(2)} kW` },
+      },
+    };
+
+    // ⏱️ Horómetro (si hay valores)
+    this.horometroPieChart = {
+      series: [avg(valoresHorometro)],
+      labels: ['Tiempo de uso'],
+      chart: {
+        type: 'donut',
+        height: 300,
+        toolbar: { show: true, tools: { download: true } },
+      },
+      tooltip: {
+        y: { formatter: (val) => `${val.toFixed(2)} minutos` },
+      },
+      dataLabels: {
+        enabled: true,
+        formatter: (val) => `${val.toFixed(1)}%`,
+      },
+      legend: {
+        show: true,
+        position: 'right',
+        formatter: (label, opts) => {
+          const minutos = opts.w.globals.series[opts.seriesIndex];
+          const horas = (minutos / 60).toFixed(2);
+          return `${label}: ${horas} h`;
         },
-        stroke: { curve: 'smooth', width: 3 },
-        xaxis: {
-          categories: fechasReducidas,
-          labels: { rotate: -45 },
-        },
-        yaxis: {
-          min:
-            tipo === 'frecuencia'
-              ? 49
-              : ['corriente', 'voltaje', 'potencia'].includes(tipo)
-              ? 0
-              : undefined,
-          max:
-            tipo === 'frecuencia'
-              ? 60
-              : Math.max(...datos, guideValue) + 1,
-          labels: {
-            formatter: (value: number) => value.toFixed(2),
-          },
-        },
-        legend: {
-          show: true,
-          labels: { colors: ['#000'] },
-          formatter: (name: string) => (name === 'Base' ? '' : name),
-        },
-        dataLabels: { enabled: false },
-      });
-    }
+      },
+    };
   }
-  
 
   getMaxRPM(ip: string): number {
     const rpmMap: Record<string, number> = {
@@ -473,7 +499,7 @@ export class VariadoresComponent implements OnInit, OnDestroy {
     },
     {
       active: true,
-      nombre: 'GRAFICOS',
+      nombre: 'INDICADORES',
       isSelected: false,
     },
   ];
@@ -496,10 +522,6 @@ export class VariadoresComponent implements OnInit, OnDestroy {
   }
 
   tiempoHistorico: string = '5m';
-  
-  refresco: number = 5000;
-  actualizacionInterval: any;
-  
 
   onCambioTiempo(valor: string) {
     this.tiempoHistorico = valor;
@@ -507,10 +529,125 @@ export class VariadoresComponent implements OnInit, OnDestroy {
       this.obtenerDataHistoricoPlc();
     }
   }
-  onCambioRefresco() {
-    console.log('Nuevo intervalo de refresco:', this.refresco);
-    this.obtenerDataHistoricoPlc();
+
+  voltajeChart: GraficoPromedio = {
+    chart: { type: 'bar', height: 250 },
+    xaxis: { categories: [] },
+    yaxis: {},
+    series: [],
+  };
+
+  corrienteChart: GraficoPromedio = {
+    chart: { type: 'bar', height: 250 },
+    xaxis: { categories: [] },
+    yaxis: {},
+    series: [],
+  };
+
+  potenciaChart: GraficoPromedio = {
+    chart: { type: 'bar', height: 250 },
+    xaxis: { categories: [] },
+    yaxis: {},
+    series: [],
+  };
+
+  horometroPieChart: GraficoPie = {
+    series: [],
+    chart: {
+      type: 'pie',
+      height: 300,
+      toolbar: {
+        show: true,
+        tools: {
+          download: true,
+        },
+      },
+    },
+    labels: [],
+    tooltip: {
+      y: {
+        formatter: (val: number) => `${val} min`,
+      },
+    },
+    dataLabels: {
+      enabled: true,
+      formatter: (val: number) => `${val.toFixed(1)}%`,
+    },
+    legend: {
+      show: true,
+      position: 'right',
+      formatter: (label: string, opts: any) => {
+        const minutos = opts.w.globals.series[opts.seriesIndex];
+        const horas = (minutos / 60).toFixed(2);
+        return `${label}: ${horas} h`;
+      },
+    },
+  };
+  datosAgrupadosPorIp: any[] = [];
+
+  buscarHorometro(): void {
+    this.horometroService.obtenerPorFechas(this.plcMedidor.ip).subscribe({
+      next: (data) => {
+        console.log('✅ Datos agrupados por IP:', data);
+        this.datosAgrupadosPorIp = data;
+        console.log('Datos agrupados por IP:', this.datosAgrupadosPorIp);
+        this.generarGraficoHorometroPie();
+      },
+      error: (err) => console.error('❌ Error al obtener datos:', err),
+    });
   }
 
+  generarGraficoHorometroPie(): void {
+    const series: number[] = [];
+    const labels: string[] = [];
 
+    // Acumular tiempo total por equipo
+    for (const ip in this.datosAgrupadosPorIp) {
+      const registros = this.datosAgrupadosPorIp[ip];
+      const nombre = registros[0]?.nombre || ip;
+
+      const minutosTotales = registros.reduce((sum: number, r: any) => {
+        return sum + (r.minutosEncendido || 0);
+      }, 0);
+
+      series.push(minutosTotales);
+      labels.push(nombre.replace(/^VARIADOR\s*-\s*/i, '').trim());
+    }
+
+    // Configurar el gráfico
+    this.horometroPieChart = {
+      series,
+      labels,
+      chart: {
+        type: 'pie',
+        height: 320,
+        toolbar: {
+          show: true,
+          tools: {
+            download: true,
+          },
+        },
+      },
+      tooltip: {
+        y: {
+          formatter: (val: number) => `${(val / 60).toFixed(2)} h`,
+        },
+      },
+      dataLabels: {
+        enabled: true,
+        formatter: (val: number) => `${val.toFixed(1)}%`,
+      },
+      legend: {
+        position: 'right',
+        fontSize: '14px',
+        formatter: (label: string, opts: any) => {
+          const minutos = series[opts.seriesIndex] || 0;
+          const horas = Math.floor(minutos / 60);
+          const min = minutos % 60;
+          return `${label}: ${horas}h ${min}min`;
+        },
+      },
+      
+    };
+  }
 }

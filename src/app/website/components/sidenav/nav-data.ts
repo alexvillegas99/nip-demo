@@ -32,31 +32,31 @@ export const NAVBARDATA: INavbarData[] = [
       //     // },
       //   ],
       // },
+      // {
+      //   routeLink: 'instrumentacion-medidores',
+      //   label: 'Instrumentación y medidores',
+      //  icon: 'assets/imgs/navbar/inst-medidores-d.svg',
+      //  items: [
+      // {
+      //   routeLink: 'mantenimiento',
+      //   label: 'Sensor de Presión',
+      //   icon: '',
+      //   items: [],
+      // },
       {
-        routeLink: 'instrumentacion-medidores',
-        label: 'Instrumentación y medidores',
-        icon: 'assets/imgs/navbar/inst-medidores-d.svg',
-        items: [
-          // {
-          //   routeLink: 'mantenimiento',
-          //   label: 'Sensor de Presión',
-          //   icon: '',
-          //   items: [],
-          // },
-          {
-            routeLink: 'monitoreo/instrumentacion/gestion/medidores',
-            label: 'Medidores',
-            icon: '',
-            items: [],
-          },
-          {
-            routeLink: 'monitoreo/instrumentacion/gestion/variadores',
-            label: 'Variadores',
-            icon: '',
-            items: [],
-          },
-        ],
+        routeLink: 'monitoreo/instrumentacion/gestion/medidores',
+        label: 'Medidores de energía',
+        icon: '',
+        items: [],
       },
+      {
+        routeLink: 'monitoreo/instrumentacion/gestion/variadores',
+        label: 'Variadores de frecuencia',
+        icon: '',
+        items: [],
+      },
+      //  ],
+      //  },
       /*  {
         routeLink: '',
         label: 'Procesos',

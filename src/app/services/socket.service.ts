@@ -42,11 +42,17 @@ sendFindPlcData(ip: string, tipo?: string): void {
     return this.responseSubject.asObservable();
   }
 
-  // Método para enviar una solicitud de datos históricos
-  sendFindHistoricoPlcData(ips: string[], rango: string, tipo?: any): void {
-    this.emit('findHistoricoPlcData', { ips, rango, tipo });
-  }
-  
+
+  // Método para enviar una solicitud de datos históricos por fecha
+  sendFindHistoricoPlcData(
+  ips: string[],
+  desde: any,
+  hasta: any,
+  tipo?: string
+): void {
+  this.emit('findHistoricoPlcData', { ips, desde, hasta, tipo });
+}
+
   
   
 
