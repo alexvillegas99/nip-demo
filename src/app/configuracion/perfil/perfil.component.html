@@ -10,9 +10,6 @@
     </div>
 </div>
 
-
-
-
 <ng-template #modalDispositivo let-modal>
     <form [formGroup]="formDispositivo">
         <div class="modal-body">
@@ -28,3 +25,48 @@
         </div>
     </form>
 </ng-template>
+
+<div style="margin-top: 1rem;" class="row"></div>
+
+<div class="container-tabla">
+    <div class="table-responsive">
+        <table class="table align-middle table-bordered table-bordered-sides">
+            <thead>
+                <tr>
+                    <th>PERFIL</th>
+                    <th>PERMISOS</th>
+                    <th>ACCIONES</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @for(item of perfiles; track item)
+                {
+                <tr>
+                    <td>
+                        <h5> {{item.nombre}} </h5>
+                    </td>
+
+                    <td>
+                        @for (permiso of item.permisos; track $index) {
+                        <p>{{permiso.descripcion}}</p>
+                        }
+                    </td>
+
+                    <td>
+                        <button class="btn btn-primary" (click)="abrirModal(modalDispositivo, item)">
+                            Editar
+                        </button>
+
+                        <p></p>
+
+
+                    </td>
+                </tr>
+                }
+
+
+            </tbody>
+        </table>
+    </div>
+</div>

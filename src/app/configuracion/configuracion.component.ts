@@ -1,5 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit, TemplateRef } from '@angular/core';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { ListaEquiposService } from '../services/lista-equipos.service';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { AlertService } from '../services/alert.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-configuracion',
@@ -164,7 +174,7 @@ export class ConfiguracionComponent implements OnInit {
           this._listaEquiposService
             .updateDevice(this.dipositivoSeleccionado._id, data)
             .subscribe({
-              next: (response) => {
+              next: () => {
                 this.alert.showToast(
                   'success',
                   'Usuario actualizado correctamente'
@@ -172,8 +182,8 @@ export class ConfiguracionComponent implements OnInit {
                 this.getDevices();
                 this.modalDispositivoRef?.hide();
               },
-              error: (error) => {
-                console.log(error);
+              error: (err: any) => {
+                console.log(err);
                 this.alert.showToast(
                   'error',
                   'Error al actualizar el dispositivo'
@@ -185,13 +195,13 @@ export class ConfiguracionComponent implements OnInit {
       console.log(data, 'data para crear dispositivo....');
 
       this._listaEquiposService.createDevice(data).subscribe({
-        next: (response) => {
+        next: (response: any) => {
           console.log(response);
           this.alert.showToast('success', 'Usuario creado correctamente');
           this.getDevices();
           this.modalDispositivoRef?.hide();
         },
-        error: (error) => {
+        error: (error: any) => {
           console.log(error);
           this.alert.showToast('error', 'Error al crear el dispositivo');
         },
@@ -257,12 +267,12 @@ export class ConfiguracionComponent implements OnInit {
     const data = this.formValores.value;
 
     this._listaEquiposService.createDevice(data).subscribe({
-      next: (response) => {
+      next: (response: any) => {
         this.alert.showToast('success', 'Valor creado correctamente');
         this.getDevices();
         this.modalValoresRef?.hide();
       },
-      error: (error) => {
+      error: (error: any) => {
         console.log(error);
         this.alert.showToast('error', 'Error al crear el valor');
       },
@@ -278,12 +288,12 @@ export class ConfiguracionComponent implements OnInit {
     this._listaEquiposService
       .updateValor(this.dipositivoSeleccionado._id, data)
       .subscribe({
-        next: (response) => {
+        next: (response: any) => {
           this.alert.showToast('success', 'Valor editado correctamente');
           this.getDevices();
           this.modalValoresRef?.hide();
         },
-        error: (error) => {
+        error: (error: any) => {
           console.log(error);
           this.alert.showToast('error', 'Error al editar el valor');
         },

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, TemplateRef } from '@angular/core';
+import { Component, inject, OnInit, TemplateRef } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -13,6 +13,7 @@ import { SearchComponent } from '../../shared/components/search/search.component
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { AlertService } from '../../services/alert.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { PerfilService } from '../../services/tarea.service copy';
 
 @Component({
   selector: 'app-perfil',
@@ -27,19 +28,36 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
   templateUrl: './perfil.component.html',
   styleUrl: './perfil.component.scss',
 })
-export class PerfilComponent {
+export class PerfilComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly modalService = inject(BsModalService);
   private readonly alert = inject(AlertService);
   private readonly _modalService = inject(NgbModal);
+  private readonly perfilService = inject(PerfilService);
 
   formDispositivo!: FormGroup;
 
-  perfil: any;
+  perfiles: any;
   perfilFiltrada: any;
   perfilSeleccionado!: any;
 
   modalDispositivoRef: any;
+
+  ngOnInit(): void {
+    this.getPerfiles();
+  }
+
+  getPerfiles() {
+    this.perfilService.getPerfil().subscribe({
+      next: (res) => {
+        this.perfiles = res;
+        console.log(this.perfiles, 'perfil');
+      },
+      error: (err) => {
+        console.log(err);
+      },
+    });
+  }
 
   inicializarFormulario() {
     this.formDispositivo = this.fb.group({
@@ -65,15 +83,8 @@ export class PerfilComponent {
 
   textoFiltrado(event: any) {
     console.log(event, 'textoFiltrado....');
-    this.perfilFiltrada = this.perfil.filter((item: any) =>
+    this.perfilFiltrada = this.perfiles.filter((item: any) =>
       item.nombre.toLowerCase().includes(event.toLowerCase())
-    );
-  }
-
-  opcionSeleccionada(event: any) {
-    console.log(event, 'opcionSeleccionada....');
-    this.perfilFiltrada = this.perfil.filter((item: any) =>
-      item.tipo.toLowerCase().includes(event.toLowerCase())
     );
   }
 }
