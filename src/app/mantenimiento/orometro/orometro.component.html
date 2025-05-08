@@ -3,15 +3,7 @@
     <h1>MANTENIMIENTO</h1>
     <h2>Lista de Variadores</h2>
   </div>
-  <div class="filtros-horizontales">
-    <label for="fechaInicio">🗓️ Inicio:</label>
-    <input id="fechaInicio" type="datetime-local" [(ngModel)]="fechaInicio" />
-  
-    <label for="fechaFin">🗓️ Fin:</label>
-    <input id="fechaFin" type="datetime-local" [(ngModel)]="fechaFin" />
-  
-    <button class="btn-consultar" (click)="buscarHorometro()">🔍 Consultar</button>
-  </div>
+
   
   <div class="row">
     @for (item of equipos; track $index) {
@@ -28,7 +20,14 @@
               <div class="horas-trabajadas">
                 <h3>{{ item?.totalHoras }}</h3>
                 <p>Horas trabajadas</p>
+              
+                <div *ngIf="item.totalHorasSuma">
+                  <small class="text-muted">
+                    Total acumulado: {{ item.totalHorasSuma }}
+                  </small>
+                </div>
               </div>
+              
             </div>
 
             <div class="flex-fill">
@@ -58,14 +57,11 @@
                   <h4>{{ item.ip }}</h4>
                 </div>
 
-                <div class="info-block mb-2">
-                  <h5 class="text-muted">Conexión</h5>
-                  <h4>Remota</h4>
-                </div>
+               
               </div>
 
               <div class="text-end mt-3">
-                <button class="btn btn-primary">
+                <button class="btn btn-primary" (click)="reiniciarHorometro(item)">
                   <i class="bi bi-arrow-clockwise me-1"></i> Reiniciar
                 </button>
               </div>

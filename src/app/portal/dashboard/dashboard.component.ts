@@ -188,7 +188,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   datosAgrupadosPorIp: any = {};
   buscarHorometro(): void {
     this.horometroService
-      .obtenerPorFechas(this.equiposSeleccionados)
+      .obtenerPorFechas(this.equiposSeleccionados, this.fechaInicio, this.fechaFin)
       .subscribe({
         next: (data) => {
           console.log('✅ Datos agrupados por IP:', data);

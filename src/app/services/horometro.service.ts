@@ -8,15 +8,23 @@ export class HorometroService {
 
   constructor(private http: HttpClient) {}
 
-  obtenerPorFechas(ips: string[], dias: number = 5) {
-    const fechaFin = new Date();
-    const fechaInicio = new Date();
-    fechaInicio.setDate(fechaFin.getDate() - dias);
-
+  obtenerPorFechas(ips: string[], fechaInicio: any, fechaFin: any) {
     return this.http.post<any>(`${this.api}/por-fechas`, {
       ips,
-      fechaInicio: fechaInicio.toISOString(),
-      fechaFin: fechaFin.toISOString()
+      fechaInicio: fechaInicio,
+      fechaFin: fechaFin,
+    });
+  }
+
+  restablecerHorometro(ip: string) {
+    return this.http.post<any>(`${this.api}/crear-historial`, {
+      ip,
+    });
+  }
+
+  obtenerHistorial(ips: string[]) {
+    return this.http.post<any>(`${this.api}/obtner-historial`, {
+      ips,
     });
   }
 }
