@@ -2,11 +2,11 @@ import { INavbarData } from './helper';
 
 export const NAVBARDATA: INavbarData[] = [
   {
-    routeLink: 'portal',
+    routeLink: 'portal/home',
     icon: 'assets/imgs/navbar/portal-d.svg',
     label: 'Portal',
     items: [],
-    roles: ['Administrador', 'Operador'],
+    roles: ['Superadministrador','Administrador', 'Operador'],
   },
   {
     routeLink: 'monitoreo',
@@ -78,7 +78,7 @@ export const NAVBARDATA: INavbarData[] = [
         // roles: ['ADMIN', 'BASIC']
       }, */
     ],
-    roles: ['Administrador', 'Operador'],
+    roles: ['Superadministrador','Administrador', 'Operador'],
   },
   {
     routeLink: 'mantenimiento',
@@ -98,7 +98,7 @@ export const NAVBARDATA: INavbarData[] = [
         items: [],
       },
     ],
-    roles: ['Administrador', 'Operador'],
+    roles: ['Superadministrador','Administrador', 'Operador'],
   },
   {
     routeLink: './configuracion',
@@ -118,13 +118,13 @@ export const NAVBARDATA: INavbarData[] = [
         items: [],
       },
     ],
-    roles: ['Administrador', 'Operador'],
+    roles: ['Superadministrador'],
   },
   {
     routeLink: './usuarios',
     icon: 'assets/imgs/navbar/user.svg',
     label: 'Usuarios',
     items: [],
-    roles: ['Administrador'],
+    roles: ['Superadministrador','Administrador'],
   },
 ];

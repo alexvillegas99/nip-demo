@@ -309,4 +309,6 @@ export class ListaEquipoComponent implements OnInit {
         },
       });
   }
+
+  // bajo tolerable // bajo 
 }

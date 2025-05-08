@@ -4,22 +4,22 @@
     </div>
 
     <div class="item">
-        <button type="button" class="btn boton-1 " (click)="abrirModal(modalDispositivo)">
+        <button type="button" class="btn boton-1 " (click)="abrirModal(modalPermiso)">
             <i class="fa fa-plus" aria-hidden="true"></i> Crear nuevo perfil
         </button>
     </div>
 </div>
 
-<ng-template #modalDispositivo let-modal>
-    <form [formGroup]="formDispositivo">
+<ng-template #modalPermiso let-modal>
+    <form [formGroup]="formPermiso">
         <div class="modal-body">
 
         </div>
         <div class="modal-footer">
-            <button class="btn btn-cancel" (click)="modalDispositivoRef?.hide()">
+            <button class="btn btn-cancel" (click)="modalPermisosRef?.hide()">
                 Cancelar
             </button>
-            <button class="btn btn-primary" [disabled]="formDispositivo.invalid">
+            <button class="btn btn-primary" [disabled]="formPermiso.invalid">
                 Guardar
             </button>
         </div>
@@ -70,3 +70,47 @@
         </table>
     </div>
 </div>
+
+
+<ng-template #modalDispositivo let-modal>
+    <form [formGroup]="formPermiso">
+        <div class="modal-body">
+            <h4>{{ perfilSeleccionado ? "Editar Permiso" : "Nuevo Permiso" }}</h4>
+ 
+            <div class="row">
+                <div class="form-group">
+                    <label for="nombre">Nombre:</label>
+                    <input formControlName="nombre" class="form-control" />
+                </div>    
+            </div>
+
+            <h1></h1>
+
+            <div class="row">
+                @for (item of permisos; track $index) {
+                    <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12 col-12 mb-2">
+                        <div class="item-group">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" 
+                                    [checked]="item.descripcion"
+                                    [(value)]="item.descripcion"
+                                    (change)="checkModulo(item)" type="checkbox"
+                                    [name]="item.descripcion" />
+                                <label class="form-check-label"> {{item.descripcion}} </label>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-cancel" (click)="modalPermisosRef?.hide()">
+                Cancelar
+            </button>
+            <button class="btn btn-primary" [disabled]="formPermiso.invalid" (click)="createPermiso()">
+                Guardar
+            </button>
+        </div>
+    </form>
+</ng-template>

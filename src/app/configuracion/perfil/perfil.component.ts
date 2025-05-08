@@ -8,7 +8,6 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { SelectComponent } from '../../shared/components/select/select.component';
 import { SearchComponent } from '../../shared/components/search/search.component';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { AlertService } from '../../services/alert.service';
@@ -18,13 +17,7 @@ import { PerfilService } from '../../services/tarea.service copy';
 @Component({
   selector: 'app-perfil',
   standalone: true,
-  imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    CommonModule,
-    SearchComponent,
-    SelectComponent,
-  ],
+  imports: [FormsModule, ReactiveFormsModule, CommonModule, SearchComponent],
   templateUrl: './perfil.component.html',
   styleUrl: './perfil.component.scss',
 })
@@ -35,16 +28,31 @@ export class PerfilComponent implements OnInit {
   private readonly _modalService = inject(NgbModal);
   private readonly perfilService = inject(PerfilService);
 
-  formDispositivo!: FormGroup;
+  formPermiso!: FormGroup;
 
   perfiles: any;
-  perfilFiltrada: any;
   perfilSeleccionado!: any;
 
-  modalDispositivoRef: any;
+  modalPermisosRef: any;
+
+  permisos = [
+    {
+      descripcion: 'crear',
+    },
+    {
+      descripcion: 'leer',
+    },
+    {
+      descripcion: 'actualizar',
+    },
+    {
+      descripcion: 'eliminar',
+    },
+  ];
 
   ngOnInit(): void {
     this.getPerfiles();
+    this.inicializarFormulario();
   }
 
   getPerfiles() {
@@ -60,7 +68,7 @@ export class PerfilComponent implements OnInit {
   }
 
   inicializarFormulario() {
-    this.formDispositivo = this.fb.group({
+    this.formPermiso = this.fb.group({
       nombre: new FormControl('', Validators.compose([Validators.required])),
       permisos: new FormControl('', Validators.compose([Validators.required])),
     });
@@ -71,20 +79,24 @@ export class PerfilComponent implements OnInit {
 
     this.perfilSeleccionado = dispositivo ?? null;
     if (dispositivo) {
-      this.formDispositivo.patchValue(dispositivo);
+      this.formPermiso.patchValue(dispositivo);
     } else {
-      this.formDispositivo.reset({ rol: 'visualizador' });
+      this.formPermiso.reset();
     }
 
-    this.modalDispositivoRef = this.modalService.show(template, {
+    this.modalPermisosRef = this.modalService.show(template, {
       class: 'modal-md modal-dialog-centered',
     });
   }
 
   textoFiltrado(event: any) {
     console.log(event, 'textoFiltrado....');
-    this.perfilFiltrada = this.perfiles.filter((item: any) =>
+    this.perfiles = this.perfiles.filter((item: any) =>
       item.nombre.toLowerCase().includes(event.toLowerCase())
     );
   }
+
+  createPermiso() {}
+
+  checkModulo(permiso: any) {}
 }

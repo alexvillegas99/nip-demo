@@ -31,11 +31,15 @@ export class EstaLogeadoGuard implements CanActivate {
     | boolean
     | UrlTree {
     const accessTokenString = this._cookiesService.obtenerCookie(JWT);
+
     if (accessTokenString) {
       const accessToken =
         this._encriptadoService.desencriptarInformacionCookie(
           accessTokenString
-        );
+        );        
+
+        console.log(helper.decodeToken(accessToken));
+        
       const isExpired = helper.isTokenExpired(accessToken);
       if (!isExpired) {
         return true;
@@ -44,7 +48,7 @@ export class EstaLogeadoGuard implements CanActivate {
         return false;
       }
     } else {
-      this._router.navigate(['/']).then();
+      this._router.navigate(['/login']).then();
       return false;
     }
   }

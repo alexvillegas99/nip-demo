@@ -22,7 +22,9 @@ export class AuthService {
       tap((response) => {
         if (response.accessToken) {
           this.setRoles(response.user.rol);
-          this._coookiesService.almacenarCookie(JWT, response.accessToken);
+          this._coookiesService.almacenarCookie(JWT,       
+            this._encriptadoService.encriptarInformacionCookie(response.accessToken)
+           );
         }
       })
     );

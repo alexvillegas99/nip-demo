@@ -26,6 +26,7 @@ import { VariadoresComponent } from './monitoreo/instrumentacion-medidores/gesti
 import { OrometroComponent } from './mantenimiento/orometro/orometro.component';
 import { ListaEquipoComponent } from './configuracion/lista-equipo/lista-equipo.component';
 import { PerfilComponent } from './configuracion/perfil/perfil.component';
+import { EstaLogeadoGuard } from './core/guards/esta-logeado.guard';
 
 export const routes: Routes = [
   {
@@ -42,6 +43,7 @@ export const routes: Routes = [
         path: 'portal',
         title: 'Portal',
         component: PortalComponent,
+        canActivate: [EstaLogeadoGuard],
         children: [
           {
             path: 'home',
@@ -69,6 +71,7 @@ export const routes: Routes = [
         path: 'monitoreo',
         title: 'Monitoreo',
         component: MonitoreoComponent,
+        canActivate: [EstaLogeadoGuard],
         children: [
           {
             path: 'maquinaria-equipos',
@@ -178,6 +181,7 @@ export const routes: Routes = [
         path: 'mantenimiento',
         title: 'Mantenimiento',
         component: MantenimientoComponent,
+        canActivate: [EstaLogeadoGuard],
         children: [
           {
             path: 'gestion-mantenimiento',
@@ -200,6 +204,7 @@ export const routes: Routes = [
         path: 'configuracion',
         title: 'Configuracion',
         component: ConfiguracionComponent,
+        canActivate: [EstaLogeadoGuard],
         children: [
           {
             path: 'gestion-equipos',
@@ -222,12 +227,18 @@ export const routes: Routes = [
         path: 'usuarios',
         title: 'usuarios',
         component: UsuariosComponent,
+        canActivate: [EstaLogeadoGuard],
       },
       {
         path: '',
         redirectTo: 'portal',
-        pathMatch: 'full', // Esto asegura que solo redirija cuando la URL es exactamente vacía
+        pathMatch: 'full', 
       },
     ],
+  },
+  {
+    path: '**',
+    redirectTo: 'login',
+    pathMatch: 'full', 
   },
 ];
