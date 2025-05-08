@@ -1,5 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit, TemplateRef } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { ListaEquiposService } from '../services/lista-equipos.service';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { AlertService } from '../services/alert.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-configuracion',
