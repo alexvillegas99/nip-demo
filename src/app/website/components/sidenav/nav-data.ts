@@ -2,11 +2,11 @@ import { INavbarData } from './helper';
 
 export const NAVBARDATA: INavbarData[] = [
   {
-    routeLink: 'portal',
+    routeLink: 'portal/home',
     icon: 'assets/imgs/navbar/portal-d.svg',
     label: 'Portal',
     items: [],
-    roles: ['Administrador', 'Operador'],
+    roles: ['Superadministrador','Administrador', 'Operador'],
   },
   {
     routeLink: 'monitoreo',
@@ -78,7 +78,7 @@ export const NAVBARDATA: INavbarData[] = [
         // roles: ['ADMIN', 'BASIC']
       }, */
     ],
-    roles: ['Administrador', 'Operador'],
+    roles: ['Superadministrador','Administrador', 'Operador'],
   },
   {
     routeLink: 'mantenimiento',
@@ -97,73 +97,8 @@ export const NAVBARDATA: INavbarData[] = [
         icon: 'assets/imgs/navbar/gest-mantenimiento-d.svg',
         items: [],
       },
-
-      /*  {
-        routeLink: '',
-        label: 'Maquinaria y Equipos',
-        icon: 'assets/imgs/navbar/maquinaria-d.svg',
-        items: [
-          {
-            routeLink: './mantenimiento',
-            label: 'Compresores',
-            icon: '',
-            items: [],
-          },
-          {
-            routeLink: './gestion',
-            label: 'Variadores',
-            icon: '',
-            items: [],
-          },
-        ],
-      },
-      {
-        routeLink: '',
-        label: 'Instrumentación y medidores',
-        icon: 'assets/imgs/navbar/inst-medidores-d.svg',
-        items: [
-          {
-            routeLink: './mantenimiento',
-            label: 'Sensores de Presión',
-            icon: '',
-            items: [],
-          },
-          {
-            routeLink: './gestion',
-            label: 'Medidores',
-            icon: '',
-            items: [],
-          },
-        ],
-      },
-      {
-        routeLink: '',
-        label: 'Procesos',
-        icon: 'assets/imgs/navbar/procesos.svg',
-        items: [
-          {
-            routeLink: './mantenimiento',
-            label: 'Proceso IP',
-            icon: '',
-            items: [],
-          },
-        ],
-      },
-      {
-        routeLink: './reportes',
-        icon: 'assets/imgs/navbar/reporteria-d.svg',
-        label: 'Reportes',
-        items: [
-          // {
-          //     routeLink: './reportes',
-          //     label: 'Reporte Incidentes',
-          //     icon: 'assets/imgs/navbar/reporte-incidente-d.svg',
-          // },
-        ],
-        // roles: ['ADMIN', 'BASIC']
-      }, */
     ],
-    roles: ['Administrador', 'Operador'],
+    roles: ['Superadministrador','Administrador', 'Operador'],
   },
   {
     routeLink: './configuracion',
@@ -183,13 +118,13 @@ export const NAVBARDATA: INavbarData[] = [
         items: [],
       },
     ],
-    roles: ['Administrador', 'Operador'],
+    roles: ['Superadministrador'],
   },
   {
     routeLink: './usuarios',
     icon: 'assets/imgs/navbar/user.svg',
     label: 'Usuarios',
     items: [],
-    roles: ['Administrador'],
+    roles: ['Superadministrador','Administrador'],
   },
 ];
