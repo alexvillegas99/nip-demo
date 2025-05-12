@@ -49,7 +49,9 @@
 
                     <td>
                         @for (permiso of item.permisos; track $index) {
-                        <p>{{permiso.descripcion}}</p>
+                            @if(permiso.estado) {
+                                <p>{{permiso.descripcion}}</p>
+                            }                        
                         }
                     </td>
 
@@ -87,14 +89,15 @@
             <h1></h1>
 
             <div class="row">
-                @for (item of permisos; track $index) {
+                @for (item of perfilSeleccionado.permisos; track $index) {
                     <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12 col-12 mb-2">
                         <div class="item-group">
                             <div class="form-check form-switch">
                                 <input class="form-check-input" 
-                                    [checked]="item.descripcion"
-                                    [(value)]="item.descripcion"
-                                    (change)="checkModulo(item)" type="checkbox"
+                                    [checked]="item.estado"
+                                    [(value)]="item.estado"
+                                    (change)="checkModulo(item)" 
+                                    type="checkbox"
                                     [name]="item.descripcion" />
                                 <label class="form-check-label"> {{item.descripcion}} </label>
                             </div>
@@ -108,9 +111,16 @@
             <button class="btn btn-cancel" (click)="modalPermisosRef?.hide()">
                 Cancelar
             </button>
-            <button class="btn btn-primary" [disabled]="formPermiso.invalid" (click)="createPermiso()">
-                Guardar
-            </button>
+
+            @if (perfilSeleccionado) {
+                <button class="btn btn-primary" [disabled]="formPermiso.invalid" (click)="editarPermiso()">
+                    Guardar
+                </button>
+            } @else {
+                <button class="btn btn-primary" [disabled]="formPermiso.invalid" (click)="createPermiso()">
+                    Guardar
+                </button>
+            }
         </div>
     </form>
 </ng-template>

@@ -2,7 +2,11 @@
     <select (change)="opcionSeleccionada($event)" class="form-select" aria-label="Seleccione un país">
         <option class="select" disabled>{{labelDisabled}}</option>
         @for (opcion of lista; track $index) {
-        <option class="select" [value]="opcion.code">{{opcion.nombre}}</option>
+            @if(opcion.code) {
+                <option class="select" [value]="opcion.code">{{opcion.nombre}}</option>
+            } @else {
+                <option class="select" [value]="opcion.nombre">{{opcion.nombre}}</option>
+            }
         }
     </select>
 </div>

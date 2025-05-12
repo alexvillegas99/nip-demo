@@ -12,7 +12,7 @@
 <div class="filters">
   <div class="item">
     <app-select
-      [labelDisabled]="'Rol'"
+      [labelDisabled]="'Seleccione el Rol'"
       [lista]="filtrosRoles"
       (opcionEvent)="rolFiltro = $event"
     ></app-select>
@@ -77,31 +77,25 @@
     <div class="modal-body">
       <h4>{{ usuarioSeleccionado ? "Editar Usuario" : "Nuevo Usuario" }}</h4>
       <div class="form-group">
-        <label>Cédula:</label>
+        <label for="cedula">Cédula:</label>
         <input formControlName="cedula" class="form-control" />
       </div>
       <div class="form-group">
-        <label>Nombre:</label>
+        <label for="nombre">Nombre:</label>
         <input formControlName="nombre" class="form-control" />
       </div>
       <div class="form-group">
-        <label>Correo Institucional:</label>
+        <label for="correo">Correo Institucional:</label>
         <input formControlName="correo" class="form-control" />
       </div>
       <div class="form-group">
-        <label>Cargo:</label>
-        <select formControlName="rol" class="form-select">
-          <option *ngFor="let cargo of cargos" [value]="cargo">{{ cargo }}</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Celular:</label>
+        <label for="telefono">Celular:</label>
         <input formControlName="telefono" class="form-control" />
       </div>
       <div class="form-group">
-        <label>Rol:</label>
+        <label for="rol">Rol:</label>
         <select formControlName="rol" class="form-select">
-          <option *ngFor="let rol of roles" [value]="rol">{{ rol }}</option>
+          <option *ngFor="let rol of roles" [value]="rol.nombre">{{ rol.nombre }}</option>
         </select>
       </div>
     </div>

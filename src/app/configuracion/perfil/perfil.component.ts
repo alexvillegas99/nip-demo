@@ -35,6 +35,7 @@ export class PerfilComponent implements OnInit {
 
   modalPermisosRef: any;
 
+  permisosSeleccionados: any = [];
   permisos = [
     {
       descripcion: 'crear',
@@ -59,7 +60,6 @@ export class PerfilComponent implements OnInit {
     this.perfilService.getPerfil().subscribe({
       next: (res) => {
         this.perfiles = res;
-        console.log(this.perfiles, 'perfil');
       },
       error: (err) => {
         console.log(err);
@@ -74,12 +74,12 @@ export class PerfilComponent implements OnInit {
     });
   }
 
-  abrirModal(template: TemplateRef<any>, dispositivo?: any) {
-    console.log(dispositivo);
+  abrirModal(template: TemplateRef<any>, perfil?: any) {
+    console.log(perfil);
 
-    this.perfilSeleccionado = dispositivo ?? null;
-    if (dispositivo) {
-      this.formPermiso.patchValue(dispositivo);
+    this.perfilSeleccionado = perfil ?? null;
+    if (perfil) {
+      this.formPermiso.patchValue(perfil);
     } else {
       this.formPermiso.reset();
     }
@@ -98,5 +98,19 @@ export class PerfilComponent implements OnInit {
 
   createPermiso() {}
 
-  checkModulo(permiso: any) {}
+  editarPermiso() {
+    console.log(this.perfilSeleccionado, 'editarPermiso');
+    console.log(this.permisosSeleccionados, 'permisos seleccionados..')
+  }
+
+  checkModulo(permiso: any) {
+    console.log(permiso, 'dta de permiso..', this.perfilSeleccionado.permisos);
+
+    const index = this.perfilSeleccionado.permisos.findIndex((reg: any) => reg.descripcion === permiso.descripcion);
+    console.log(index, 'indice encontrado...');
+  
+    if (index > -1) {
+      this.perfilSeleccionado.permisos[index].estado = !this.perfilSeleccionado.permisos[index].estado;
+    }
+  }
 }

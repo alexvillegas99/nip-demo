@@ -1,4 +1,4 @@
-/*   export const environment = {
+export const environment = {
   production: false,
   apiUrl: 'http://localhost:4000/api',
   //wsUrl: 'http://back.test.nipautomation.com',
@@ -10,7 +10,7 @@
   },
 };
   
- */
+/*
   export const environment = {
   production: false,
   apiUrl: 'https://back.test.nipautomation.com/api',
@@ -21,4 +21,4 @@
     mapbox_style: 'mapbox://styles/mapbox/navigation-day-v1',
   },
 }; 
- 
+*/

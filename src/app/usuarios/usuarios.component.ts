@@ -7,11 +7,12 @@ import {
   Validators,
 } from '@angular/forms';
 import { UsuariosService } from '../services/usuarios.service';
-import { SharedModule } from '../shared/shared.module';
 import { SelectComponent } from '../shared/components/select/select.component';
 import { CommonModule } from '@angular/common';
-import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
+import { BsModalService } from 'ngx-bootstrap/modal';
 import { AlertService } from '../services/alert.service';
+import { PerfilService } from '../services/tarea.service copy';
+
 @Component({
   selector: 'app-usuarios',
   standalone: true,
@@ -25,24 +26,7 @@ export class UsuariosComponent implements OnInit {
   usuarioSeleccionado: any | null = null;
 
   formUsuario!: FormGroup;
-  filtrosRoles = [
-    {
-      nombre: 'Todos',
-      code: 1,
-    },
-    {
-      nombre: 'Administrador',
-      code: 2,
-    },
-    {
-      nombre: 'Visualizador',
-      code: 3,
-    },
-    {
-      nombre: 'Operador',
-      code: 4,
-    },
-  ];
+  filtrosRoles: any = [  ];
 
   filtrosEstados = [
     {
@@ -59,18 +43,20 @@ export class UsuariosComponent implements OnInit {
   estadoFiltro: string = 'todos';
   modalUsuarioRef: any;
 
-  roles = ['Administrador', 'Visualizador', 'Operador'];
+  roles: any = [];
   cargos = ['Administrador', 'Operador'];
   constructor(
-    private fb: FormBuilder,
-    private usuariosService: UsuariosService,
-    private modalService: BsModalService,
-    private alert: AlertService
+    private readonly fb: FormBuilder,
+    private readonly usuariosService: UsuariosService,
+    private readonly modalService: BsModalService,
+    private readonly alert: AlertService,
+    private readonly _perfilService: PerfilService
   ) {}
 
   ngOnInit(): void {
     this.inicializarFormulario();
     this.cargarUsuarios();
+    this.getPerfiles();
   }
 
   inicializarFormulario() {
@@ -81,6 +67,20 @@ export class UsuariosComponent implements OnInit {
       telefono: ['', Validators.required],
       rol: ['visualizador', Validators.required],
     });
+  }
+
+  
+  getPerfiles() {
+    this._perfilService.getPerfil().subscribe({
+      next: (resp: any) => {
+        this.filtrosRoles.push({ nombre: 'Todos'});
+        this.roles = resp;
+        this.filtrosRoles.push(...resp);
+      },
+      error: (error: any) => {
+        console.error('Error al obtener los perfiles:', error);
+      },
+    })
   }
 
   cargarUsuarios() {
@@ -151,7 +151,14 @@ export class UsuariosComponent implements OnInit {
   }
 
   filtrarUsuarios() {
-    this.usuariosService.getUsuarios(this.rolFiltro).subscribe((resp) => {
+    console.log(this.rolFiltro, 'rol para filtro..', this.estadoFiltro)
+
+    if(this.rolFiltro === '' || this.rolFiltro.toLowerCase() == 'todos') {
+      this.rolFiltro = '';
+    }
+
+    this.usuariosService.getUsuarios(this.rolFiltro)
+    .subscribe((resp) => {
       this.usuarios = resp.data;
     });
   }
