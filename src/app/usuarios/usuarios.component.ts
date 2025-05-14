@@ -12,12 +12,18 @@ import { CommonModule } from '@angular/common';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { AlertService } from '../services/alert.service';
 import { PerfilService } from '../services/tarea.service copy';
+import { DisableForRolesDirective } from '../core/directives/disable-for-roles.directive';
 
 @Component({
   selector: 'app-usuarios',
   standalone: true,
-
-  imports: [FormsModule, ReactiveFormsModule, SelectComponent, CommonModule],
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    SelectComponent,
+    CommonModule,
+    DisableForRolesDirective,
+  ],
   templateUrl: './usuarios.component.html',
   styleUrl: './usuarios.component.scss',
 })
@@ -26,7 +32,7 @@ export class UsuariosComponent implements OnInit {
   usuarioSeleccionado: any | null = null;
 
   formUsuario!: FormGroup;
-  filtrosRoles: any = [  ];
+  filtrosRoles: any = [];
 
   filtrosEstados = [
     {
@@ -69,18 +75,17 @@ export class UsuariosComponent implements OnInit {
     });
   }
 
-  
   getPerfiles() {
     this._perfilService.getPerfil().subscribe({
       next: (resp: any) => {
-        this.filtrosRoles.push({ nombre: 'Todos'});
+        this.filtrosRoles.push({ nombre: 'Todos' });
         this.roles = resp;
         this.filtrosRoles.push(...resp);
       },
       error: (error: any) => {
         console.error('Error al obtener los perfiles:', error);
       },
-    })
+    });
   }
 
   cargarUsuarios() {
@@ -151,14 +156,13 @@ export class UsuariosComponent implements OnInit {
   }
 
   filtrarUsuarios() {
-    console.log(this.rolFiltro, 'rol para filtro..', this.estadoFiltro)
+    console.log(this.rolFiltro, 'rol para filtro..', this.estadoFiltro);
 
-    if(this.rolFiltro === '' || this.rolFiltro.toLowerCase() == 'todos') {
+    if (this.rolFiltro === '' || this.rolFiltro.toLowerCase() == 'todos') {
       this.rolFiltro = '';
     }
 
-    this.usuariosService.getUsuarios(this.rolFiltro)
-    .subscribe((resp) => {
+    this.usuariosService.getUsuarios(this.rolFiltro).subscribe((resp) => {
       this.usuarios = resp.data;
     });
   }

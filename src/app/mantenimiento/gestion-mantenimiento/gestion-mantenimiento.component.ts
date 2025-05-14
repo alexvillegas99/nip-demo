@@ -25,6 +25,7 @@ import { StepperComponent } from '../../shared/stepper/stepper.component';
 import { ToastrService } from '../../services/toas.service';
 import { TareaService } from '../../services/tarea.service';
 import { UsuariosService } from '../../services/usuarios.service';
+import { DisableForRolesDirective } from '../../core/directives/disable-for-roles.directive';
 
 @Component({
   selector: 'app-gestion-mantenimiento',
@@ -37,6 +38,7 @@ import { UsuariosService } from '../../services/usuarios.service';
     NgbTimepickerModule,
     SearchComponent,
     SelectComponent,
+    DisableForRolesDirective
   ],
   templateUrl: './gestion-mantenimiento.component.html',
   styleUrl: './gestion-mantenimiento.component.scss',

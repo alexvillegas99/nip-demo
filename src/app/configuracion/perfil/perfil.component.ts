@@ -13,11 +13,18 @@ import { BsModalService } from 'ngx-bootstrap/modal';
 import { AlertService } from '../../services/alert.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { PerfilService } from '../../services/tarea.service copy';
+import { DisableForRolesDirective } from '../../core/directives/disable-for-roles.directive';
 
 @Component({
   selector: 'app-perfil',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, CommonModule, SearchComponent],
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    CommonModule,
+    SearchComponent,
+    DisableForRolesDirective,
+  ],
   templateUrl: './perfil.component.html',
   styleUrl: './perfil.component.scss',
 })
@@ -100,17 +107,32 @@ export class PerfilComponent implements OnInit {
 
   editarPermiso() {
     console.log(this.perfilSeleccionado, 'editarPermiso');
-    console.log(this.permisosSeleccionados, 'permisos seleccionados..')
+    this.perfilService
+      .updatePerfil(this.perfilSeleccionado._id, this.perfilSeleccionado)
+      .subscribe({
+        next: (res: any) => {
+          // this.alert.showSuccess('Perfil actualizado correctamente');
+          this.modalPermisosRef.hide();
+          this.getPerfiles();
+        },
+        error: (err: any) => {
+          console.log(err);
+          // this.alert.showError('Error al actualizar el perfil');
+        },
+      });
   }
 
   checkModulo(permiso: any) {
     console.log(permiso, 'dta de permiso..', this.perfilSeleccionado.permisos);
 
-    const index = this.perfilSeleccionado.permisos.findIndex((reg: any) => reg.descripcion === permiso.descripcion);
+    const index = this.perfilSeleccionado.permisos.findIndex(
+      (reg: any) => reg.descripcion === permiso.descripcion
+    );
     console.log(index, 'indice encontrado...');
-  
+
     if (index > -1) {
-      this.perfilSeleccionado.permisos[index].estado = !this.perfilSeleccionado.permisos[index].estado;
+      this.perfilSeleccionado.permisos[index].estado =
+        !this.perfilSeleccionado.permisos[index].estado;
     }
   }
 }

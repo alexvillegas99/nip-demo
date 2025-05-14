@@ -14,6 +14,7 @@ import { AlertService } from '../../services/alert.service';
 import { CommonModule } from '@angular/common';
 import { SearchComponent } from '../../shared/components/search/search.component';
 import { SelectComponent } from '../../shared/components/select/select.component';
+import { DisableForRolesDirective } from '../../core/directives/disable-for-roles.directive';
 
 @Component({
   selector: 'app-lista-equipo',
@@ -24,6 +25,7 @@ import { SelectComponent } from '../../shared/components/select/select.component
     CommonModule,
     SearchComponent,
     SelectComponent,
+    DisableForRolesDirective
   ],
   templateUrl: './lista-equipo.component.html',
   styleUrl: './lista-equipo.component.scss',

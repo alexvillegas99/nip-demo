@@ -67,8 +67,8 @@ export class SublevelMenuComponent implements OnInit {
   constructor(public router: Router) {}
 
   ngOnInit(): void {
-    console.log(this.data, 'data...', this.nivel);
-    console.log(this.collapsed, this.animating, this.expanded, this.multiple);
+    //console.log(this.data, 'data...', this.nivel);
+    //console.log(this.collapsed, this.animating, this.expanded, this.multiple);
   }
 
   handleClick(item: any): void {

@@ -3,7 +3,10 @@
     <h1>GESTIÓN DE USUARIOS</h1>
   </div>
   <div class="item">
-    <button class="btn boton-1" (click)="abrirModal(modalUsuario)">
+    <button [appDisableForRoles]="['Superadministrador', 'Administrador']"
+      [appDisableForRolesPermisos]="['crear']" 
+      class="btn boton-1"
+      (click)="abrirModal(modalUsuario)">
       Crear usuario
     </button>
   </div>
@@ -11,21 +14,17 @@
 
 <div class="filters">
   <div class="item">
-    <app-select
-      [labelDisabled]="'Seleccione el Rol'"
-      [lista]="filtrosRoles"
-      (opcionEvent)="rolFiltro = $event"
-    ></app-select>
+    <app-select [labelDisabled]="'Seleccione el Rol'" [lista]="filtrosRoles"
+      (opcionEvent)="rolFiltro = $event"></app-select>
   </div>
   <div class="item">
-    <app-select
-      [labelDisabled]="'Estado'"
-      [lista]="filtrosEstados"
-      (opcionEvent)="estadoFiltro = $event"
-    ></app-select>
+    <app-select [labelDisabled]="'Estado'" [lista]="filtrosEstados" (opcionEvent)="estadoFiltro = $event"></app-select>
   </div>
   <div class="item">
-    <button class="btn btn-light boton-2" (click)="filtrarUsuarios()">
+    <button 
+    [appDisableForRoles]="['Superadministrador', 'Administrador']"
+    [appDisableForRolesPermisos]="['leer']"  
+      class="btn btn-light boton-2" (click)="filtrarUsuarios()">
       Filtrar
     </button>
   </div>
@@ -48,21 +47,18 @@
           <td>{{ usuario.nombre }}</td>
           <td>{{ usuario.correo }}</td>
           <td>{{ usuario.rol }}</td>
-          <td (click)="cambiarEstado(usuario, !usuario.estado)">
+          <td (click)="cambiarEstado(usuario, !usuario.estado)" >
             <!-- sapn con bg color succes o danger -->
 
-            <span
-            style="cursor: pointer;"
-              class="badge"
-              [ngClass]="usuario.estado ? 'bg-success' : 'bg-danger'"
-              >{{ usuario.estado ? "Activo" : "Inactivo" }}</span>
+            <span  style="cursor: pointer;" class="badge" [ngClass]="usuario.estado ? 'bg-success' : 'bg-danger'">{{
+              usuario.estado ? "Activo" : "Inactivo" }}</span>
 
           </td>
           <td>
-            <button
-              class="btn btn-primary"
-              (click)="abrirModal(modalUsuario, usuario)"
-            >
+            <button class="btn btn-primary" 
+            [appDisableForRoles]="['Superadministrador', 'Administrador']"
+            [appDisableForRolesPermisos]="['actualizar']"  
+            (click)="abrirModal(modalUsuario, usuario)">
               Editar
             </button>
           </td>
@@ -103,11 +99,7 @@
       <button class="btn btn-cancel" (click)="modalUsuarioRef?.hide()">
         Cancelar
       </button>
-      <button
-        class="btn btn-primary"
-        [disabled]="formUsuario.invalid"
-        (click)="guardarUsuario()"
-      >
+      <button class="btn btn-primary" [disabled]="formUsuario.invalid" (click)="guardarUsuario()">
         Guardar
       </button>
     </div>

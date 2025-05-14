@@ -9,7 +9,8 @@
     </div>
 
     <div class="item">
-        <button type="button" class="btn boton-1 " (click)="abrirModal(modalDispositivo)">
+        <button [appDisableForRoles]="['Superadministrador', 'Administrador']" [appDisableForRolesPermisos]="['crear']"
+            type="button" class="btn boton-1 " (click)="abrirModal(modalDispositivo)">
             <i class="fa fa-plus" aria-hidden="true"></i> Crear nuevo dispositivo
         </button>
     </div>
@@ -48,13 +49,13 @@
                     </td>
 
                     <td>
-                        <button class="btn btn-primary" (click)="abrirModal(modalDispositivo, item)">
+                        <button [appDisableForRoles]="['Superadministrador', 'Administrador']" [appDisableForRolesPermisos]="['actualizar']" class="btn btn-primary" (click)="abrirModal(modalDispositivo, item)">
                             Editar
                         </button>
 
                         <p></p>
 
-                        <button class="btn btn-secondary" (click)="abrirModalValores(modalValores, item)">
+                        <button [appDisableForRoles]="['Superadministrador', 'Administrador']" [appDisableForRolesPermisos]="['crear']" class="btn btn-secondary" (click)="abrirModalValores(modalValores, item)">
                             Valores
                         </button>
                     </td>

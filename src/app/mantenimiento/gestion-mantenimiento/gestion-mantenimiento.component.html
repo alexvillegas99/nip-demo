@@ -31,7 +31,9 @@
     }
  -->
     @if (menu[0].active) {
-    <button type="button" class="btn boton-1 " (click)="modalNuevaTarea(content1)">
+    <button 
+    [appDisableForRoles]="['Superadministrador', 'Administrador']" [appDisableForRolesPermisos]="['crear']" 
+    type="button" class="btn boton-1 " (click)="modalNuevaTarea(content1)">
       <i class="fa fa-plus" aria-hidden="true"></i> Crear nueva tarea
     </button>
     }
@@ -128,11 +130,11 @@
           </td> -->
           <td>{{ tarea.createdAt | date: 'dd/MM/yyyy' }}</td>
           <td style="display: flex; flex-direction: row; align-items: center; justify-content: center; gap: .5rem;">
-            <button class="btn btn-cancel" title="Visualizar" (click)="seleccionarTarea(tarea, content1)"
+            <button  [appDisableForRoles]="['Superadministrador', 'Administrador']" [appDisableForRolesPermisos]="['actualizar']" class="btn btn-cancel" title="Visualizar" (click)="seleccionarTarea(tarea, content1)"
               style="color: #191D23;">
               <i class="fa fa-eye" aria-hidden="true"></i>
             </button>
-            <button class="btn btn-cancel" title="Eliminar" (click)="eliminarTarea(tarea._id)"
+            <button  [appDisableForRoles]="['Superadministrador', 'Administrador']" [appDisableForRolesPermisos]="['eliminar']" class="btn btn-cancel" title="Eliminar" (click)="eliminarTarea(tarea._id)"
               style="color: #191D23;margin-left: 5px">
               <i class="fa fa-trash" aria-hidden="true"></i>
             </button>
@@ -477,6 +479,7 @@
         </button>
 
         <button class="btn btn-primary" title="Editar"
+          [appDisableForRoles]="['Superadministrador', 'Administrador']" [appDisableForRolesPermisos]="['actualizar']" 
           (click)="guardarSubTareaEditada(); this.subTareaSeleccionada = null;" *ngIf="subTareaSeleccionada"
           [disabled]="formActividades.invalid">
           <i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar

@@ -1,10 +1,10 @@
-<div class="filters">
+<div class="filters" style="margin-top: 1rem;">
     <div class="item">
-        <app-search [label]="'Buscar por nombre'" (searchText)="textoFiltrado($event)"></app-search>
+        <!-- <app-search [label]="'Buscar por nombre'" (searchText)="textoFiltrado($event)"></app-search> -->
     </div>
 
     <div class="item">
-        <button type="button" class="btn boton-1 " (click)="abrirModal(modalPermiso)">
+        <button [appDisableForRoles]="['Superadministrador', 'Administrador']" [appDisableForRolesPermisos]="['crear']"  type="button" class="btn boton-1 " (click)="abrirModal(modalPermiso)">
             <i class="fa fa-plus" aria-hidden="true"></i> Crear nuevo perfil
         </button>
     </div>
@@ -56,7 +56,7 @@
                     </td>
 
                     <td>
-                        <button class="btn btn-primary" (click)="abrirModal(modalDispositivo, item)">
+                        <button [appDisableForRoles]="['Superadministrador', 'Administrador']" [appDisableForRolesPermisos]="['actualizar']"  class="btn btn-primary" (click)="abrirModal(modalDispositivo, item)">
                             Editar
                         </button>
 
@@ -113,11 +113,11 @@
             </button>
 
             @if (perfilSeleccionado) {
-                <button class="btn btn-primary" [disabled]="formPermiso.invalid" (click)="editarPermiso()">
+                <button [appDisableForRoles]="['Superadministrador', 'Administrador']" [appDisableForRolesPermisos]="['actualizar']"  class="btn btn-primary" [disabled]="formPermiso.invalid" (click)="editarPermiso()">
                     Guardar
                 </button>
             } @else {
-                <button class="btn btn-primary" [disabled]="formPermiso.invalid" (click)="createPermiso()">
+                <button [appDisableForRoles]="['Superadministrador', 'Administrador']" [appDisableForRolesPermisos]="['crear']"  class="btn btn-primary" [disabled]="formPermiso.invalid" (click)="createPermiso()">
                     Guardar
                 </button>
             }

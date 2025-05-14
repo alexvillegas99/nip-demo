@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../env/env';
 import { CookiesService } from '../core/services/cookies.service';
 import { EncriptadoService } from '../core/services/encriptacion-aes.service';
-import { JWT, ROLES } from '../core/constants/local-store.constants';
+import { JWT, PERMISOS, ROLES } from '../core/constants/local-store.constants';
 import { map, tap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
@@ -20,8 +20,11 @@ export class AuthService {
     const uri = `${this.API}/login`;
     return this.http.post<any>(uri, { ...data }).pipe(
       tap((response) => {
+        console.log(response, 'response');
+        
         if (response.accessToken) {
           this.setRoles(response.user.rol);
+          this.setPermisos(response.permisos);
           this._coookiesService.almacenarCookie(JWT,       
             this._encriptadoService.encriptarInformacionCookie(response.accessToken)
            );
@@ -48,4 +51,24 @@ export class AuthService {
     const rolesString = this._coookiesService.obtenerCookie(ROLES);
     return this._encriptadoService.desencriptarInformacionCookie(rolesString);
   }
+
+  setPermisos(permisos: string) {
+    this._coookiesService.almacenarCookie(
+      PERMISOS,
+      this._encriptadoService.encriptarInformacionCookie(permisos)
+    );
+  }
+
+  hasPermisos(permisos: string): boolean {
+    const permisosString = this._coookiesService.obtenerCookie(PERMISOS);
+    const permiso =
+      this._encriptadoService.desencriptarInformacionCookie(permisosString);
+    return permiso.includes(permisos);
+  }
+
+  getPermisos(): string {
+    const permisosString = this._coookiesService.obtenerCookie(PERMISOS);
+    return this._encriptadoService.desencriptarInformacionCookie(permisosString);
+  }
+
 }
