@@ -27,6 +27,7 @@ import { OrometroComponent } from './mantenimiento/orometro/orometro.component';
 import { ListaEquipoComponent } from './configuracion/lista-equipo/lista-equipo.component';
 import { PerfilComponent } from './configuracion/perfil/perfil.component';
 import { EstaLogeadoGuard } from './core/guards/esta-logeado.guard';
+import { RoleGuard } from './core/guards/rol.guard';
 
 export const routes: Routes = [
   {
@@ -49,16 +50,28 @@ export const routes: Routes = [
             path: 'home',
             title: 'Inicio',
             component: InicioComponent,
+            canActivate: [EstaLogeadoGuard, RoleGuard],
+            data: {
+              roles: ['Superadministrador', 'Administrador', 'Operador'],
+            },
           },
           {
             path: 'alarmas',
             title: 'Alarmas',
             component: AlarmasComponent,
+            canActivate: [EstaLogeadoGuard, RoleGuard],
+            data: {
+              roles: ['Superadministrador', 'Administrador', 'Operador'],
+            },
           },
           {
             path: 'dashboard',
             title: 'Dashboard',
             component: DashboardComponent,
+            canActivate: [EstaLogeadoGuard, RoleGuard],
+            data: {
+              roles: ['Superadministrador', 'Administrador', 'Operador'],
+            },
           },
           {
             path: '',
@@ -77,16 +90,28 @@ export const routes: Routes = [
             path: 'maquinaria-equipos',
             title: 'Maquinaria y equipos',
             component: MaquinariaEquiposComponent,
+            canActivate: [EstaLogeadoGuard, RoleGuard],
+            data: {
+              roles: ['Superadministrador', 'Administrador', 'Operador'],
+            },
             children: [
               {
                 path: 'gestion-comprensor',
                 title: 'Gestión de Comprensores',
                 component: GestionComprensorComponent,
+                canActivate: [EstaLogeadoGuard, RoleGuard],
+                data: {
+                  roles: ['Superadministrador', 'Administrador', 'Operador'],
+                },
                 children: [
                   {
                     path: ':id/comprensor',
                     title: 'Comprensor',
                     component: ComprensoresComponent,
+                    canActivate: [EstaLogeadoGuard, RoleGuard],
+                    data: {
+                      roles: ['Superadministrador', 'Administrador', 'Operador'],
+                    },
                   },
                 ],
               },
@@ -94,11 +119,19 @@ export const routes: Routes = [
                 path: 'gestion-variador',
                 title: 'Gestión de Variadores',
                 component: GestionVariadorComponent,
+                canActivate: [EstaLogeadoGuard, RoleGuard],
+                data: {
+                  roles: ['Superadministrador', 'Administrador', 'Operador'],
+                },
                 children: [
                   {
                     path: ':id/variador',
                     title: 'Medidor',
                     component: VariadoresComponent,
+                    canActivate: [EstaLogeadoGuard, RoleGuard],
+                    data: {
+                      roles: ['Superadministrador', 'Administrador', 'Operador'],
+                    },
                   },
                 ],
               },
@@ -113,31 +146,55 @@ export const routes: Routes = [
             path: 'instrumentacion',
             title: 'Instrumentacion y medidores',
             component: InstrumentacionMedidoresComponent,
+            canActivate: [EstaLogeadoGuard, RoleGuard],
+            data: {
+              roles: ['Superadministrador', 'Administrador', 'Operador'],
+            },
             children: [
               {
                 path: 'gestion/:id',
                 title: 'Gestión de Medidores',
                 component: GestionMedidorComponent,
+                canActivate: [EstaLogeadoGuard, RoleGuard],
+                data: {
+                  roles: ['Superadministrador', 'Administrador', 'Operador'],
+                },
               },
               {
                 path: ':id/pantalla-medidores',
                 title: '',
                 component: PantallaMedidoresComponent,
+                canActivate: [EstaLogeadoGuard, RoleGuard],
+                data: {
+                  roles: ['Superadministrador', 'Administrador', 'Operador'],
+                },
                 children: [
                   {
                     path: 'medidor',
                     title: 'Medidor',
                     component: MedidoresComponent,
+                    canActivate: [EstaLogeadoGuard, RoleGuard],
+                    data: {
+                      roles: ['Superadministrador', 'Administrador', 'Operador'],
+                    },
                   },
                   {
                     path: 'consumo-energetico',
                     title: 'Consumo energético',
                     component: ConsumoEnergeticoComponent,
+                    canActivate: [EstaLogeadoGuard, RoleGuard],
+                    data: {
+                      roles: ['Superadministrador', 'Administrador', 'Operador'],
+                    },
                   },
                   {
                     path: 'visualizador-personalizado',
                     title: 'Consumo energético',
                     component: VisualizadorPersonalizadoComponent,
+                    canActivate: [EstaLogeadoGuard, RoleGuard],
+                    data: {
+                      roles: ['Superadministrador', 'Administrador', 'Operador'],
+                    },
                   },
                   {
                     path: '',
@@ -150,11 +207,19 @@ export const routes: Routes = [
                 path: ':id/pantalla-variadores',
                 title: '',
                 component: PantallaVariadoresComponent,
+                canActivate: [EstaLogeadoGuard, RoleGuard],
+                data: {
+                  roles: ['Superadministrador', 'Administrador', 'Operador'],
+                },
                 children: [
                   {
                     path: 'variador',
                     title: 'Variador',
                     component: VariadoresComponent,
+                    canActivate: [EstaLogeadoGuard, RoleGuard],
+                    data: {
+                      roles: ['Superadministrador', 'Administrador', 'Operador'],
+                    },
                   },
                 ],
               },
@@ -164,11 +229,19 @@ export const routes: Routes = [
             path: 'procesos',
             title: 'Procesos',
             component: ProcesosComponent,
+            canActivate: [EstaLogeadoGuard, RoleGuard],
+            data: {
+              roles: ['Superadministrador', 'Administrador', 'Operador'],
+            },
           },
           {
             path: 'reportes',
             title: 'Reportes',
             component: ReportesComponent,
+            canActivate: [EstaLogeadoGuard, RoleGuard],
+            data: {
+              roles: ['Superadministrador', 'Administrador', 'Operador'],
+            },
           },
           {
             path: '',
@@ -187,11 +260,19 @@ export const routes: Routes = [
             path: 'gestion-mantenimiento',
             title: 'Gestión mantenimiento',
             component: GestionMantenimientoComponent,
+            canActivate: [EstaLogeadoGuard, RoleGuard],
+            data: {
+              roles: ['Superadministrador', 'Administrador', 'Operador'],
+            },
           },
           {
             path: 'orometro',
             title: 'Gestión de Orometro',
             component: OrometroComponent,
+            canActivate: [EstaLogeadoGuard, RoleGuard],
+            data: {
+              roles: ['Superadministrador', 'Administrador', 'Operador'],
+            },
           },
           /*  {
             path: '',
@@ -210,11 +291,19 @@ export const routes: Routes = [
             path: 'gestion-equipos',
             title: 'Gestión de equipos',
             component: ListaEquipoComponent,
+            canActivate: [EstaLogeadoGuard, RoleGuard],
+            data: {
+              roles: ['Superadministrador'],
+            },
           },
           {
             path: 'gestion-perfiles',
             title: 'Gestión de Perfiles',
             component: PerfilComponent,
+            canActivate: [EstaLogeadoGuard, RoleGuard],
+            data: {
+              roles: ['Superadministrador'],
+            },
           },
           {
             path: '',
@@ -227,18 +316,21 @@ export const routes: Routes = [
         path: 'usuarios',
         title: 'usuarios',
         component: UsuariosComponent,
-        canActivate: [EstaLogeadoGuard],
+        canActivate: [EstaLogeadoGuard, RoleGuard],
+        data: {
+          roles: ['Superadministrador', 'Administrador'],
+        },
       },
       {
         path: '',
         redirectTo: 'portal',
-        pathMatch: 'full', 
+        pathMatch: 'full',
       },
     ],
   },
   {
     path: '**',
     redirectTo: 'login',
-    pathMatch: 'full', 
+    pathMatch: 'full',
   },
 ];
