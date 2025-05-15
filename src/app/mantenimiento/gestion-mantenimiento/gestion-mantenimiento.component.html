@@ -130,7 +130,7 @@
           </td> -->
           <td>{{ tarea.createdAt | date: 'dd/MM/yyyy' }}</td>
           <td style="display: flex; flex-direction: row; align-items: center; justify-content: center; gap: .5rem;">
-            <button  [appDisableForRoles]="['Superadministrador', 'Administrador']" [appDisableForRolesPermisos]="['actualizar']" class="btn btn-cancel" title="Visualizar" (click)="seleccionarTarea(tarea, content1)"
+            <button  [appDisableForRoles]="['Superadministrador', 'Administrador', 'Operador']" [appDisableForRolesPermisos]="['leer']" class="btn btn-cancel" title="Visualizar" (click)="seleccionarTarea(tarea, content1)"
               style="color: #191D23;">
               <i class="fa fa-eye" aria-hidden="true"></i>
             </button>
@@ -336,7 +336,7 @@
           (click)="guardarTarea()">
           Guardar
         </button>
-        <button type="submit" class="btn btn-primary" *ngIf="tareaSeleccionada" (click)="editarTarea()">
+        <button [appDisableForRoles]="['Superadministrador', 'Administrador']" [appDisableForRolesPermisos]="['actualizar']" class="btn btn-cancel" title="Visualizar" type="submit" class="btn btn-primary" *ngIf="tareaSeleccionada" (click)="editarTarea()">
           Editar
         </button>
       </div>
@@ -345,7 +345,7 @@
     <div class="card">
       <div class="card-body">
         <div class="button" style="margin: 5px 0px">
-          <button class="btn btn-primary" (click)="openModal2(content2)">
+          <button [appDisableForRoles]="['Superadministrador', 'Administrador']" [appDisableForRolesPermisos]="['crear']" class="btn btn-cancel" title="Visualizar" class="btn btn-primary" (click)="openModal2(content2)">
             <i class="fa fa-plus" aria-hidden="true"></i> Agregar actividades
           </button>
         </div>
@@ -369,7 +369,9 @@
                 <td>{{ tarea_asociada.duracionEstimada }}</td>
                 <td>
                   <label class="switch">
-                    <input type="checkbox" (change)="onEstadoChange(tarea_asociada, tareaSeleccionada)"
+                    <input 
+                      [appDisableForRoles]="['Superadministrador', 'Administrador']" [appDisableForRolesPermisos]="['actualizar']"
+                      type="checkbox" (change)="onEstadoChange(tarea_asociada, tareaSeleccionada)"
                       [(ngModel)]="tarea_asociada.estado" />
                     <div class="slider">
                       <div class="circle">
@@ -402,11 +404,15 @@
                     align-items: center;
                     gap: 0.5rem;
                   ">
-                  <button type="button" class="btn btn-danger" title="Eliminar tarea"
+                  <button 
+                    [appDisableForRoles]="['Superadministrador', 'Administrador']" [appDisableForRolesPermisos]="['eliminar']"
+                    type="button" class="btn btn-danger" title="Eliminar tarea"
                     (click)="eliminarSubTarea($index, tareaSeleccionada)">
                     <i class="fa fa-trash" aria-hidden="true"></i>
                   </button>
-                  <button class="btn btn-primary" title="Editar" (click)="openModal2(content2,tarea_asociada, $index ); modal.close()
+                  <button 
+                    [appDisableForRoles]="['Superadministrador', 'Administrador']" [appDisableForRolesPermisos]="['actualizar']"
+                    class="btn btn-primary" title="Editar" (click)="openModal2(content2,tarea_asociada, $index ); modal.close()
                     ">
                     <i class="fa fa-pencil" aria-hidden="true"></i>
                   </button>
