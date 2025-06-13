@@ -33,8 +33,8 @@ export class LoginComponent implements OnInit {
 
   iniciarForm() {
     this.loginForm = this.fb.group({
-      correo: ['av058554@gmail.com', Validators.required],
-      clave: ['666135', Validators.required],
+      correo: ['jparra@hoptech.dev', Validators.required],
+      clave: ['cf7293', Validators.required],
     });
   }
 
