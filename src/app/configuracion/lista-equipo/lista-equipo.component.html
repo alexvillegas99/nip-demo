@@ -49,15 +49,28 @@
                     </td>
 
                     <td>
-                        <button [appDisableForRoles]="['Superadministrador', 'Administrador']" [appDisableForRolesPermisos]="['actualizar']" class="btn btn-primary" (click)="abrirModal(modalDispositivo, item)">
+                        <button [appDisableForRoles]="['Superadministrador', 'Administrador']"
+                            [appDisableForRolesPermisos]="['actualizar']" class="btn btn-primary"
+                            (click)="abrirModal(modalDispositivo, item)">
                             Editar
                         </button>
 
                         <p></p>
 
-                        <button [appDisableForRoles]="['Superadministrador', 'Administrador']" [appDisableForRolesPermisos]="['crear']" class="btn btn-secondary" (click)="abrirModalValores(modalValores, item)">
+                        <button [appDisableForRoles]="['Superadministrador', 'Administrador']"
+                            [appDisableForRolesPermisos]="['crear', 'actualizar']" class="btn btn-secondary"
+                            (click)="abrirModalValores(modalValores, item)">
                             Valores
                         </button>
+
+                        <p></p>
+
+                        <button [appDisableForRoles]="['Superadministrador', 'Administrador']"
+                            [appDisableForRolesPermisos]="['crear', 'actualizar']" class="btn btn-warning"
+                            (click)="abrirModalRango(modalRangos, item)">
+                            Rangos
+                        </button>
+
                     </td>
                 </tr>
                 }
@@ -71,79 +84,93 @@
 <ng-template #modalDispositivo let-modal>
     <form [formGroup]="formDispositivo">
         <div class="modal-body">
-            <h4>{{ dipositivoSeleccionado ? "Editar Dispositivo" : "Nuevo Dispositivo" }}</h4>
-            <div class="form-group">
-                <label for="Tipo">Tipo:</label>
-                <select formControlName="tipo" class="form-select">
-                    <option *ngFor="let tipo of filtrosTipo" [value]="tipo.code">{{ tipo.nombre }}</option>
-                </select>
-            </div>
+            <h4 class="mb-3 text-center">
+                {{ dipositivoSeleccionado ? "Editar Dispositivo" : "Nuevo Dispositivo" }}
+            </h4>
 
-            <div class="form-group">
-                <label for="Ip">Ip:</label>
-                <input formControlName="ip" class="form-control" />
-            </div>
+            <div class="row g-3">
 
-            <div class="form-group">
-                <label for="Nombre">Nombre:</label>
-                <input formControlName="nombre" class="form-control" />
-            </div>
+                <!-- Tipo -->
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                    <label for="Tipo">Tipo:</label>
+                    <select formControlName="tipo" class="form-select">
+                        <option *ngFor="let tipo of filtrosTipo" [value]="tipo.code">{{ tipo.nombre }}</option>
+                    </select>
+                </div>
 
-            <div class="form-group">
-                <label for="Modelo">Modelo:</label>
-                <input formControlName="modelo" class="form-control" />
-            </div>
+                <!-- IP -->
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                    <label for="Ip">Ip:</label>
+                    <input formControlName="ip" class="form-control" />
+                </div>
 
-            <div class="form-group">
-                <label for="serie">Serie:</label>
-                <input formControlName="serie" class="form-control" />
-            </div>
+                <!-- Nombre -->
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                    <label for="Nombre">Nombre:</label>
+                    <input formControlName="nombre" class="form-control" />
+                </div>
 
-            <div class="form-group">
-                <label for="area">Area:</label>
-                <input formControlName="area" class="form-control" />
-            </div>
+                <!-- Modelo -->
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                    <label for="Modelo">Modelo:</label>
+                    <input formControlName="modelo" class="form-control" />
+                </div>
 
-            <div class="form-group">
-                <label for="imagen">Imagen:</label>
-                <input formControlName="imagen" class="form-control" />
-            </div>
+                <!-- Serie -->
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                    <label for="serie">Serie:</label>
+                    <input formControlName="serie" class="form-control" />
+                </div>
 
-            @if(esVariador) {
-            <div class="form-group">
-                <label for="ubicacion">Ubicacion:</label>
-                <input formControlName="ubicacion" class="form-control" />
-            </div>
+                <!-- Área -->
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                    <label for="area">Área:</label>
+                    <input formControlName="area" class="form-control" />
+                </div>
 
-            <div class="form-group">
-                <label for="Inom">Inom:</label>
-                <input formControlName="Inom" class="form-control" />
-            </div>
+                <!-- Imagen -->
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                    <label for="imagen">Imagen:</label>
+                    <input formControlName="imagen" class="form-control" />
+                </div>
 
-            <div class="form-group">
-                <label for="Nnom">Nnom:</label>
-                <input formControlName="Nnom" class="form-control" />
-            </div>
+                <!-- Campos adicionales si es variador -->
+                @if (esVariador) {
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                    <label for="ubicacion">Ubicación:</label>
+                    <input formControlName="ubicacion" class="form-control" />
+                </div>
 
-            <div class="form-group">
-                <label for="Pnom">Pnom:</label>
-                <input formControlName="Pnom" class="form-control" />
-            </div>
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                    <label for="Inom">Inom:</label>
+                    <input formControlName="Inom" class="form-control" />
+                </div>
 
-            <div class="form-group">
-                <label for="Vnom">Vnom:</label>
-                <input formControlName="Vnom" class="form-control" />
-            </div>
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                    <label for="Nnom">Nnom:</label>
+                    <input formControlName="Nnom" class="form-control" />
+                </div>
 
-            <div class="form-group">
-                <label for="motor">Motor:</label>
-                <input formControlName="motor" class="form-control" />
-            </div>
-            }
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                    <label for="Pnom">Pnom:</label>
+                    <input formControlName="Pnom" class="form-control" />
+                </div>
 
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                    <label for="Vnom">Vnom:</label>
+                    <input formControlName="Vnom" class="form-control" />
+                </div>
+
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                    <label for="motor">Motor:</label>
+                    <input formControlName="motor" class="form-control" />
+                </div>
+                }
+            </div>
         </div>
-        <div class="modal-footer">
-            <button class="btn btn-cancel" (click)="modalDispositivoRef?.hide()">
+
+        <div class="modal-footer d-flex justify-content-between">
+            <button class="btn btn-secondary" (click)="modalDispositivoRef?.hide()">
                 Cancelar
             </button>
             <button class="btn btn-primary" [disabled]="formDispositivo.invalid" (click)="createDevice()">
@@ -215,7 +242,6 @@
 </ng-template>
 
 <ng-template #modalAgregarValores let-modal>
-
     <form [formGroup]="formValores">
         <div class="modal-body">
             <h4>{{ dipositivoSeleccionado ? "Editar Valor" : "Nuevo Valor" }}</h4>
@@ -254,6 +280,49 @@
 
 
 
+        </div>
+    </form>
+</ng-template>
+
+<ng-template #modalRangos let-modal>
+    <form [formGroup]="formRangos">
+        <div class="modal-body">
+            <h4>Editar Valores de Rango</h4>
+
+            <div class="row g-3">
+                <!-- RangoMinimoModerado -->
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                    <label for="RangoMinimoModerado">Rango Mínimo Moderado:</label>
+                    <input formControlName="RangoMinimoModerado" class="form-control" />
+                </div>
+
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                    <label for="RangoMinimoAlerta">Rango Mínimo Alerta:</label>
+                    <input formControlName="RangoMinimoAlerta" class="form-control" />
+                </div>
+
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                    <label for="RangoMaximoModerado">Rango Máximo Moderado:</label>
+                    <input formControlName="RangoMaximoModerado" class="form-control" />
+                </div>
+
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                    <label for="RangoMaximoAlerta">Rango Máximo Alerta:</label>
+                    <input formControlName="RangoMaximoAlerta" class="form-control" />
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn btn-cancel" (click)="modalRangosRef?.hide()">
+                Cancelar
+            </button>
+
+            <p></p>
+
+            <button class="btn btn-primary" (click)="editarRango(dipositivoSeleccionado)">
+                Editar
+            </button>
         </div>
     </form>
 </ng-template>
