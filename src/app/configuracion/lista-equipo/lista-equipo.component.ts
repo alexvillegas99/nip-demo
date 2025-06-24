@@ -25,7 +25,7 @@ import { DisableForRolesDirective } from '../../core/directives/disable-for-role
     CommonModule,
     SearchComponent,
     SelectComponent,
-    DisableForRolesDirective
+    DisableForRolesDirective,
   ],
   templateUrl: './lista-equipo.component.html',
   styleUrl: './lista-equipo.component.scss',
@@ -52,9 +52,11 @@ export class ListaEquipoComponent implements OnInit {
 
   formDispositivo!: FormGroup;
   formValores!: FormGroup;
+  formRangos!: FormGroup;
   modalDispositivoRef: any;
   modalValoresRef: any;
   modalAgregarValoresRef: any;
+  modalRangosRef: any;
 
   listaDispositivo: any;
   listaDispositivoFiltrada: any;
@@ -66,6 +68,7 @@ export class ListaEquipoComponent implements OnInit {
     this.getDevices();
     this.inicializarFormulario();
     this.inicializarFormularioValores();
+    this.inicializarFormularioRango();
   }
 
   inicializarFormulario() {
@@ -97,6 +100,27 @@ export class ListaEquipoComponent implements OnInit {
     });
   }
 
+  inicializarFormularioRango() {
+    this.formRangos = this.fb.group({
+      RangoMinimoModerado: new FormControl(
+        '',
+        Validators.compose([Validators.required])
+      ),
+      RangoMinimoAlerta: new FormControl(
+        '',
+        Validators.compose([Validators.required])
+      ),
+      RangoMaximoModerado: new FormControl(
+        '',
+        Validators.compose([Validators.required])
+      ),
+      RangoMaximoAlerta: new FormControl(
+        '',
+        Validators.compose([Validators.required])
+      ),
+    });
+  }
+
   get esVariador(): boolean {
     return this.formDispositivo.get('tipo')?.value === 'variador';
   }
@@ -122,7 +146,7 @@ export class ListaEquipoComponent implements OnInit {
     }
 
     this.modalDispositivoRef = this.modalService.show(template, {
-      class: 'modal-md modal-dialog-centered',
+      class: 'modal-lg modal-dialog-centered',
     });
   }
 
@@ -173,6 +197,19 @@ export class ListaEquipoComponent implements OnInit {
         );
       }
     );
+  }
+
+  abrirModalRango(template: TemplateRef<any>, dispositivo?: any) {
+    this.dipositivoSeleccionado = dispositivo ?? null;
+    if (dispositivo) {
+      this.formRangos.patchValue(dispositivo?.rango);
+    } else {
+      this.formRangos.reset();
+    }
+
+    this.modalRangosRef = this.modalService.show(template, {
+      class: 'modal-lg modal-dialog-centered',
+    });
   }
 
   createDevice() {
@@ -312,5 +349,30 @@ export class ListaEquipoComponent implements OnInit {
       });
   }
 
-  // bajo tolerable // bajo 
+  editarRango(dipositivo: any) {
+    const data = this.formRangos.value;
+    data._id = dipositivo._id;
+
+    const jsonData = {
+      rango: {
+        ...data,
+      },
+    };
+
+    this._listaEquiposService
+      .updateDevice(this.dipositivoSeleccionado._id, jsonData)
+      .subscribe({
+        next: (response) => {
+          this.alert.showToast('success', 'Valor editado correctamente');
+          this.getDevices();
+          this.modalRangosRef?.hide();
+        },
+        error: (error) => {
+          console.log(error);
+          this.alert.showToast('error', 'Error al editar el valor');
+        },
+      });
+  }
+
+  // bajo tolerable // bajo
 }

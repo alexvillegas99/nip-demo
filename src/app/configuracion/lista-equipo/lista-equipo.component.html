@@ -10,140 +10,181 @@
 
     <div class="item">
         <button [appDisableForRoles]="['Superadministrador', 'Administrador']" [appDisableForRolesPermisos]="['crear']"
-            type="button" class="btn boton-1 " (click)="abrirModal(modalDispositivo)">
+            type="button" class="btn boton-1 mb-2" (click)="abrirModal(modalDispositivo)">
             <i class="fa fa-plus" aria-hidden="true"></i> Crear nuevo dispositivo
         </button>
     </div>
 </div>
 
-<div class="container-tabla">
-    <div class="table-responsive">
-        <table class="table align-middle table-bordered table-bordered-sides">
-            <thead>
-                <tr>
-                    <th>INFORMACIÓN</th>
-                    <th>IMAGEN</th>
-                    <th>DESCRIPCIÓN</th>
-                    <th>ACCIONES</th>
-                </tr>
-            </thead>
-            <tbody>
-                @for(item of listaDispositivoFiltrada; track item)
-                {
-                <tr>
-                    <td>
-                        <h5> {{item.nombre}} </h5>
-                        <p> {{item.ip}}</p>
-                    </td>
+<!-- Vista tipo TABLA para pantallas grandes -->
+<div class="table-responsive d-none d-lg-block">
+    <table class="table align-middle table-bordered">
+        <thead class="text-center">
+            <tr>
+                <th>INFORMACIÓN</th>
+                <th>IMAGEN</th>
+                <th>DESCRIPCIÓN</th>
+                <th>ACCIONES</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (item of listaDispositivoFiltrada; track item) {
+            <tr>
+                <td>
+                    <h6 class="mb-1 fw-bold">{{ item.nombre }}</h6>
+                    <small class="text-muted">{{ item.ip }}</small>
+                </td>
+                <td class="text-center">
+                    <img [src]="item.imagen || 'assets/images/placeholder.png'" alt="{{ item.nombre }}"
+                        class="img-thumbnail rounded" style="width: 4rem; height: 4rem; object-fit: cover;" />
+                </td>
+                <td>
+                    <strong>Área:</strong> {{ item.area }} <br />
+                    <strong>Tipo:</strong> {{ item.tipo }} <br />
+                    <strong>Modelo:</strong> {{ item.modelo }} <br />
+                    <strong>Serie:</strong> {{ item.serie }}
+                </td>
+                <td class="text-center">
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-sm btn-primary"
+                            (click)="abrirModal(modalDispositivo, item)">Editar</button>
+                        <button class="btn btn-sm btn-secondary"
+                            (click)="abrirModalValores(modalValores, item)">Valores</button>
+                        <button class="btn btn-sm btn-warning"
+                            (click)="abrirModalRango(modalRangos, item)">Rangos</button>
+                    </div>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>
 
-                    <td>
-                        <img style="width: 4rem;" src="{{item.imagen}}" alt="Img de {{item.nombre}}"
-                            class="img-fluid" />
-                    </td>
-
-                    <td>
-                        <h5> {{item.area | uppercase}} </h5>
-                        <p> {{item.tipo | uppercase}} </p>
-                        <p> {{item.modelo}} </p>
-                        <p> {{item.serie}} </p>
-                    </td>
-
-                    <td>
-                        <button [appDisableForRoles]="['Superadministrador', 'Administrador']" [appDisableForRolesPermisos]="['actualizar']" class="btn btn-primary" (click)="abrirModal(modalDispositivo, item)">
-                            Editar
-                        </button>
-
-                        <p></p>
-
-                        <button [appDisableForRoles]="['Superadministrador', 'Administrador']" [appDisableForRolesPermisos]="['crear']" class="btn btn-secondary" (click)="abrirModalValores(modalValores, item)">
-                            Valores
-                        </button>
-                    </td>
-                </tr>
-                }
-
-
-            </tbody>
-        </table>
+<!-- Vista tipo CARD para pantallas pequeñas -->
+<div class="d-lg-none">
+    <div class="row gy-3">
+        @for (item of listaDispositivoFiltrada; track item) {
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-start">
+                        <img [src]="item.imagen || 'assets/images/placeholder.png'" alt="{{ item.nombre }}"
+                            class="rounded me-3" style="width: 60px; height: 60px; object-fit: cover;" />
+                        <div>
+                            <h6 class="fw-bold mb-1">{{ item.nombre }}</h6>
+                            <small class="text-muted d-block mb-2">{{ item.ip }}</small>
+                            <div class="mb-1"><strong>Área:</strong> {{ item.area }}</div>
+                            <div class="mb-1"><strong>Tipo:</strong> {{ item.tipo }}</div>
+                            <div class="mb-1"><strong>Modelo:</strong> {{ item.modelo }}</div>
+                            <div class="mb-1"><strong>Serie:</strong> {{ item.serie }}</div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between mt-3">
+                        <button class="btn btn-sm btn-primary"
+                            (click)="abrirModal(modalDispositivo, item)">Editar</button>
+                        <button class="btn btn-sm btn-secondary"
+                            (click)="abrirModalValores(modalValores, item)">Valores</button>
+                        <button class="btn btn-sm btn-warning"
+                            (click)="abrirModalRango(modalRangos, item)">Rangos</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        }
     </div>
 </div>
+
 
 <ng-template #modalDispositivo let-modal>
     <form [formGroup]="formDispositivo">
         <div class="modal-body">
-            <h4>{{ dipositivoSeleccionado ? "Editar Dispositivo" : "Nuevo Dispositivo" }}</h4>
-            <div class="form-group">
-                <label for="Tipo">Tipo:</label>
-                <select formControlName="tipo" class="form-select">
-                    <option *ngFor="let tipo of filtrosTipo" [value]="tipo.code">{{ tipo.nombre }}</option>
-                </select>
-            </div>
+            <h4 class="mb-3 text-center">
+                {{ dipositivoSeleccionado ? "Editar Dispositivo" : "Nuevo Dispositivo" }}
+            </h4>
 
-            <div class="form-group">
-                <label for="Ip">Ip:</label>
-                <input formControlName="ip" class="form-control" />
-            </div>
+            <div class="row g-3">
 
-            <div class="form-group">
-                <label for="Nombre">Nombre:</label>
-                <input formControlName="nombre" class="form-control" />
-            </div>
+                <!-- Tipo -->
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                    <label for="Tipo">Tipo:</label>
+                    <select formControlName="tipo" class="form-select">
+                        <option *ngFor="let tipo of filtrosTipo" [value]="tipo.code">{{ tipo.nombre }}</option>
+                    </select>
+                </div>
 
-            <div class="form-group">
-                <label for="Modelo">Modelo:</label>
-                <input formControlName="modelo" class="form-control" />
-            </div>
+                <!-- IP -->
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                    <label for="Ip">Ip:</label>
+                    <input formControlName="ip" class="form-control" />
+                </div>
 
-            <div class="form-group">
-                <label for="serie">Serie:</label>
-                <input formControlName="serie" class="form-control" />
-            </div>
+                <!-- Nombre -->
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                    <label for="Nombre">Nombre:</label>
+                    <input formControlName="nombre" class="form-control" />
+                </div>
 
-            <div class="form-group">
-                <label for="area">Area:</label>
-                <input formControlName="area" class="form-control" />
-            </div>
+                <!-- Modelo -->
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                    <label for="Modelo">Modelo:</label>
+                    <input formControlName="modelo" class="form-control" />
+                </div>
 
-            <div class="form-group">
-                <label for="imagen">Imagen:</label>
-                <input formControlName="imagen" class="form-control" />
-            </div>
+                <!-- Serie -->
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                    <label for="serie">Serie:</label>
+                    <input formControlName="serie" class="form-control" />
+                </div>
 
-            @if(esVariador) {
-            <div class="form-group">
-                <label for="ubicacion">Ubicacion:</label>
-                <input formControlName="ubicacion" class="form-control" />
-            </div>
+                <!-- Área -->
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                    <label for="area">Área:</label>
+                    <input formControlName="area" class="form-control" />
+                </div>
 
-            <div class="form-group">
-                <label for="Inom">Inom:</label>
-                <input formControlName="Inom" class="form-control" />
-            </div>
+                <!-- Imagen -->
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                    <label for="imagen">Imagen:</label>
+                    <input formControlName="imagen" class="form-control" />
+                </div>
 
-            <div class="form-group">
-                <label for="Nnom">Nnom:</label>
-                <input formControlName="Nnom" class="form-control" />
-            </div>
+                <!-- Campos adicionales si es variador -->
+                @if (esVariador) {
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                    <label for="ubicacion">Ubicación:</label>
+                    <input formControlName="ubicacion" class="form-control" />
+                </div>
 
-            <div class="form-group">
-                <label for="Pnom">Pnom:</label>
-                <input formControlName="Pnom" class="form-control" />
-            </div>
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                    <label for="Inom">Inom:</label>
+                    <input formControlName="Inom" class="form-control" />
+                </div>
 
-            <div class="form-group">
-                <label for="Vnom">Vnom:</label>
-                <input formControlName="Vnom" class="form-control" />
-            </div>
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                    <label for="Nnom">Nnom:</label>
+                    <input formControlName="Nnom" class="form-control" />
+                </div>
 
-            <div class="form-group">
-                <label for="motor">Motor:</label>
-                <input formControlName="motor" class="form-control" />
-            </div>
-            }
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                    <label for="Pnom">Pnom:</label>
+                    <input formControlName="Pnom" class="form-control" />
+                </div>
 
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                    <label for="Vnom">Vnom:</label>
+                    <input formControlName="Vnom" class="form-control" />
+                </div>
+
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                    <label for="motor">Motor:</label>
+                    <input formControlName="motor" class="form-control" />
+                </div>
+                }
+            </div>
         </div>
-        <div class="modal-footer">
-            <button class="btn btn-cancel" (click)="modalDispositivoRef?.hide()">
+
+        <div class="modal-footer d-flex justify-content-between">
+            <button class="btn btn-secondary" (click)="modalDispositivoRef?.hide()">
                 Cancelar
             </button>
             <button class="btn btn-primary" [disabled]="formDispositivo.invalid" (click)="createDevice()">
@@ -215,7 +256,6 @@
 </ng-template>
 
 <ng-template #modalAgregarValores let-modal>
-
     <form [formGroup]="formValores">
         <div class="modal-body">
             <h4>{{ dipositivoSeleccionado ? "Editar Valor" : "Nuevo Valor" }}</h4>
@@ -254,6 +294,49 @@
 
 
 
+        </div>
+    </form>
+</ng-template>
+
+<ng-template #modalRangos let-modal>
+    <form [formGroup]="formRangos">
+        <div class="modal-body">
+            <h4>Editar Valores de Rango</h4>
+
+            <div class="row g-3">
+                <!-- RangoMinimoModerado -->
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                    <label for="RangoMinimoModerado">Rango Mínimo Moderado:</label>
+                    <input formControlName="RangoMinimoModerado" class="form-control" />
+                </div>
+
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                    <label for="RangoMinimoAlerta">Rango Mínimo Alerta:</label>
+                    <input formControlName="RangoMinimoAlerta" class="form-control" />
+                </div>
+
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                    <label for="RangoMaximoModerado">Rango Máximo Moderado:</label>
+                    <input formControlName="RangoMaximoModerado" class="form-control" />
+                </div>
+
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                    <label for="RangoMaximoAlerta">Rango Máximo Alerta:</label>
+                    <input formControlName="RangoMaximoAlerta" class="form-control" />
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn btn-cancel" (click)="modalRangosRef?.hide()">
+                Cancelar
+            </button>
+
+            <p></p>
+
+            <button class="btn btn-primary" (click)="editarRango(dipositivoSeleccionado)">
+                Editar
+            </button>
         </div>
     </form>
 </ng-template>
