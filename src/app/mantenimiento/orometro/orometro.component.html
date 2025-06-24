@@ -4,7 +4,6 @@
     <h2>Lista de Variadores</h2>
   </div>
 
-  
   <div class="row">
     @for (item of equipos; track $index) {
       <div class="col-12 col-md-6 col-lg-4 mb-4">
@@ -13,21 +12,26 @@
             <div class="imagen me-3 text-center">
               <img
                 [src]="item.imagen"
-                alt="img_comprensor"
+                alt="img_equipo"
                 class="img-fluid"
                 style="max-height: 100px; object-fit: contain"
               />
               <div class="horas-trabajadas">
-                <h3>{{ item?.totalHoras }}</h3>
+                <h3>{{ item?.totalHoras || '0h 0min' }}</h3>
                 <p>Horas trabajadas</p>
-              
+              <div *ngIf="item.ultimaFechaReinicio">
+                  <small class="text-muted">
+                    Último reinicio: {{ item.ultimaFechaReinicio }}
+                  </small>
+                </div>
                 <div *ngIf="item.totalHorasSuma">
                   <small class="text-muted">
                     Total acumulado: {{ item.totalHorasSuma }}
                   </small>
                 </div>
+
+
               </div>
-              
             </div>
 
             <div class="flex-fill">
@@ -56,13 +60,15 @@
                   <h5 class="text-muted">IP</h5>
                   <h4>{{ item.ip }}</h4>
                 </div>
-
-               
               </div>
 
-              <div class="text-end mt-3">
+              <div class="text-end mt-3 d-flex justify-content-end gap-2 flex-wrap">
                 <button class="btn btn-primary" (click)="reiniciarHorometro(item)">
                   <i class="bi bi-arrow-clockwise me-1"></i> Reiniciar
+                </button>
+
+                <button class="btn btn-outline-secondary" (click)="abrirHistorial(item)">
+                  <i class="bi bi-clock-history me-1"></i> Ver historial
                 </button>
               </div>
             </div>
@@ -70,5 +76,45 @@
         </div>
       </div>
     }
+  </div>
+</div>
+
+<!-- ✅ MODAL DE HISTORIAL DE HORÓMETROS -->
+<div
+  class="modal fade show"
+  tabindex="-1"
+  style="display: block; background-color: rgba(0,0,0,0.5)"
+  *ngIf="historialVisible"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          Historial de horómetro - {{ equipoHistorialSeleccionado?.nombre }}
+        </h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="cerrarHistorial()"></button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-bordered table-striped table-sm">
+          <thead class="table-light">
+            <tr>
+              <th style="width: 50%">Fecha</th>
+              <th style="width: 50%">Minutos Encendido</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let registro of equipoHistorialSeleccionado?.historial">
+            <td>{{ formatearFechaPersonalizada(registro.fecha) }}</td>
+
+            <td>{{ formatearMinutos(registro.minutosEncendido) }}</td>
+
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="cerrarHistorial()">Cerrar</button>
+      </div>
+    </div>
   </div>
 </div>

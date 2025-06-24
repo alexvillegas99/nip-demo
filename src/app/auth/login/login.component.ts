@@ -43,9 +43,7 @@ export class LoginComponent implements OnInit {
       this._authService.login(this.loginForm.value).subscribe({
         next: (res) => {
           console.log('res', res);
-          if (res.accessToken) {
-            this.router.navigate(['/']);
-          }
+              this.router.navigate(['/']);
         },
         error: (err) => {
           console.log(err);
@@ -60,4 +58,32 @@ export class LoginComponent implements OnInit {
       ? (this.password!.nativeElement.type = 'text')
       : (this.password!.nativeElement.type = 'password');
   }
+
+  mostrarSelector = false;
+
+empresas = [
+  {
+    nombre: 'La Fabril',
+    descripcion: 'Producción industrial y alimentos',
+    logo: 'assets/imgs/icons/lafabril.png',
+  },
+  {
+    nombre: 'EMAPA-A',
+    descripcion: 'Agua potable y saneamiento',
+    logo: 'assets/imgs/icons/EMAPA.jpeg',
+  },
+  {
+    nombre: 'Novacero',
+    descripcion: 'Soluciones de acero para la industria',
+    logo: 'assets/imgs/icons/novacero.jpg',
+  },
+];
+
+ingresarDashboard(empresa: any) {
+  console.log('➡️ Empresa seleccionada:', empresa.nombre);
+
+
+
+}
+
 }

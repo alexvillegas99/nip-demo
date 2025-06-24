@@ -3,17 +3,17 @@
 
 <div class="filtros-horizontales">
   <label for="fechaInicio">🗓️ Inicio:</label>
-  <input id="fechaInicio" type="datetime-local" [(ngModel)]="fechaInicio" />
+  <input id="fechaInicio" type="date" [(ngModel)]="fechaInicio" />
 
   <label for="fechaFin">🗓️ Fin:</label>
-  <input id="fechaFin" type="datetime-local" [(ngModel)]="fechaFin" />
+  <input id="fechaFin" type="date" [(ngModel)]="fechaFin" />
 
   <button class="btn-consultar" (click)="enviarPeticionHistorico()">🔍 Consultar</button>
 </div>
 
 
 
- 
+
 
 
 <!-- 🔸 TabView principal -->
@@ -25,7 +25,7 @@
       <!-- ⏱️ Horómetro -->
       <div class="widget-card">
         <h3 class="widget-title">
-          ⏱️ Uso total del horómetro 
+          ⏱️ Uso total del horómetro
         </h3>
         <apx-chart
           [series]="horometroPieChart.series"
@@ -119,7 +119,7 @@
     <div class="dashboard-layout">
       <div class="widget-card">
         <h3  class="widget-title">Consumo total de energía por equipo</h3>
-        
+
         <apx-chart
         *ngIf="consumoEnergiaPieChart"
         [series]="consumoEnergiaPieChart.series"
@@ -134,82 +134,111 @@
         <p><strong>💵 Total costo:</strong> ${{ totalCostoEnergia }}</p>
       </div>
       </div>
-      <!-- 🔌 Voltaje total PM -->
-      <div class="widget-card">
-        <h3 class="widget-title">🔌 Voltaje total</h3>
-        <apx-chart
-          [series]="voltajeChart.series"
-          [chart]="voltajeChart.chart"
-          [xaxis]="voltajeChart.xaxis"
-          [yaxis]="voltajeChart.yaxis"
-          [plotOptions]="voltajeChart.plotOptions"
-          [dataLabels]="voltajeChart.dataLabels"
-          [tooltip]="voltajeChart.tooltip"
-        >
-        </apx-chart>
-      </div>
-  
-      <!-- ⚡ Corriente total PM -->
-      <div class="widget-card">
-        <h3 class="widget-title">⚡ Corriente total</h3>
-        <apx-chart
-          [series]="corrienteChart.series"
-          [chart]="corrienteChart.chart"
-          [xaxis]="corrienteChart.xaxis"
-          [yaxis]="corrienteChart.yaxis"
-          [plotOptions]="corrienteChart.plotOptions"
-          [dataLabels]="corrienteChart.dataLabels"
-          [tooltip]="corrienteChart.tooltip"
-        >
-        </apx-chart>
-      </div>
-  
-      <!-- 💡 Potencia total PM -->
-      <div class="widget-card">
-        <h3 class="widget-title">💡 Potencia total</h3>
-        <apx-chart
-          [series]="potenciaChart.series"
-          [chart]="potenciaChart.chart"
-          [xaxis]="potenciaChart.xaxis"
-          [yaxis]="potenciaChart.yaxis"
-          [plotOptions]="potenciaChart.plotOptions"
-          [dataLabels]="potenciaChart.dataLabels"
-          [tooltip]="potenciaChart.tooltip"
-        >
-        </apx-chart>
-      </div>
-  
-      <!-- 🔄 Frecuencia total PM -->
-      <div class="widget-card">
-        <h3 class="widget-title">🔄 Frecuencia total</h3>
-        <apx-chart
-          [series]="frecuenciaChart.series"
-          [chart]="frecuenciaChart.chart"
-          [xaxis]="frecuenciaChart.xaxis"
-          [yaxis]="frecuenciaChart.yaxis"
-          [plotOptions]="frecuenciaChart.plotOptions"
-          [dataLabels]="frecuenciaChart.dataLabels"
-          [tooltip]="frecuenciaChart.tooltip"
-        >
-        </apx-chart>
-      </div>
-  
-      <!-- ⚖️ Factor de potencia total PM -->
-      <div class="widget-card">
-        <h3 class="widget-title">⚖️ Factor de Potencia</h3>
-        <apx-chart
-          [series]="fpChart.series"
-          [chart]="fpChart.chart"
-          [xaxis]="fpChart.xaxis"
-          [yaxis]="fpChart.yaxis"
-          [plotOptions]="fpChart.plotOptions"
-          [dataLabels]="fpChart.dataLabels"
-          [tooltip]="fpChart.tooltip"
-        >
-        </apx-chart>
-      </div>
+    <!-- 🔌 Corriente -->
+<div class="widget-card">
+  <h3 class="widget-title">🔌 Corriente Fase A</h3>
+  <apx-chart *ngIf="corrienteAChart" [series]="corrienteAChart.series" [chart]="corrienteAChart.chart" [xaxis]="corrienteAChart.xaxis" [yaxis]="corrienteAChart.yaxis" [dataLabels]="corrienteAChart.dataLabels" [tooltip]="corrienteAChart.tooltip"></apx-chart>
+</div>
+<div class="widget-card">
+  <h3 class="widget-title">🔌 Corriente Fase B</h3>
+  <apx-chart *ngIf="corrienteBChart" [series]="corrienteBChart.series" [chart]="corrienteBChart.chart" [xaxis]="corrienteBChart.xaxis" [yaxis]="corrienteBChart.yaxis" [dataLabels]="corrienteBChart.dataLabels" [tooltip]="corrienteBChart.tooltip"></apx-chart>
+</div>
+<div class="widget-card">
+  <h3 class="widget-title">🔌 Corriente Fase C</h3>
+  <apx-chart *ngIf="corrienteCChart" [series]="corrienteCChart.series" [chart]="corrienteCChart.chart" [xaxis]="corrienteCChart.xaxis" [yaxis]="corrienteCChart.yaxis" [dataLabels]="corrienteCChart.dataLabels" [tooltip]="corrienteCChart.tooltip"></apx-chart>
+</div>
+<div class="widget-card">
+  <h3 class="widget-title">🔌 Corriente Total</h3>
+  <apx-chart *ngIf="corrienteTotChart" [series]="corrienteTotChart.series" [chart]="corrienteTotChart.chart" [xaxis]="corrienteTotChart.xaxis" [yaxis]="corrienteTotChart.yaxis" [dataLabels]="corrienteTotChart.dataLabels" [tooltip]="corrienteTotChart.tooltip"></apx-chart>
+</div>
+
+<!-- ⚡ Voltaje -->
+<div class="widget-card">
+  <h3 class="widget-title">⚡ Voltaje AB</h3>
+  <apx-chart *ngIf="voltajeABChart" [series]="voltajeABChart.series" [chart]="voltajeABChart.chart" [xaxis]="voltajeABChart.xaxis" [yaxis]="voltajeABChart.yaxis" [dataLabels]="voltajeABChart.dataLabels" [tooltip]="voltajeABChart.tooltip"></apx-chart>
+</div>
+<div class="widget-card">
+  <h3 class="widget-title">⚡ Voltaje BC</h3>
+  <apx-chart *ngIf="voltajeBCChart" [series]="voltajeBCChart.series" [chart]="voltajeBCChart.chart" [xaxis]="voltajeBCChart.xaxis" [yaxis]="voltajeBCChart.yaxis" [dataLabels]="voltajeBCChart.dataLabels" [tooltip]="voltajeBCChart.tooltip"></apx-chart>
+</div>
+<div class="widget-card">
+  <h3 class="widget-title">⚡ Voltaje CA</h3>
+  <apx-chart *ngIf="voltajeCACChart" [series]="voltajeCACChart.series" [chart]="voltajeCACChart.chart" [xaxis]="voltajeCACChart.xaxis" [yaxis]="voltajeCACChart.yaxis" [dataLabels]="voltajeCACChart.dataLabels" [tooltip]="voltajeCACChart.tooltip"></apx-chart>
+</div>
+<div class="widget-card">
+  <h3 class="widget-title">⚡ Voltaje Total</h3>
+  <apx-chart *ngIf="voltajeTotChart" [series]="voltajeTotChart.series" [chart]="voltajeTotChart.chart" [xaxis]="voltajeTotChart.xaxis" [yaxis]="voltajeTotChart.yaxis" [dataLabels]="voltajeTotChart.dataLabels" [tooltip]="voltajeTotChart.tooltip"></apx-chart>
+</div>
+
+<!-- 💡 Potencia -->
+<div class="widget-card">
+  <h3 class="widget-title">💡 Potencia Fase A</h3>
+  <apx-chart *ngIf="potenciaAChart" [series]="potenciaAChart.series" [chart]="potenciaAChart.chart" [xaxis]="potenciaAChart.xaxis" [yaxis]="potenciaAChart.yaxis" [dataLabels]="potenciaAChart.dataLabels" [tooltip]="potenciaAChart.tooltip"></apx-chart>
+</div>
+<div class="widget-card">
+  <h3 class="widget-title">💡 Potencia Fase B</h3>
+  <apx-chart *ngIf="potenciaBChart" [series]="potenciaBChart.series" [chart]="potenciaBChart.chart" [xaxis]="potenciaBChart.xaxis" [yaxis]="potenciaBChart.yaxis" [dataLabels]="potenciaBChart.dataLabels" [tooltip]="potenciaBChart.tooltip"></apx-chart>
+</div>
+<div class="widget-card">
+  <h3 class="widget-title">💡 Potencia Fase C</h3>
+  <apx-chart *ngIf="potenciaCChart" [series]="potenciaCChart.series" [chart]="potenciaCChart.chart" [xaxis]="potenciaCChart.xaxis" [yaxis]="potenciaCChart.yaxis" [dataLabels]="potenciaCChart.dataLabels" [tooltip]="potenciaCChart.tooltip"></apx-chart>
+</div>
+<div class="widget-card">
+  <h3 class="widget-title">💡 Potencia Total</h3>
+  <apx-chart *ngIf="potenciaTotChart" [series]="potenciaTotChart.series" [chart]="potenciaTotChart.chart" [xaxis]="potenciaTotChart.xaxis" [yaxis]="potenciaTotChart.yaxis" [dataLabels]="potenciaTotChart.dataLabels" [tooltip]="potenciaTotChart.tooltip"></apx-chart>
+</div>
+
+<!-- 🔄 Frecuencia -->
+<!-- <div class="widget-card">
+  <h3 class="widget-title">🔄 Frecuencia Fase A</h3>
+  <apx-chart *ngIf="frecuenciaAChart" [series]="frecuenciaAChart.series" [chart]="frecuenciaAChart.chart" [xaxis]="frecuenciaAChart.xaxis" [yaxis]="frecuenciaAChart.yaxis" [dataLabels]="frecuenciaAChart.dataLabels" [tooltip]="frecuenciaAChart.tooltip"></apx-chart>
+</div>
+<div class="widget-card">
+  <h3 class="widget-title">🔄 Frecuencia Fase B</h3>
+  <apx-chart *ngIf="frecuenciaBChart" [series]="frecuenciaBChart.series" [chart]="frecuenciaBChart.chart" [xaxis]="frecuenciaBChart.xaxis" [yaxis]="frecuenciaBChart.yaxis" [dataLabels]="frecuenciaBChart.dataLabels" [tooltip]="frecuenciaBChart.tooltip"></apx-chart>
+</div>
+<div class="widget-card">
+  <h3 class="widget-title">🔄 Frecuencia Fase C</h3>
+  <apx-chart *ngIf="frecuenciaCChart" [series]="frecuenciaCChart.series" [chart]="frecuenciaCChart.chart" [xaxis]="frecuenciaCChart.xaxis" [yaxis]="frecuenciaCChart.yaxis" [dataLabels]="frecuenciaCChart.dataLabels" [tooltip]="frecuenciaCChart.tooltip"></apx-chart>
+</div> -->
+<div class="widget-card">
+  <h3 class="widget-title">🔄 Frecuencia Total</h3>
+  <apx-chart *ngIf="frecuenciaTotChart" [series]="frecuenciaTotChart.series" [chart]="frecuenciaTotChart.chart" [xaxis]="frecuenciaTotChart.xaxis" [yaxis]="frecuenciaTotChart.yaxis" [dataLabels]="frecuenciaTotChart.dataLabels" [tooltip]="frecuenciaTotChart.tooltip"></apx-chart>
+</div>
+
+
+<!-- THD Corriente -->
+<div class="widget-card">
+  <h3 class="widget-title">THD Corriente Fase A</h3>
+  <apx-chart *ngIf="thdCorrienteAChart" [series]="thdCorrienteAChart.series" [chart]="thdCorrienteAChart.chart" [xaxis]="thdCorrienteAChart.xaxis" [yaxis]="thdCorrienteAChart.yaxis" [plotOptions]="thdCorrienteAChart.plotOptions" [dataLabels]="thdCorrienteAChart.dataLabels" [tooltip]="thdCorrienteAChart.tooltip"></apx-chart>
+</div>
+<div class="widget-card">
+  <h3 class="widget-title">THD Corriente Fase B</h3>
+  <apx-chart *ngIf="thdCorrienteBChart" [series]="thdCorrienteBChart.series" [chart]="thdCorrienteBChart.chart" [xaxis]="thdCorrienteBChart.xaxis" [yaxis]="thdCorrienteBChart.yaxis" [plotOptions]="thdCorrienteBChart.plotOptions" [dataLabels]="thdCorrienteBChart.dataLabels" [tooltip]="thdCorrienteBChart.tooltip"></apx-chart>
+</div>
+<div class="widget-card">
+  <h3 class="widget-title">THD Corriente Fase C</h3>
+  <apx-chart *ngIf="thdCorrienteCChart" [series]="thdCorrienteCChart.series" [chart]="thdCorrienteCChart.chart" [xaxis]="thdCorrienteCChart.xaxis" [yaxis]="thdCorrienteCChart.yaxis" [plotOptions]="thdCorrienteCChart.plotOptions" [dataLabels]="thdCorrienteCChart.dataLabels" [tooltip]="thdCorrienteCChart.tooltip"></apx-chart>
+</div>
+
+<!-- THD Voltaje -->
+<div class="widget-card">
+  <h3 class="widget-title">THD Voltaje AB</h3>
+  <apx-chart *ngIf="thdVoltajeABChart" [series]="thdVoltajeABChart.series" [chart]="thdVoltajeABChart.chart" [xaxis]="thdVoltajeABChart.xaxis" [yaxis]="thdVoltajeABChart.yaxis" [plotOptions]="thdVoltajeABChart.plotOptions" [dataLabels]="thdVoltajeABChart.dataLabels" [tooltip]="thdVoltajeABChart.tooltip"></apx-chart>
+</div>
+<div class="widget-card">
+  <h3 class="widget-title">THD Voltaje BC</h3>
+  <apx-chart *ngIf="thdVoltajeBCChart" [series]="thdVoltajeBCChart.series" [chart]="thdVoltajeBCChart.chart" [xaxis]="thdVoltajeBCChart.xaxis" [yaxis]="thdVoltajeBCChart.yaxis" [plotOptions]="thdVoltajeBCChart.plotOptions" [dataLabels]="thdVoltajeBCChart.dataLabels" [tooltip]="thdVoltajeBCChart.tooltip"></apx-chart>
+</div>
+<div class="widget-card">
+  <h3 class="widget-title">THD Voltaje CA</h3>
+  <apx-chart *ngIf="thdVoltajeCAChart" [series]="thdVoltajeCAChart.series" [chart]="thdVoltajeCAChart.chart" [xaxis]="thdVoltajeCAChart.xaxis" [yaxis]="thdVoltajeCAChart.yaxis" [plotOptions]="thdVoltajeCAChart.plotOptions" [dataLabels]="thdVoltajeCAChart.dataLabels" [tooltip]="thdVoltajeCAChart.tooltip"></apx-chart>
+</div>
+
+
+
     </div>
   </p-tabPanel>
-  
-  
+
+
 </p-tabView>

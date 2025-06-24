@@ -26,6 +26,18 @@ type GraficoPromedio = {
   dataLabels?: any;
   tooltip?: any;
   colors?: string[];
+  stroke?: {
+    width: number;
+    curve?: 'smooth' | 'straight' | 'stepline';
+  };
+  markers?: {
+    size: number;
+  };
+  grid?: {
+    show: boolean;
+    borderColor?: string;
+    strokeDashArray?: number;
+  };
 };
 type GraficoPie = {
   series: number[];
@@ -127,7 +139,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       formatter: (label: string, opts: any) => `${label}: ${opts.w.globals.series[opts.seriesIndex].toFixed(2)} kWh`,
     },
   };
-  
+
 
   frecuenciaChart: GraficoPromedio = {
     chart: { type: 'bar', height: 250 },
@@ -187,8 +199,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   datosAgrupadosPorIp: any = {};
   buscarHorometro(): void {
+    const inicio = new Date(this.fechaInicio);
+inicio.setHours(0, 0, 0, 0);
+
+const fin = new Date(this.fechaFin);
+fin.setHours(23, 59, 59, 999);
+    // Consulta inicial
     this.horometroService
-      .obtenerPorFechas(this.equiposSeleccionados, this.fechaInicio, this.fechaFin)
+      .obtenerPorFechas(this.equiposSeleccionados, inicio, fin)
       .subscribe({
         next: (data) => {
           console.log('✅ Datos agrupados por IP:', data);
@@ -341,10 +359,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
   costoTotal: number | null = null;
   async calcularConsumoEnergia() {
     //validar si fecha es date o string y convertir a string con variable solo const para este caso
-    const fechaInicioString = new Date(this.fechaInicio)
+
+        const inicio = new Date(this.fechaInicio);
+inicio.setHours(0, 0, 0, 0);
+
+const fin = new Date(this.fechaFin);
+fin.setHours(23, 59, 59, 999);
+    const fechaInicioString = new Date(inicio)
       .toISOString()
       .split('T')[0];
-    const fechaFinString = new Date(this.fechaFin).toISOString().split('T')[0];
+    const fechaFinString = new Date(fin).toISOString().split('T')[0];
 
     console.log('📤 Enviando histórico de energía desde');
     console.log(fechaInicioString, 'hasta', fechaFinString);
@@ -376,26 +400,26 @@ export class DashboardComponent implements OnInit, OnDestroy {
     const labels: string[] = [];
     let totalConsumo = 0;
     let totalCosto = 0;
-  
+
     for (const item of resultado) {
       const consumo = item.dias.reduce((sum: number, d: any) => sum + d.consumo, 0);
       const costo = item.dias.reduce((sum: number, d: any) => sum + d.costo, 0);
-  
+
       if (consumo <= 0) continue;
-  
+
       const nombre =
         this.plcList.find((e) => e.ip === item.ip)?.nombre.replace(/^PM\s*-\s*/i, '').trim() || item.ip;
-  
+
       series.push(consumo);
       labels.push(`${nombre}: ${consumo.toFixed(2)} kWh - $${costo.toFixed(2)}`);
-  
+
       totalConsumo += consumo;
       totalCosto += costo;
     }
-  
+
     this.totalEnergiaKwh = totalConsumo.toFixed(2);
     this.totalCostoEnergia = totalCosto.toFixed(2);
-  
+
     this.consumoEnergiaPieChart = {
       series,
       labels,
@@ -425,8 +449,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
       },
     };
   }
-  
-  
+
+
 
   enviarPeticionHistorico(): void {
     if (!this.fechaInicio || !this.fechaFin) {
@@ -441,10 +465,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.fechaFin
     );
 
+
+
+        const inicio = new Date(this.fechaInicio);
+inicio.setHours(0, 0, 0, 0);
+
+const fin = new Date(this.fechaFin);
+fin.setHours(23, 59, 59, 999);
+
     this.socketService.sendFindHistoricoPlcData(
       this.equiposSeleccionados,
-      this.fechaInicio,
-      this.fechaFin,
+      inicio,
+      fin,
       this.tipoSeleccionado
     );
     if (this.tipoSeleccionado === 'variador') {
@@ -468,7 +500,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             ...equipo,
             data: [...equipo.data].reverse(),
           }));
-       
+
         console.log('Datos históricos:', this.historicoData);
         if (this.tipoSeleccionado === 'pm') {
           this.generarGraficosPm();
@@ -482,7 +514,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   generarGraficoBarra(
     titulo: string,
     categorias: string[],
-    data: number[], 
+    data: number[],
     unidad: string
   ): GraficoPromedio {
 
@@ -506,7 +538,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         },
         animations: { enabled: false },
       },
-      colors: colores, 
+      colors: colores,
       plotOptions: {
         bar: {
           borderRadius: 4,
@@ -517,7 +549,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           },
         },
       },
-      
+
       dataLabels: {
         enabled: true,
         offsetY: -20,
@@ -553,94 +585,76 @@ export class DashboardComponent implements OnInit, OnDestroy {
       },
     };
   }
-  generarGraficosPm(): void {
-    const categorias: string[] = [];
-    const corrienteTotales: number[] = [];
-    const voltajeTotales: number[] = [];
-    const potenciaTotales: number[] = [];
-    const frecuenciaTotales: number[] = [];
-    const fpTotales: number[] = [];
 
-    for (const equipo of this.historicoData) {
-      const nombreCompleto =
-        this.plcList.find((p) => p.ip === equipo.ip)?.nombre || equipo.ip;
-      const nombreLimpio = nombreCompleto.replace(/^PM\s*-\s*/i, '').trim();
-      categorias.push(nombreLimpio);
+/*    extraerFechasYValores(
+  data: any[],
+  campo: string,
+  cantidad: number = 8
+): { fechas: string[]; valores: number[] } {
+  const filtrados = data.filter((d) => d[campo] !== undefined);
+  const n = filtrados.length;
 
-      const avg = (arr: number[]) =>
-        arr.length
-          ? Math.round(
-              (arr.reduce((a: number, b: number) => a + b, 0) / arr.length) *
-                100
-            ) / 100
-          : 0;
+  if (n === 0) return { fechas: [], valores: [] };
 
-      const data = equipo.data;
+  const paso = Math.floor(n / cantidad);
+  const fechas: string[] = [];
+  const valores: number[] = [];
 
-      corrienteTotales.push(
-        avg(
-          data
-            .map((d: any) => d.CORRIENTE_TOT)
-            .filter((v: number) => v !== undefined)
-        )
-      );
-      voltajeTotales.push(
-        avg(
-          data
-            .map((d: any) => d.VOLTAJE_TOT)
-            .filter((v: number) => v !== undefined)
-        )
-      );
-      potenciaTotales.push(
-        avg(
-          data.map((d: any) => d.POT_TOT).filter((v: number) => v !== undefined)
-        )
-      );
-      frecuenciaTotales.push(
-        avg(
-          data.map((d: any) => d.FHZ_TOT).filter((v: number) => v !== undefined)
-        )
-      );
-      fpTotales.push(
-        avg(
-          data
-            .map((d: any) => d.FPOT_TOT)
-            .filter((v: number) => v !== undefined)
-        )
-      );
-    }
-
-    this.corrienteChart = this.generarGraficoBarra(
-      'Corriente Total (A)',
-      categorias,
-      corrienteTotales,
-      'A'
-    );
-    this.voltajeChart = this.generarGraficoBarra(
-      'Voltaje Total (V)',
-      categorias,
-      voltajeTotales,
-      'V'
-    );
-    this.potenciaChart = this.generarGraficoBarra(
-      'Potencia Total (kW)',
-      categorias,
-      potenciaTotales,
-      'kW'
-    );
-    this.frecuenciaChart = this.generarGraficoBarra(
-      'Frecuencia Total (Hz)',
-      categorias,
-      frecuenciaTotales,
-      'Hz'
-    );
-    this.fpChart = this.generarGraficoBarra(
-      'Factor de Potencia Total',
-      categorias,
-      fpTotales,
-      ''
-    );
+  for (let i = 0; i < cantidad && i * paso < n; i++) {
+    const registro = filtrados[i * paso];
+    const fecha = new Date(registro.fecha); // asegúrate de que `fecha` exista y sea válida
+    const label = `${fecha.getDate().toString().padStart(2, '0')}-${(fecha.getMonth() + 1)
+      .toString()
+      .padStart(2, '0')} ${fecha.getHours().toString().padStart(2, '0')}:${fecha
+      .getMinutes()
+      .toString()
+      .padStart(2, '0')}`;
+    fechas.push(label);
+    valores.push(registro[campo]);
   }
+
+  return { fechas, valores };
+} */
+
+generarGraficosPm(): void {
+  // Corriente
+  this.corrienteAChart = this.generarGraficoPorCampo('CORRIENTE_A', 'Corriente Fase A', 'A');
+  this.corrienteBChart = this.generarGraficoPorCampo('CORRIENTE_B', 'Corriente Fase B', 'A');
+  this.corrienteCChart = this.generarGraficoPorCampo('CORRIENTE_C', 'Corriente Fase C', 'A');
+  this.corrienteTotChart = this.generarGraficoPorCampo('CORRIENTE_TOT', 'Corriente Total', 'A');
+
+  // Voltaje
+  this.voltajeABChart = this.generarGraficoPorCampo('VOLTAJE_AB', 'Voltaje AB', 'V');
+  this.voltajeBCChart = this.generarGraficoPorCampo('VOLTAJE_BC', 'Voltaje BC', 'V');
+  this.voltajeCACChart = this.generarGraficoPorCampo('VOLTAJE_CA', 'Voltaje CA', 'V');
+  this.voltajeTotChart = this.generarGraficoPorCampo('VOLTAJE_TOT', 'Voltaje Total', 'V');
+
+  // Potencia
+  this.potenciaAChart = this.generarGraficoPorCampo('POT_A', 'Potencia Fase A', 'kW');
+  this.potenciaBChart = this.generarGraficoPorCampo('POT_B', 'Potencia Fase B', 'kW');
+  this.potenciaCChart = this.generarGraficoPorCampo('POT_C', 'Potencia Fase C', 'kW');
+  this.potenciaTotChart = this.generarGraficoPorCampo('POT_TOT', 'Potencia Total', 'kW');
+
+  // Frecuencia
+  this.frecuenciaAChart = this.generarGraficoPorCampo('FHZ_A', 'Frecuencia Fase A', 'Hz');
+  this.frecuenciaBChart = this.generarGraficoPorCampo('FHZ_B', 'Frecuencia Fase B', 'Hz');
+  this.frecuenciaCChart = this.generarGraficoPorCampo('FHZ_C', 'Frecuencia Fase C', 'Hz');
+  this.frecuenciaTotChart = this.generarGraficoPorCampo('FHZ_TOT', 'Frecuencia Total', 'Hz');
+
+// 🔹 THD Corriente
+this.thdCorrienteAChart = this.generarGraficoPorCampo('THD_COR_A', 'THD Corriente Fase A','');
+this.thdCorrienteBChart = this.generarGraficoPorCampo('THD_COR_B', 'THD Corriente Fase B','');
+this.thdCorrienteCChart = this.generarGraficoPorCampo('THD_COR_C', 'THD Corriente Fase C','');
+
+// 🔹 THD Voltaje
+this.thdVoltajeABChart = this.generarGraficoPorCampo('TH_DBA', 'THD Voltaje AB','');
+this.thdVoltajeBCChart = this.generarGraficoPorCampo('TH_DBC', 'THD Voltaje BC','');
+this.thdVoltajeCAChart = this.generarGraficoPorCampo('TH_DCA', 'THD Voltaje CA','');
+
+}
+
+
+
 
   generarGraficoHorometroPie(): void {
     const series: number[] = [];
@@ -691,253 +705,126 @@ export class DashboardComponent implements OnInit, OnDestroy {
           const m = Math.round(minutos % 60);
           return `${label}: ${h}h ${m}min`;
         }
-        
+
       },
     };
   }
 
-  generarGraficosSeparados(): void {
-    const base: {
-      chart: ApexChart;
-      xaxis: ApexXAxis;
-    } = {
-      chart: { type: 'bar' as ChartType, height: 250 },
-      xaxis: {
-        categories: [], // <- Tipado correctamente por ApexXAxis
-        labels: {
-          rotate: -15,
-          style: { fontSize: '12px' },
-        },
-      },
-    };
+generarGraficosSeparados(): void {
+  let categories: string[] = [];
 
-    const voltajeSeries: number[] = [];
-    const corrienteSeries: number[] = [];
-    const potenciaSeries: number[] = [];
-    const categorias: string[] = [];
+  const voltajeSeries: ApexAxisChartSeries = [];
+  const corrienteSeries: ApexAxisChartSeries = [];
+  const potenciaSeries: ApexAxisChartSeries = [];
 
-    for (const equipo of this.historicoData) {
-      const nombreCompleto =
-        this.plcList.find((p) => p.ip === equipo.ip)?.nombre || equipo.ip;
-      const nombreLimpio = nombreCompleto
-        .replace(/^VARIADOR\s*-\s*/i, '')
-        .trim();
-      categorias.push(nombreLimpio);
+  for (const equipo of this.historicoData) {
+    const nombre = this.plcList.find((p) => p.ip === equipo.ip)?.nombre?.replace(/^VARIADOR\s*-\s*/i, '').trim() || equipo.ip;
 
-      const voltajes = equipo.data
-        .map((d: any) => d.voltaje)
-        .filter((v: number) => v !== undefined);
-      const corrientes = equipo.data
-        .map((d: any) => d.corriente)
-        .filter((v: number) => v !== undefined);
-      const potencias = equipo.data
-        .map((d: any) => d.potencia)
-        .filter((v: number) => v !== undefined);
+    const data = equipo.data;
 
-      const avg = (arr: number[]) =>
-        arr.length
-          ? Math.round(
-              (arr.reduce((a: number, b: number) => a + b, 0) / arr.length) *
-                100
-            ) / 100
-          : 0;
+    const voltaje = this.extraerFechasYValoresTodos(data, 'voltaje');
+    const corriente = this.extraerFechasYValoresTodos(data, 'corriente');
+    const potencia = this.extraerFechasYValoresTodos(data, 'potencia');
 
-      voltajeSeries.push(avg(voltajes));
-      corrienteSeries.push(avg(corrientes));
-      potenciaSeries.push(avg(potencias));
+    // Usamos las fechas del primer equipo para las categorías del eje X
+    if (categories.length === 0) {
+      categories = voltaje.fechas;
     }
 
-    this.voltajeChart = {
-      chart: {
-        type: 'bar',
-        height: 300,
-        toolbar: {
-          show: true,
-          tools: {
-            download: true,
-            selection: true,
-            zoom: true,
-            zoomin: true,
-            zoomout: true,
-            pan: true,
-            reset: true,
-            customIcons: [],
-          },
-          autoSelected: 'zoom',
-        },
-        animations: { enabled: false },
-      },
-      plotOptions: {
-        bar: {
-          borderRadius: 4,
-          columnWidth: '50%',
-          dataLabels: {
-            position: 'top',
-          },
-        },
-      },
-      dataLabels: {
-        enabled: true,
-        offsetY: -20,
-        style: {
-          fontSize: '12px',
-          colors: ['#304758'],
-        },
-        formatter: (val: number) => `${val.toFixed(1)} V`,
-      },
-      xaxis: {
-        categories: categorias,
-        labels: {
-          rotate: -15,
-          style: { fontSize: '12px' },
-        },
-      },
-      yaxis: {
-        title: { text: 'Voltaje (V)' },
-        labels: { formatter: (val: number) => `${val.toFixed(1)} V` },
-      },
-      series: [
-        {
-          name: 'Voltaje promedio',
-          data: voltajeSeries,
-        },
-      ],
-      tooltip: {
-        y: {
-          formatter: (val: number) => `${val.toFixed(2)} V`,
-        },
-      },
-    };
-
-    this.corrienteChart = {
-      chart: {
-        type: 'bar',
-        height: 300,
-        toolbar: {
-          show: true,
-          tools: {
-            download: true,
-            selection: true,
-            zoom: true,
-            zoomin: true,
-            zoomout: true,
-            pan: true,
-            reset: true,
-            customIcons: [],
-          },
-          autoSelected: 'zoom',
-        },
-        animations: { enabled: false },
-      },
-      plotOptions: {
-        bar: {
-          borderRadius: 4,
-          columnWidth: '50%',
-          dataLabels: {
-            position: 'top',
-          },
-        },
-      },
-      dataLabels: {
-        enabled: true,
-        offsetY: -20,
-        style: {
-          fontSize: '12px',
-          colors: ['#304758'],
-        },
-        formatter: (val: number) => `${val.toFixed(1)} A`,
-      },
-      yaxis: {
-        title: { text: 'Corriente (A)' },
-        labels: {
-          formatter: (val: number) => `${val.toFixed(1)} A`,
-        },
-      },
-      series: [
-        {
-          name: 'Corriente promedio',
-          data: corrienteSeries,
-        },
-      ],
-      tooltip: {
-        y: {
-          formatter: (val: number) => `${val.toFixed(2)} A`,
-        },
-      },
-      xaxis: {
-        categories: categorias,
-        labels: {
-          rotate: -15,
-          style: { fontSize: '12px' },
-        },
-      },
-    };
-
-    this.potenciaChart = {
-      chart: {
-        type: 'bar',
-        height: 300,
-        toolbar: {
-          show: true,
-          tools: {
-            download: true,
-            selection: true,
-            zoom: true,
-            zoomin: true,
-            zoomout: true,
-            pan: true,
-            reset: true,
-            customIcons: [],
-          },
-          autoSelected: 'zoom',
-        },
-
-        animations: { enabled: false },
-      },
-      plotOptions: {
-        bar: {
-          borderRadius: 4,
-          columnWidth: '50%',
-          dataLabels: {
-            position: 'top',
-          },
-        },
-      },
-      dataLabels: {
-        enabled: true,
-        offsetY: -20,
-        style: {
-          fontSize: '12px',
-          colors: ['#304758'],
-        },
-        formatter: (val: number) => `${val.toFixed(2)} kW`,
-      },
-      yaxis: {
-        title: { text: 'Potencia (kW)' },
-        labels: {
-          formatter: (val: number) => `${val.toFixed(2)} kW`,
-        },
-      },
-      series: [
-        {
-          name: 'Potencia promedio',
-          data: potenciaSeries,
-        },
-      ],
-      tooltip: {
-        y: {
-          formatter: (val: number) => `${val.toFixed(2)} kW`,
-        },
-      },
-      xaxis: {
-        categories: categorias,
-        labels: {
-          rotate: -15,
-          style: { fontSize: '12px' },
-        },
-      },
-    };
+    voltajeSeries.push({ name: nombre, data: voltaje.valores });
+    corrienteSeries.push({ name: nombre, data: corriente.valores });
+    potenciaSeries.push({ name: nombre, data: potencia.valores });
   }
+
+  this.voltajeChart = this.generarGraficoLineas('Voltaje (V)', categories, voltajeSeries, 'V');
+  this.corrienteChart = this.generarGraficoLineas('Corriente (A)', categories, corrienteSeries, 'A');
+  this.potenciaChart = this.generarGraficoLineas('Potencia (kW)', categories, potenciaSeries, 'kW');
+}
+
+
+generarGraficoLineas(
+  titulo: string,
+  categories: string[],
+  series: ApexAxisChartSeries,
+  unidad: string
+): GraficoPromedio {
+  return {
+    chart: {
+      type: 'line',
+      height: 300,
+      toolbar: {
+        show: true,
+        tools: {
+          download: true,
+          selection: true,
+          zoom: true,
+          zoomin: true,
+          zoomout: true,
+          pan: true,
+          reset: true,
+        },
+      },
+      background: '#ffffff',
+    },
+    stroke: {
+      width: 1.5,
+      curve: 'smooth',
+    },
+    markers: {
+      size: 0,
+    },
+    xaxis: {
+      categories,
+      labels: {
+        show: false,
+      },
+      tooltip: {
+        enabled: true,
+      },
+    },
+    yaxis: {
+      title: { text: titulo },
+      labels: {
+        formatter: (val: number) => `${val.toFixed(1)} ${unidad}`,
+      },
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    tooltip: {
+      x: { show: true },
+      y: {
+        formatter: (val: number) => `${val.toFixed(2)} ${unidad}`,
+      },
+    },
+    grid: {
+      show: true,
+      borderColor: '#e0e0e0',
+      strokeDashArray: 2,
+    },
+    series,
+  };
+}
+
+
+
+
+
+
+  private obtenerPuntosDeMuestra(data: number[], cantidad: number = 8): number[] {
+  const n = data.length;
+  if (n === 0) return new Array(cantidad).fill(0);
+  if (n <= cantidad) return [...data]; // si ya tiene pocos
+
+  const paso = Math.floor(n / cantidad);
+  const resultado: number[] = [];
+
+  for (let i = 0; i < cantidad; i++) {
+    resultado.push(data[i * paso]);
+  }
+  return resultado;
+}
+
   private  generarColoresAleatorios(cantidad: number): string[] {
     return Array.from({ length: cantidad }, () => {
       const r = Math.floor(Math.random() * 156) + 100; // evitar colores muy oscuros
@@ -946,7 +833,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       return `rgb(${r}, ${g}, ${b})`;
     });
   }
-  
+
   get metricasPromedio(): string[] {
     return ['voltaje', 'corriente', 'potencia'];
   }
@@ -956,4 +843,87 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.tipoSeleccionado = index === 0 ? 'variador' : 'pm';
     this.cambiarTipoEquipo(); // <- ya ejecuta getListaEquipos y toda la lógica
   }
+
+  corrienteAChart: GraficoPromedio;
+corrienteBChart: GraficoPromedio;
+corrienteCChart: GraficoPromedio;
+corrienteTotChart: GraficoPromedio;
+
+voltajeABChart: GraficoPromedio;
+voltajeBCChart: GraficoPromedio;
+voltajeCACChart: GraficoPromedio;
+voltajeTotChart: GraficoPromedio;
+
+potenciaAChart: GraficoPromedio;
+potenciaBChart: GraficoPromedio;
+potenciaCChart: GraficoPromedio;
+potenciaTotChart: GraficoPromedio;
+
+frecuenciaAChart: GraficoPromedio;
+frecuenciaBChart: GraficoPromedio;
+frecuenciaCChart: GraficoPromedio;
+frecuenciaTotChart: GraficoPromedio;
+
+fpAChart: GraficoPromedio;
+fpBChart: GraficoPromedio;
+fpCChart: GraficoPromedio;
+fpTotChart: GraficoPromedio;
+ generarGraficoPorCampo(
+  campo: string,
+  titulo: string,
+  unidad: string
+): GraficoPromedio {
+  let categories: string[] = [];
+  const series: ApexAxisChartSeries = [];
+
+  for (const equipo of this.historicoData) {
+    const nombre =
+      this.plcList.find((p) => p.ip === equipo.ip)?.nombre?.replace(/^PM\s*-\s*/i, '').trim() || equipo.ip;
+
+    const { fechas, valores } = this.extraerFechasYValoresTodos(equipo.data, campo);
+
+    if (categories.length === 0) {
+      categories = fechas;
+    }
+
+    series.push({ name: nombre, data: valores });
+  }
+
+  return this.generarGraficoLineas(titulo, categories, series, unidad);
+}
+
+extraerFechasYValoresTodos(
+  data: any[],
+  campo: string
+): { fechas: string[]; valores: number[] } {
+  const fechas: string[] = [];
+  const valores: number[] = [];
+
+  for (const registro of data) {
+    if (registro[campo] === undefined) continue;
+
+    const fecha = new Date(registro.fecha);
+    const label = `${fecha.getDate().toString().padStart(2, '0')}-${(fecha.getMonth() + 1)
+      .toString()
+      .padStart(2, '0')} ${fecha.getHours().toString().padStart(2, '0')}:${fecha
+      .getMinutes()
+      .toString()
+      .padStart(2, '0')}`;
+
+    fechas.push(label);
+    valores.push(registro[campo]);
+  }
+
+  return { fechas, valores };
+}
+
+thdCorrienteAChart: GraficoPromedio;
+thdCorrienteBChart: GraficoPromedio;
+thdCorrienteCChart: GraficoPromedio;
+
+thdVoltajeABChart: GraficoPromedio;
+thdVoltajeBCChart: GraficoPromedio;
+thdVoltajeCAChart: GraficoPromedio;
+
+
 }

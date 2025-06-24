@@ -1,50 +1,96 @@
-<div class="sidenav" [ngClass]="collapsed ? 'sidenav-collapsed': ''">
-    <div class="logo-container">
-        <img class="logo" (click)="toggleCollapse()" src="assets/imgs/navbar/nip-icono.png" alt="icono_nip">
-        <div class="logo-text" *ngIf="collapsed">PRISMA CONTROL</div>
-        <img class="btn-close" *ngIf="collapsed" (click)="closeSidenav()" src="assets/imgs/navbar/hamburguesa.svg"
-            alt="icon_hamburguesa" class="me-2">
+<div class="sidenav" [ngClass]="collapsed ? 'sidenav-collapsed' : ''">
+  <div class="logo-container">
+    <img
+      class="logo"
+      (click)="toggleCollapse()"
+      src="assets/imgs/navbar/nip-icono.png"
+      alt="icono_nip"
+    />
+    <div class="logo-text" *ngIf="collapsed">PRISMA CONTROL</div>
+    <img
+      class="btn-close"
+      *ngIf="collapsed"
+      (click)="closeSidenav()"
+      src="assets/imgs/navbar/hamburguesa.svg"
+      alt="icon_hamburguesa"
+      class="me-2"
+    />
 
-        <!-- <app-search [label]="'Buscar'" (searchText)="busqueda($event)"></app-search> -->
-    </div>
+    <!-- <app-search [label]="'Buscar'" (searchText)="busqueda($event)"></app-search> -->
+  </div>
 
-    <div class="scrollwrap scrollwrap_delayed">
-        <ul class="sidenav-nav">
-            @for (data of navData; track $index) {
-            <li class="sidenav-nav-item">
-                @if (data.items && data.items.length > 0) {
-                <a class="sidenav-nav-link" (click)="handleClick(data)" [ngClass]="getActiveClass(data)">
-                    <img class="sidenav-link-icon" [src]="data.icon" width="14px" alt="icon_level">
-                    <span class="sidenav-link-text" @fadeInOut *ngIf="collapsed">
-                        {{ data.label }}
-                    </span>
+  <div class="scrollwrap scrollwrap_delayed">
+    <ul class="sidenav-nav">
+      @for (data of navData; track $index) {
+      <li class="sidenav-nav-item">
+        @if (data.items && data.items.length > 0) {
+        <a
+          class="sidenav-nav-link"
+          (click)="handleClick(data)"
+          [ngClass]="getActiveClass(data)"
+        >
+          <img
+            class="sidenav-link-icon"
+            [src]="data.icon"
+            width="14px"
+            alt="icon_level"
+          />
+          <span class="sidenav-link-text" @fadeInOut *ngIf="collapsed">
+            {{ data.label }}
+          </span>
 
-                    @if (data.items && collapsed) {                  
-                        <i class="menu-collapse-icon"
-                        [ngClass]="!data.expanded ? 'fa fa-angle-right' : 'fa fa-angle-down'"></i>
-                    }
-                </a>
-                } @else {
-                <a class="sidenav-nav-link" [routerLink]="[data.routeLink]" routerLinkActive="active"
-                    [routerLinkActiveOptions]="{exact: true}" (click)="shrinkItems(data)">
-                    <img class="sidenav-link-icon" [src]="data.icon" width="14px" alt="icono_subleve">
-                    <span class="sidenav-link-text" @fadeInOut *ngIf="collapsed">
-                        {{data.label}}
-                    </span>
-                </a>
-                }
-
-                @if (collapsed && data.items && data.items.length > 0) {
-                    <app-sublevel-menu 
-                        [nivel]="1"
-                        [data]="data"
-                        [collapsed]="collapsed"
-                        [multiple]="multiple"
-                        [expanded]="data.expanded">
-                    </app-sublevel-menu>
-                }
-            </li>
-            }
-        </ul>
-    </div>
+          @if (data.items && collapsed) {
+          <i
+            class="menu-collapse-icon"
+            [ngClass]="
+              !data.expanded ? 'fa fa-angle-right' : 'fa fa-angle-down'
+            "
+          ></i>
+          }
+        </a>
+        } @else {
+        <a
+          class="sidenav-nav-link"
+          [routerLink]="[data.routeLink]"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          (click)="shrinkItems(data)"
+        >
+          <img
+            class="sidenav-link-icon"
+            [src]="data.icon"
+            width="14px"
+            alt="icono_subleve"
+          />
+          <span class="sidenav-link-text" @fadeInOut *ngIf="collapsed">
+            {{ data.label }}
+          </span>
+        </a>
+        } @if (collapsed && data.items && data.items.length > 0) {
+        <app-sublevel-menu
+          [nivel]="1"
+          [data]="data"
+          [collapsed]="collapsed"
+          [multiple]="multiple"
+          [expanded]="data.expanded"
+        >
+        </app-sublevel-menu>
+        }
+      </li>
+      }
+      <li class="sidenav-nav-item cerrar-sesion">
+        <a class="sidenav-nav-link" (click)="cerrarSesion()">
+          <img
+            class="sidenav-link-icon"
+            src="assets/imgs/icons/cerrar-sesion.png"
+            width="14px"
+            alt="icono_logout"
+          />
+          <span class="sidenav-link-text" @fadeInOut *ngIf="collapsed">
+            Cerrar sesión
+          </span>
+        </a>
+      </li>
+    </ul>
+  </div>
 </div>

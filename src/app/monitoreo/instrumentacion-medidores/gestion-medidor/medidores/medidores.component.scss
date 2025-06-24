@@ -20,7 +20,7 @@
 }
 .pm-quick-view-card {
   background: #ffffff;
-  border-radius: 12px; 
+  border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
   font-family: 'Poppins', sans-serif;
@@ -117,7 +117,7 @@
   padding: 20px;
   transition: transform 0.2s ease;
   border: 1px solid #1e73be;
-  
+
   &:hover {
     transform: translateY(-4px);
   }
@@ -287,9 +287,9 @@
 }
 .dashboard-layout {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 1.5rem;
-  padding: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); // ⬅️ más ancho
+  gap: 2rem; // ⬅️ más espacio entre tarjetas
+  padding: 1.5rem 2rem;
 }
 
 .widget-card {
@@ -343,7 +343,7 @@
   color: #2d3e50;
 }
 
-.filtros-horizontales input[type='datetime-local'] {
+.filtros-horizontales input[type='date'] {
   padding: 0.5rem;
   border: 1px solid #ccc;
   border-radius: 0.5rem;

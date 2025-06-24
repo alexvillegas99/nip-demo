@@ -39,6 +39,7 @@ type GraficoPromedio = {
   dataLabels?: any;
   tooltip?: any;
   colors?: string[]; // ✅ Agrega esta línea
+  stroke?: ApexStroke;
 };
 type GraficoPie = {
   series: number[];
@@ -72,10 +73,20 @@ export class MedidoresComponent implements OnInit, OnDestroy {
   private readonly _router = inject(Router);
   private readonly _plcData = inject(DataPlcService);
   private readonly _socketService = inject(SocketService);
-  constructor(
-    private cdr: ChangeDetectorRef
-  ) {}
-  
+  constructor(private cdr: ChangeDetectorRef) {}
+  harmonicosTotalesChart: GraficoPromedio = {
+    chart: { type: 'bar', height: 300 },
+    xaxis: { categories: [] },
+    yaxis: {},
+    series: [],
+  };
+
+  harmonicosDetalleChart: GraficoPromedio = {
+    chart: { type: 'bar', height: 300 },
+    xaxis: { categories: [] },
+    yaxis: {},
+    series: [],
+  };
 
   ip: string | null = null;
   plcInfo: any;
@@ -127,6 +138,19 @@ export class MedidoresComponent implements OnInit, OnDestroy {
     this.plcDataSub?.unsubscribe();
     clearInterval(this.actualizacionInterval);
   }
+  thdCorrienteChart: GraficoPromedio = {
+    chart: { type: 'line', height: 250 },
+    xaxis: { categories: [] },
+    yaxis: {},
+    series: [],
+  };
+
+  thVoltajeChart: GraficoPromedio = {
+    chart: { type: 'line', height: 250 },
+    xaxis: { categories: [] },
+    yaxis: {},
+    series: [],
+  };
 
   actualizarFechaHora() {
     const ahora = new Date();
@@ -148,183 +172,337 @@ export class MedidoresComponent implements OnInit, OnDestroy {
           if (!historicoEquipo) return;
           this.historicoData = historicoEquipo;
           this.generarGraficosPm();
-          this.calcularConsumoEnergia()
+          const datosAgrupados = this.agruparHarmonicosPorFecha(
+            this.historicoData.data
+          );
+          this.generarGraficosHarmonicosPorBloques(datosAgrupados);
+
+          this.calcularConsumoEnergia();
         });
       },
       error: (err) => {},
     });
   }
 
-
-
-
   generarGraficosPm(): void {
-    const equipo = this.historicoData;
-    const data = equipo.data;
-  
-    const avg = (arr: number[], ignorarNegativos = false) => {
-      const filtrados = arr.filter((v) => v !== undefined && v !== null && (!ignorarNegativos || v >= 0));
-      return filtrados.length
-        ? Math.round((filtrados.reduce((a, b) => a + b, 0) / filtrados.length) * 100) / 100
-        : 0;
-    };
-    
-    const metricas = {
-      corriente: ['CORRIENTE_A', 'CORRIENTE_B', 'CORRIENTE_C', 'CORRIENTE_TOT'],
-      voltaje: ['VOLTAJE_AB', 'VOLTAJE_BC', 'VOLTAJE_CA', 'VOLTAJE_TOT'],
-      potencia: ['POT_A', 'POT_B', 'POT_C', 'POT_TOT'],
-      frecuencia: ['FHZ_TOT'],
-      fp: ['FPOT_A', 'FPOT_B', 'FPOT_C', 'FPOT_TOT'],
-    };
-  
-    const procesar = (keys: string[]) =>
-      keys.map((k) => {
-        const valores = data
-          .map((d: any) => d[k])
-          .filter((v: any) => v !== undefined && v !== null);
-    
-        const promedio = avg(valores);
-    
-        console.log(`🔍 Métrica: ${k}`);
-        console.log(`   Valores:`, valores);
-        console.log(`   Promedio: ${promedio}`);
-    
-        return promedio;
-      });
-    
-  
-    this.corrienteChart = this.generarGraficoBarra(
+    const data = this.historicoData.data;
+
+    const { fechas: fechasCorr, valores: valCorrA } =
+      this.extraerFechasYValores(data, 'CORRIENTE_A');
+    const { valores: valCorrB } = this.extraerFechasYValores(
+      data,
+      'CORRIENTE_B'
+    );
+    const { valores: valCorrC } = this.extraerFechasYValores(
+      data,
+      'CORRIENTE_C'
+    );
+    const { valores: valCorrTot } = this.extraerFechasYValores(
+      data,
+      'CORRIENTE_TOT'
+    );
+
+    this.corrienteChart = this.generarGraficoLineaOriginal(
       'Corriente por Fase (A)',
-      ['A', 'B', 'C', 'TOTAL'],
-      procesar(metricas.corriente),
+      [
+        { nombre: 'A', datos: valCorrA },
+        { nombre: 'B', datos: valCorrB },
+        { nombre: 'C', datos: valCorrC },
+        { nombre: 'Total', datos: valCorrTot },
+      ],
+      fechasCorr,
       'A'
     );
-  
-    this.voltajeChart = this.generarGraficoBarra(
+
+    // Voltaje
+    const { fechas: fechasVolt, valores: valVoltAB } =
+      this.extraerFechasYValores(data, 'VOLTAJE_AB');
+    const { valores: valVoltBC } = this.extraerFechasYValores(
+      data,
+      'VOLTAJE_BC'
+    );
+    const { valores: valVoltCA } = this.extraerFechasYValores(
+      data,
+      'VOLTAJE_CA'
+    );
+    const { valores: valVoltTot } = this.extraerFechasYValores(
+      data,
+      'VOLTAJE_TOT'
+    );
+
+    this.voltajeChart = this.generarGraficoLineaOriginal(
       'Voltaje por Fase (V)',
-      ['AB', 'BC', 'CA', 'TOTAL'],
-      procesar(metricas.voltaje),
+      [
+        { nombre: 'AB', datos: valVoltAB },
+        { nombre: 'BC', datos: valVoltBC },
+        { nombre: 'CA', datos: valVoltCA },
+        { nombre: 'Total', datos: valVoltTot },
+      ],
+      fechasVolt,
       'V'
     );
-  
-    this.potenciaChart = this.generarGraficoBarra(
+
+    // Potencia
+    const { fechas: fechasPot, valores: valPotA } = this.extraerFechasYValores(
+      data,
+      'POT_A'
+    );
+    const { valores: valPotB } = this.extraerFechasYValores(data, 'POT_B');
+    const { valores: valPotC } = this.extraerFechasYValores(data, 'POT_C');
+    const { valores: valPotTot } = this.extraerFechasYValores(data, 'POT_TOT');
+
+    this.potenciaChart = this.generarGraficoLineaOriginal(
       'Potencia por Fase (kW)',
-      ['A', 'B', 'C', 'TOTAL'],
-      procesar(metricas.potencia),
+      [
+        { nombre: 'A', datos: valPotA },
+        { nombre: 'B', datos: valPotB },
+        { nombre: 'C', datos: valPotC },
+        { nombre: 'Total', datos: valPotTot },
+      ],
+      fechasPot,
       'kW'
     );
-    console.log('potencia', this.potenciaChart);
-  
-    this.frecuenciaChart = this.generarGraficoBarra(
+
+    // Frecuencia
+    const { fechas: fechasFreq, valores: valFhzTot } =
+      this.extraerFechasYValores(data, 'FHZ_TOT');
+
+    this.frecuenciaChart = this.generarGraficoLineaOriginal(
       'Frecuencia (Hz)',
-      ['TOTAL'],
-      procesar(metricas.frecuencia),
+      [{ nombre: 'Total', datos: valFhzTot }],
+      fechasFreq,
       'Hz'
     );
-  
-    this.fpChart = this.generarGraficoBarra(
+
+    // Factor de Potencia
+    const { fechas: fechasFp, valores: valFpA } = this.extraerFechasYValores(
+      data,
+      'FPOT_A'
+    );
+    const { valores: valFpB } = this.extraerFechasYValores(data, 'FPOT_B');
+    const { valores: valFpC } = this.extraerFechasYValores(data, 'FPOT_C');
+    const { valores: valFpTot } = this.extraerFechasYValores(data, 'FPOT_TOT');
+
+    this.fpChart = this.generarGraficoLineaOriginal(
       'Factor de Potencia',
-      ['A', 'B', 'C', 'TOTAL'],
-      procesar(metricas.fp),
+      [
+        { nombre: 'A', datos: valFpA },
+        { nombre: 'B', datos: valFpB },
+        { nombre: 'C', datos: valFpC },
+        { nombre: 'Total', datos: valFpTot },
+      ],
+      fechasFp,
       ''
     );
-  
+    const { valores: thdB } = this.extraerFechasYValores(data, 'THD_COR_B');
+    const { valores: thdC } = this.extraerFechasYValores(data, 'THD_COR_C');
+    const { fechas: fechasThd, valores: thdA } = this.extraerFechasYValores(
+      data,
+      'THD_COR_A'
+    );
+    this.thdCorrienteChart = this.generarGraficoLineaOriginal(
+      'THD de Corriente (%)',
+      [
+        { nombre: 'THD A', datos: thdA },
+        { nombre: 'THD B', datos: thdB },
+        { nombre: 'THD C', datos: thdC },
+      ],
+      fechasThd,
+      '%'
+    );
+
+    // TH Voltaje
+    const { fechas: fechasTh, valores: thAB } = this.extraerFechasYValores(
+      data,
+      'TH_DBA'
+    );
+    const { valores: thBC } = this.extraerFechasYValores(data, 'TH_DBC');
+    const { valores: thCA } = this.extraerFechasYValores(data, 'TH_DCA');
+
+    this.thVoltajeChart = this.generarGraficoLineaOriginal(
+      'TH de Voltaje (%)',
+      [
+        { nombre: 'TH AB', datos: thAB },
+        { nombre: 'TH BC', datos: thBC },
+        { nombre: 'TH CA', datos: thCA },
+      ],
+      fechasTh,
+      '%'
+    );
+
     this.cdr.detectChanges();
   }
-  
-  
-  
-  generarGraficoBarra(
+
+  dividirEnBloquesYPromediar(data: number[], bloques: number = 8): number[] {
+    const tamaño = Math.ceil(data.length / bloques);
+    const promedios: number[] = [];
+
+    for (let i = 0; i < bloques; i++) {
+      const bloque = data.slice(i * tamaño, (i + 1) * tamaño);
+      if (bloque.length > 0) {
+        const suma = bloque.reduce((a, b) => a + b, 0);
+        promedios.push(Math.round((suma / bloque.length) * 100) / 100);
+      }
+    }
+
+    return promedios;
+  }
+
+  generarGraficoLineaPromedios(
     titulo: string,
-    categorias: string[],
-    data: number[],
+    seriesData: { nombre: string; datos: number[] }[],
     unidad: string
-  ): GraficoPromedio {
+  ): any {
+    const series = seriesData.map((s) => ({
+      name: s.nombre,
+      data: s.datos,
+    }));
+
     return {
+      series,
       chart: {
-        type: 'bar',
+        type: 'line',
         height: 300,
-        toolbar: {
-          show: true,
-          tools: {
-            download: true,
-            selection: true,
-            zoom: true,
-            zoomin: true,
-            zoomout: true,
-            pan: true,
-            reset: true,
-          },
-          autoSelected: 'zoom',
-        },
-        animations: { enabled: false },
-      },
-      colors: ['#FF6384', '#36A2EB', '#FFCE56', '#2ECC71'], // ✅ Aquí defines los colores
-      plotOptions: {
-        bar: {
-          borderRadius: 4,
-          columnWidth: '50%',
-          distributed: true, // ✅ Esto aplica un color por barra
-          dataLabels: {
-            position: 'top',
-          },
-        },
-      },
-      
-      dataLabels: {
-        enabled: true,
-        offsetY: -20,
-        style: {
-          fontSize: '12px',
-          colors: ['#304758'],
-        },
-        formatter: (val: number) => `${val.toFixed(2)} ${unidad}`,
+        toolbar: { show: true },
       },
       xaxis: {
-        categories: categorias,
-        labels: {
-          rotate: -15,
-          style: { fontSize: '12px' },
-        },
+        categories: this.calcularFechasBloques(
+          this.historicoData.data,
+          seriesData[0].datos.length
+        ),
+        // title: { text: 'Fecha' }, // si no deseas el título, elimínalo
       },
       yaxis: {
-        title: { text: titulo },
-        labels: {
-          formatter: (val: number) => `${val.toFixed(2)} ${unidad}`,
-        },
+        title: { text: unidad },
       },
-      series: [
-        {
-          name: titulo,
-          data,
-        },
-      ],
       tooltip: {
+        shared: true,
         y: {
-          formatter: (val: number) => `${val.toFixed(2)} ${unidad}`,
+          formatter: (val: number) => `${val} ${unidad}`,
         },
       },
+      dataLabels: { enabled: false },
+      stroke: { curve: 'smooth' },
     };
   }
-  
 
-    // por defecto las fechas son del día actual
-    fechaActual: Date = new Date();
-    fechaInicio: Date = new Date(
-      this.fechaActual.getTime() - 24 * 60 * 60 * 1000
-    ); // hace 24 horas
-    fechaFin: Date = new Date(this.fechaActual.getTime() + 24 * 60 * 60 * 1000); // dentro de 24 horas
+  calcularFechasBloques(data: any[], bloques: number = 8): string[] {
+    const tamaño = Math.ceil(data.length / bloques);
+    const etiquetas: string[] = [];
+
+    for (let i = 0; i < bloques; i++) {
+      const bloque = data.slice(i * tamaño, (i + 1) * tamaño);
+      if (bloque.length > 0) {
+        const fechaProm = new Date(bloque[Math.floor(bloque.length / 2)].fecha);
+        const label = `${
+          fechaProm.getMonth() + 1
+        }-${fechaProm.getDate()} ${fechaProm.getHours()}:${String(
+          fechaProm.getMinutes()
+        ).padStart(2, '0')}`;
+        etiquetas.push(label);
+      }
+    }
+
+    return etiquetas;
+  }
+
+generarGraficoBarra(
+  titulo: string,
+  categorias: string[],
+  data: number[], // solo si se usa 1 serie (se ignora si hay múltiples)
+  unidad: string,
+  colores?: string[] // <-- opcional
+): GraficoPromedio {
+  return {
+    chart: {
+      type: 'bar',
+      height: 300,
+      toolbar: {
+        show: true,
+        tools: {
+          download: true,
+          selection: true,
+          zoom: true,
+          zoomin: true,
+          zoomout: true,
+          pan: true,
+          reset: true,
+        },
+        autoSelected: 'zoom',
+      },
+      animations: { enabled: false },
+    },
+    colors: colores, // 👈 personalización
+    plotOptions: {
+      bar: {
+        borderRadius: 4,
+        columnWidth: '60%',
+        // distributed: false → omitido para usar colores por serie
+        dataLabels: {
+          position: 'top',
+        },
+      },
+    },
+    dataLabels: {
+      enabled: true,
+      offsetY: -15,
+      style: {
+        fontSize: '12px',
+        fontWeight: 600,
+        colors: ['#333'],
+      },
+      formatter: (val: number) => `${val.toFixed(1)} %`,
+    },
+    xaxis: {
+      categories: categorias,
+      labels: {
+        rotate: -45,
+        style: {
+          fontSize: '12px',
+        },
+      },
+    },
+    yaxis: {
+      title: { text: titulo },
+      labels: {
+        formatter: (val: number) => `${val.toFixed(2)} ${unidad}`,
+      },
+    },
+    series: [
+      {
+        name: titulo,
+        data,
+      },
+    ],
+    tooltip: {
+      y: {
+        formatter: (val: number) => `${val.toFixed(2)} ${unidad}`,
+      },
+    },
+  };
+}
+
+
+  // por defecto las fechas son del día actual
+  fechaActual: Date = new Date();
+  fechaInicio: Date = new Date(
+    this.fechaActual.getTime() - 24 * 60 * 60 * 1000
+  ); // hace 24 horas
+  fechaFin: Date = new Date(this.fechaActual.getTime() + 24 * 60 * 60 * 1000); // dentro de 24 horas
   obtenerDataHistoricoPlc() {
     clearInterval(this.actualizacionInterval);
     if (!this.plcMedidor?.ip) return;
+    const inicio = new Date(this.fechaInicio);
+    inicio.setHours(0, 0, 0, 0);
 
+    const fin = new Date(this.fechaFin);
+    fin.setHours(23, 59, 59, 999);
     this._socketService.sendFindHistoricoPlcData(
       [this.plcMedidor.ip],
-      this.fechaInicio,
-      this.fechaFin,
+      inicio,
+      fin,
       'pm'
     );
-  
   }
 
   redondear(valor: any) {
@@ -398,9 +576,9 @@ export class MedidoresComponent implements OnInit, OnDestroy {
     };
 
     try {
-      this._plcData.getHistoricoEnergia(body).subscribe({
+      this._plcData.getHistoricoEnergiaFranjas(body).subscribe({
         next: (resultado) => {
-          console.log('Resultado:', resultado);
+          console.log('Resultadoooooo:', resultado);
           this.generarGraficoConsumoEnergiaPie(resultado);
         },
         error: (err) => {
@@ -414,62 +592,60 @@ export class MedidoresComponent implements OnInit, OnDestroy {
     }
   }
 
-  generarGraficoConsumoEnergiaPie(resultado: any[]): void {
-    const series: number[] = [];
-    const labels: string[] = [];
-    let totalConsumo = 0;
-    let totalCosto = 0;
-  
-    for (const item of resultado) {
-      const consumo = item.dias.reduce((sum: number, d: any) => sum + d.consumo, 0);
-      const costo = item.dias.reduce((sum: number, d: any) => sum + d.costo, 0);
-  
-      if (consumo <= 0) continue;
-  
-  
-  
-      series.push(consumo);
+generarGraficoConsumoEnergiaPie(resultado: any): void {
+  const series: number[] = [];
+  const labels: string[] = [];
+  let totalConsumo = 0;
+  let totalCosto = 0;
 
-  
-      totalConsumo += consumo;
-      totalCosto += costo;
-    }
-  
-    this.totalEnergiaKwh = totalConsumo.toFixed(2);
-    this.totalCostoEnergia = totalCosto.toFixed(2);
-  
-    this.consumoEnergiaPieChart = {
-      series: [totalConsumo],
-      labels: ['Energía Consumida (kWh)'],
-      chart: {
-        type: 'donut',
-        height: 320,
-        toolbar: {
-          show: true,
-          tools: { download: true },
-        },
-      },
-      tooltip: {
-        y: {
-          formatter: (val: number, opts?: any) =>
-            opts?.seriesIndex === 1 ? `$${val.toFixed(2)}` : `${val.toFixed(2)} kWh`,
-        },
-      },
-      dataLabels: {
-        enabled: true,
-        formatter: (val: number) => `${val.toFixed(1)}%`,
-      },
-      legend: {
-        position: 'bottom',
-        fontSize: '14px',
-        formatter: (label: string, opts: any) =>
-          opts?.seriesIndex === 1
-            ? `${label}: $${opts.w.globals.series[opts.seriesIndex].toFixed(2)}`
-            : `${label}: ${opts.w.globals.series[opts.seriesIndex].toFixed(2)} kWh`,
-      },
-    };
-    
+  if (!resultado?.resumen) return;
+
+  for (const item of resultado.resumen) {
+    const franja = item.franja;
+    const consumo = item.consumo;
+    const costo = item.costo;
+
+    if (consumo <= 0) continue;
+
+    labels.push(`${franja} h`);
+    series.push(consumo);
+
+    totalConsumo += consumo;
+    totalCosto += costo;
   }
+
+  this.totalEnergiaKwh = totalConsumo.toFixed(2);
+  this.totalCostoEnergia = totalCosto.toFixed(2);
+
+  this.consumoEnergiaPieChart = {
+    series,
+    labels,
+    chart: {
+      type: 'donut',
+      height: 320,
+      toolbar: {
+        show: true,
+        tools: { download: true },
+      },
+    },
+    tooltip: {
+      y: {
+        formatter: (val: number) => `${val.toFixed(2)} kWh`,
+      },
+    },
+    dataLabels: {
+      enabled: true,
+      formatter: (val: number) => `${val.toFixed(1)}%`,
+    },
+    legend: {
+      position: 'bottom',
+      fontSize: '14px',
+      formatter: (label: string, opts: any) =>
+        `${label}: ${opts.w.globals.series[opts.seriesIndex].toFixed(2)} kWh`,
+    },
+  };
+}
+
   voltajeChart: GraficoPromedio = {
     chart: { type: 'bar', height: 250 },
     xaxis: { categories: [] },
@@ -526,11 +702,180 @@ export class MedidoresComponent implements OnInit, OnDestroy {
   totalCostoEnergia: string;
 
   onTabChange(index: number): void {
-
     this.getDataMedidor();
-   
   }
 
+  showHarm = false;
+  generarGraficoLineaOriginal(
+    titulo: string,
+    seriesData: { nombre: string; datos: number[] }[],
+    fechas: string[],
+    unidad: string
+  ): GraficoPromedio {
+    return {
+      series: seriesData.map((s) => ({
+        name: s.nombre,
+        data: s.datos.map((d) => parseFloat(d.toFixed(2))), // ✅ redondeo a 2 decimales
+      })),
+      chart: {
+        type: 'line',
+        height: 300,
+        toolbar: { show: true },
+      },
+      xaxis: {
+        categories: fechas,
+        labels: {
+          show: false, // ✅ oculta las fechas debajo del gráfico
+        },
+      },
+      yaxis: {
+        title: { text: unidad },
+        labels: {
+          formatter: (val: number) => val.toFixed(2), // ✅ eje Y con 2 decimales
+        },
+      },
+      tooltip: {
+        shared: true,
+        x: {
+          show: true,
+        },
+        y: {
+          formatter: (val: number) => `${val.toFixed(2)} ${unidad}`, // ✅ tooltip con 2 decimales
+        },
+      },
+      dataLabels: {
+        enabled: false,
+      },
+      stroke: { curve: 'smooth' },
+    };
+  }
 
-  
+  extraerFechasYValores(data: any[], campo: string) {
+    const fechas: string[] = [];
+    const valores: number[] = [];
+
+    for (const item of data) {
+      if (item[campo] !== undefined && item[campo] !== null) {
+        const fecha = new Date(item.fecha);
+        const label = `${
+          fecha.getMonth() + 1
+        }-${fecha.getDate()} ${fecha.getHours()}:${String(
+          fecha.getMinutes()
+        ).padStart(2, '0')}`;
+        fechas.push(label);
+        valores.push(item[campo]);
+      }
+    }
+
+    return { fechas, valores };
+  }
+
+  generarGraficosHarmonicosPorBloques(data: any[]): void {
+    const ordenes = [3, 5, 7, 9, 11, 13, 15, 17, 19, 21];
+    const bloques = [];
+
+    const coloresPorBloque = [
+      ['#1E90FF', '#00BFFF', '#87CEFA'], // H3, H5, H7
+      ['#FF8C00', '#FFA500', '#FFD700'], // H9, H11, H13
+      ['#8A2BE2', '#9370DB', '#DDA0DD'], // H15, H17, H19
+      ['#2ECC71'], // H21
+    ];
+
+    for (let i = 0; i < ordenes.length; i += 3) {
+      bloques.push(ordenes.slice(i, i + 3));
+    }
+
+    bloques.forEach((grupo, index) => {
+      const categorias = grupo.map((o) => `H${o}`);
+      const series = data.map((dia) => ({
+        name: dia.fecha,
+        data: grupo.map((o) => +(dia[`HARM${o}`] ?? 0).toFixed(2)),
+      }));
+
+      const grafico = this.generarGraficoBarra(
+        `Armónicos H${grupo.join(', H')}`,
+        categorias,
+        [],
+        '%'
+      );
+
+      grafico.series = series;
+      grafico.colors = [...(coloresPorBloque[index] || ['#3498db'])];
+
+      if (index === 0) this.harmChart1 = grafico;
+      if (index === 1) this.harmChart2 = grafico;
+      if (index === 2) this.harmChart3 = grafico;
+      if (index === 3) this.harmChart4 = grafico;
+
+      // Gráfico para HARM y HARM_MG
+      const categoriasHarmMg = ['HARM', 'HARM_MG'];
+      const seriesHarmMg = data.map((dia) => ({
+        name: dia.fecha,
+        data: [+(dia.HARM ?? 0).toFixed(2), +(dia.HARM_MG ?? 0).toFixed(2)],
+      }));
+
+      const graficoHarmMg = this.generarGraficoBarra(
+        'Armónicos HARM y HARM_MG',
+        categoriasHarmMg,
+        [],
+        '%'
+      );
+
+      graficoHarmMg.series = seriesHarmMg;
+      this.harmChart5 = graficoHarmMg;
+    });
+
+    this.cdr.detectChanges();
+  }
+
+  harmChart1: GraficoPromedio;
+  harmChart2: GraficoPromedio;
+  harmChart3: GraficoPromedio;
+  harmChart4: GraficoPromedio;
+  harmChart5: GraficoPromedio;
+
+agruparHarmonicosPorFecha(data: any[]): any[] {
+  const mapa = new Map<string, any>();
+
+  for (const item of data) {
+    const fecha = new Date(item.fecha).toISOString().split('T')[0];
+
+    if (!mapa.has(fecha)) {
+      mapa.set(fecha, { fecha });
+    }
+
+    const dia = mapa.get(fecha);
+    for (const key of Object.keys(item)) {
+      if (key.startsWith('HARM')) {
+        dia[key] = dia[key] ?? [];
+        dia[key].push(item[key]);
+      }
+    }
+  }
+
+  // Convertir fechas a strings comparables (formato YYYY-MM-DD)
+  const desde = new Date(this.fechaInicio).toISOString().split('T')[0];
+  const hasta = new Date(this.fechaFin).toISOString().split('T')[0];
+
+  // Agrupar y filtrar solo fechas dentro del rango seleccionado
+  const agrupados = Array.from(mapa.values())
+    .filter(d => d.fecha >= desde && d.fecha <= hasta)
+    .map(dia => {
+      const resultado: any = { fecha: dia.fecha };
+      for (const key of Object.keys(dia)) {
+        if (key !== 'fecha') {
+          const arr = dia[key];
+          resultado[key] = arr.reduce((a:any, b:any) => a + b, 0) / arr.length;
+        }
+      }
+      return resultado;
+    });
+
+  // Tomar como máximo 3 días (los más recientes)
+  return agrupados
+    .sort((a, b) => a.fecha.localeCompare(b.fecha))
+    .slice(-3);
+}
+
+
 }

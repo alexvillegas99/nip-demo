@@ -260,18 +260,18 @@
 
     <div class="filtros-horizontales">
       <label for="fechaInicio">🗓️ Inicio:</label>
-      <input id="fechaInicio" type="datetime-local" [(ngModel)]="fechaInicio" />
-    
+      <input id="fechaInicio" type="date" [(ngModel)]="fechaInicio" />
+
       <label for="fechaFin">🗓️ Fin:</label>
-      <input id="fechaFin" type="datetime-local" [(ngModel)]="fechaFin" />
-    
+      <input id="fechaFin" type="date" [(ngModel)]="fechaFin" />
+
       <button class="btn-consultar" (click)="getDataMedidor()">🔍 Consultar</button>
     </div>
     <div class="dashboard-layout">
       <!-- ⏱️ Horómetro -->
       <div class="widget-card">
         <h3 class="widget-title">
-          ⏱️ Uso total del horómetro 
+          ⏱️ Uso total del horómetro
         </h3>
         <apx-chart
           [series]="horometroPieChart.series"
@@ -328,7 +328,7 @@
         >
         </apx-chart>
       </div>
-  
+
     </div>
   </div>
 
