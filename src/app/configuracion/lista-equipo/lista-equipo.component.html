@@ -50,8 +50,6 @@
                             (click)="abrirModal(modalDispositivo, item)">Editar</button>
                         <button class="btn btn-sm btn-secondary"
                             (click)="abrirModalValores(modalValores, item)">Valores</button>
-                        <button class="btn btn-sm btn-warning"
-                            (click)="abrirModalRango(modalRangos, item)">Rangos</button>
                     </div>
                 </td>
             </tr>
@@ -84,8 +82,6 @@
                             (click)="abrirModal(modalDispositivo, item)">Editar</button>
                         <button class="btn btn-sm btn-secondary"
                             (click)="abrirModalValores(modalValores, item)">Valores</button>
-                        <button class="btn btn-sm btn-warning"
-                            (click)="abrirModalRango(modalRangos, item)">Rangos</button>
                     </div>
                 </div>
             </div>
@@ -241,9 +237,12 @@
                     </td>
 
                     <td>
-                        <button class="btn btn-primary" title="Editar" (click)="editarModalValor(modalAgregarValores, item)
-                        ">
+                        <button class="btn btn-primary" title="Editar" (click)="editarModalValor(modalAgregarValores, item)">
                             <i class="fa fa-pencil" aria-hidden="true"></i>
+                        </button>
+
+                        <button class="btn btn-secondary" style="margin-left: 1rem;" title="Rangos" (click)="abrirModalRangos(modalRangos, item)">
+                            <i class="fa fa-info" aria-hidden="true"></i>
                         </button>
                     </td>
                 </tr>
@@ -313,34 +312,34 @@
                 <!-- RangoMinimoModerado -->
                 <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
                     <label for="RangoMinimoModerado">Rango Mínimo Moderado:</label>
-                    <input formControlName="RangoMinimoModerado" class="form-control" />
+                    <input type="number" formControlName="RangoMinimoModerado" class="form-control" />
                 </div>
 
                 <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
                     <label for="RangoMinimoAlerta">Rango Mínimo Alerta:</label>
-                    <input formControlName="RangoMinimoAlerta" class="form-control" />
+                    <input type="number"  formControlName="RangoMinimoAlerta" class="form-control" />
                 </div>
 
                 <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
                     <label for="RangoMaximoModerado">Rango Máximo Moderado:</label>
-                    <input formControlName="RangoMaximoModerado" class="form-control" />
+                    <input type="number"  formControlName="RangoMaximoModerado" class="form-control" />
                 </div>
 
                 <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
                     <label for="RangoMaximoAlerta">Rango Máximo Alerta:</label>
-                    <input formControlName="RangoMaximoAlerta" class="form-control" />
+                    <input type="number" formControlName="RangoMaximoAlerta" class="form-control" />
                 </div>
             </div>
         </div>
 
         <div class="modal-footer">
-            <button class="btn btn-cancel" (click)="modalRangosRef?.hide()">
+            <button class="btn btn-cancel" (click)="modalRangosRef?.close()">
                 Cancelar
             </button>
 
             <p></p>
 
-            <button class="btn btn-primary" (click)="editarRango(dipositivoSeleccionado)">
+            <button class="btn btn-primary" (click)="modalRangosRef?.close(formRangos.value)">
                 Editar
             </button>
         </div>

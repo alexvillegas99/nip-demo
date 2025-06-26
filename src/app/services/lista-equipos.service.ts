@@ -25,6 +25,6 @@ export class ListaEquiposService {
   }
 
   updateValor(id: number, data: any) {
-    return this.http.put<any>(`${this.API}/register/${id}`, data);
+    return this.http.put<any>(`${this.API}/rango/${id}`, data);
   }
 }

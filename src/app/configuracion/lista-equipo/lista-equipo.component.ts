@@ -63,6 +63,7 @@ export class ListaEquipoComponent implements OnInit {
   dipositivoSeleccionado!: any;
   valoresSeleccionados!: any;
   valorSeleccionado!: any;
+  dataSeleccionada!: any;
 
   imagenPreview: string | ArrayBuffer | null = null;
 
@@ -351,18 +352,47 @@ export class ListaEquipoComponent implements OnInit {
       });
   }
 
-  editarRango(dipositivo: any) {
-    const data = this.formRangos.value;
-    data._id = dipositivo._id;
+  abrirModalRangos(template: TemplateRef<any>, data?: any) {    
+    if (data) {
+      this.dataSeleccionada = data;
+      this.formRangos.patchValue(data.rango);
+    } else {
+      this.formRangos.reset();
+    }
 
-    const jsonData = {
-      rango: {
-        ...data,
+    this.modalRangosRef = this._modalService.open(template, {
+      ariaLabelledBy: 'modal-basic-title',
+      size: 'lg',
+      centered: true,
+    });
+    this.modalRangosRef.result.then(
+      (result: any) => {
+        if (result) {
+          data.rango = result;
+          this.editarRango(data);
+        }
       },
-    };
+      (reason: any) => {
+        // Abrir modal 1 de nuevo cuando se rechace el modal 2
+        /*if (this.modalRef1) {
+          this.openModal1(this.modalRef1); // Reemplaza `content1` con el contenido del modal 1
+        }*/
+      }
+    );
+  }
 
+  editarRango(dataEditar: any) {
+    const json = {
+      data: [
+        {
+          ...dataEditar
+        }
+      ]
+    }
+    console.log(json, 'editarRango....', this.dipositivoSeleccionado);
+    
     this._listaEquiposService
-      .updateDevice(this.dipositivoSeleccionado._id, jsonData)
+      .updateValor(this.dipositivoSeleccionado._id, json)
       .subscribe({
         next: (response) => {
           this.alert.showToast('success', 'Valor editado correctamente');
