@@ -8,7 +8,7 @@
     top: 0;
     border-top: 2px solid $color-borde;
     border-right: 2px solid $color-borde;
-    border-bottom: 2px solid $color-borde;
+    // border-bottom: 2px solid $color-borde;
     border-left: none;
     background: #fff;
     box-shadow: 0.063rem 0 1.25rem 0 $color-borde;
@@ -180,9 +180,9 @@
     .sublevel-nav-item {
         width: 100%;
         padding-block: 0.3rem;
-        margin-left: 1rem;
 
         .sublevel-nav-link {
+            margin-left: 1rem;
             display: flex;
             align-items: center;
             height: 2rem;
