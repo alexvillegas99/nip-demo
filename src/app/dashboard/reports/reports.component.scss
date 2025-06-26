@@ -48,7 +48,7 @@
       grid-area: texto;
 
       h4 {
-        font-size: 18px;
+        font-size: $tamano-fuente-1;
         font-weight: 700;
         line-height: 23.44px;
         text-align: left;
@@ -56,7 +56,7 @@
       }
 
       p {
-        font-size: 16px;
+        font-size: $tamano-fuente-1;
         font-weight: 400;
         line-height: 24px;
         text-align: left;
@@ -88,7 +88,7 @@
 }
 
 .btn-descargar {
-  font-size: 16px;
+  font-size: $tamano-fuente-1;
   font-weight: 400;
   line-height: 20.83px;
   text-align: left;

@@ -6,7 +6,7 @@
           
           color: #105FBB;
           h3{
-            font-size: 1.2rem;
+            font-size: $tamano-fuente-1;
             font-weight: 700;
           }
           }
@@ -39,7 +39,7 @@
                 border-radius: 10px;
                 padding: 10px;
                 .detalle-titulo{
-                    font-size: 20px;
+                    font-size: $tamano-fuente-1;
                     text-align: center;
                     color: #2A2F35;
                 }   
@@ -52,7 +52,7 @@
                         color: #2A2F35;
                         gap: .5rem;
                         label{
-                            font-size: 15.5px;
+                            font-size: $tamano-fuente-1;
                             padding: .4rem;
                         }
                         label:nth-child(2) {
@@ -70,7 +70,7 @@
                 border-radius: 10px;
                 padding: 10px 0px;
                 .historial-titulo{
-                    font-size: 20px;
+                    font-size: $tamano-fuente-1;
                     text-align: center;
                     color: #2A2F35;
                 }   
@@ -90,7 +90,7 @@
                         gap: .5rem;
                         padding: .3rem;
                         label{
-                            font-size: 15.5px;
+                            font-size: $tamano-fuente-1;
                             padding: .4rem;
                         }
                         

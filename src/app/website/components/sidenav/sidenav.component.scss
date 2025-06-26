@@ -12,20 +12,19 @@
     border-left: none;
     background: #fff;
     box-shadow: 0.063rem 0 1.25rem 0 $color-borde;
+    width: 5rem;
 
     .logo-container {
         display: flex;
         align-items: center;
         padding: 0.938rem;
         width: 100%;
-        border-bottom: 2px solid $color-borde;
-
 
         .logo {
             text-align: center;
-            width: 3.5rem;
+            width: 3rem;
             padding: 0.313rem;
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 900;
             cursor: pointer;
             border: 2px solid $color-borde-icono;
@@ -35,14 +34,14 @@
         .logo-text {
             padding-left: 0.5rem;
             padding-right: 1.5rem;
-            font-size: 18px;
+            font-size: $tamano-fuente-1;
             font-weight: 500;
             line-height: 27px;
             text-align: left;            
         }
 
         .btn-close {
-            width: 3.5rem;
+            width: 2.5rem;
             background-color: transparent;
         }
     }
@@ -50,7 +49,7 @@
 
 .sidenav-collapsed {
     // width: 16.5625rem;
-    width: 20rem;
+    width: 18rem;
 }
 
 .sidenav-nav {
@@ -65,21 +64,20 @@
     .sidenav-nav-item {
         width: 100%;
         padding-block: 0.3rem;
-        border-bottom: 2px solid $color-borde;
 
         .sidenav-nav-link {
             display: flex;
             align-items: center;
-            height: 2.6rem;
+            height: 2rem;
             color: #000;
             text-decoration: none;
             border-radius: 0.625rem;
             transition: all .3s ease;
         
             .sidenav-link-icon {
-                width: 1.8rem;
-                min-width: 1.5rem;
-                margin-left: 1rem;
+                width: 1.25rem;
+                min-width: .75rem;
+                margin-left: .75rem;
                 text-align: center;
             }
         
@@ -87,7 +85,7 @@
                 margin-left: 1rem;
                 color: #000;
                 font-family: Poppins;
-                font-size: 18px;
+                font-size: $tamano-fuente-2;
                 font-weight: 500;
                 line-height: 27px;
                 text-align: left;
@@ -102,6 +100,7 @@
 
         .sidenav-nav-link:hover {
             background-color: $color-hover;
+            border-radius: 0.625rem;
 
             .sidenav-link-text {
                 margin-left: 1rem;
@@ -113,6 +112,7 @@
     .sidenav-nav-item:hover {
         background-color: $color-hover;
         color: $color-1;
+        border-radius: 0.625rem;
     }
 }
 
@@ -180,22 +180,23 @@
     .sublevel-nav-item {
         width: 100%;
         padding-block: 0.3rem;
-        border-bottom: 2px solid $color-borde;
+        margin-left: 1rem;
 
         .sublevel-nav-link {
             display: flex;
             align-items: center;
-            height: 2.6rem;
+            height: 2rem;
             color: #000;
             text-decoration: none;
             border-radius: 0.625rem;
             transition: all .3s ease;
             padding-left: 1rem;
+            font-size: $tamano-fuente-2;
 
             .sidenav-link-icon {
-                width: 1.8rem;
-                min-width: 1.5rem;
-                margin-left: 1rem;
+                width: 1.25rem;
+                min-width: .75rem;
+                margin-left: .75rem;
                 text-align: center;
             }
 
@@ -203,7 +204,7 @@
                 margin-left: 1rem;
                 color: #000;
                 font-family: Poppins;
-                font-size: 18px;
+                font-size: $tamano-fuente-1;
                 font-weight: 500;
                 line-height: 27px;
                 text-align: left;
@@ -217,6 +218,7 @@
         }
 
         .sublevel-nav-link:hover {
+            border-radius: 0.625rem;
             background-color: $color-hover;
             .sublevel-link-text {
                 color: #000;
@@ -237,5 +239,6 @@
     .sublevel-nav-item:hover {
         background-color: $color-hover;
         color: $color-1;
+        border-radius: 0.625rem;
     }
 }

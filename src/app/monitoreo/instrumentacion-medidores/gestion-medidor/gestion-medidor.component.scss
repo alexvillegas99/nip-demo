@@ -22,7 +22,7 @@
 
     h1 {
       margin-top: 0.5rem;
-      font-size: 18px;
+      font-size: $tamano-fuente-1;
       font-weight: 400;
       line-height: 27px;
       text-align: left;
@@ -64,7 +64,7 @@ h1 {
 }
 
 h2 {
-  font-size: 18px;
+  font-size: $tamano-fuente-1;
   font-weight: 500;
   line-height: 23.44px;
   text-align: left;
