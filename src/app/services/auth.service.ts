@@ -8,6 +8,11 @@ import { map, tap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+  logout() {
+    this._coookiesService.eliminarCookie(JWT);
+    this._coookiesService.eliminarCookie(ROLES);
+    this._coookiesService.eliminarCookie(PERMISOS);
+  }
   private readonly API = environment.apiUrl + '/auth';
 
   constructor(
@@ -21,11 +26,11 @@ export class AuthService {
     return this.http.post<any>(uri, { ...data }).pipe(
       tap((response) => {
         console.log(response, 'response');
-        
+
         if (response.accessToken) {
           this.setRoles(response.user.rol);
           this.setPermisos(response.permisos);
-          this._coookiesService.almacenarCookie(JWT,       
+          this._coookiesService.almacenarCookie(JWT,
             this._encriptadoService.encriptarInformacionCookie(response.accessToken)
            );
         }

@@ -46,6 +46,11 @@ export const routes: Routes = [
         component: PortalComponent,
         canActivate: [EstaLogeadoGuard],
         children: [
+           {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'home',
+      },
           {
             path: 'home',
             title: 'Inicio',

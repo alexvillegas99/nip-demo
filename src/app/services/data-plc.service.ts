@@ -28,4 +28,8 @@ export class DataPlcService {
     return this.http.post<any>(`${environment.apiUrl}/historico-plc/energia-promedio`, data);
   }
 
+   getHistoricoEnergiaFranjas(data: any) {
+    return this.http.post<any>(`${environment.apiUrl}/historico-plc/energia-promedio-franjas`, data);
+  }
+
 }

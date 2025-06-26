@@ -30,13 +30,11 @@
 
         <div class="info-line">
           <label>Date/Time</label>
-          <span>{{ plcInfo?.fecha | date:'dd/MMMM/yyyy HH:mm:ss' }}</span>
-
+          <span>{{ plcInfo?.fecha | date : "dd/MMMM/yyyy HH:mm:ss" }}</span>
         </div>
 
         <div class="info-line connection">
           <button class="btn-disconnect">CONNECT</button>
-
         </div>
       </div>
     </div>
@@ -50,13 +48,15 @@
           <div class="card-header">
             <h2>Corriente</h2>
             <button (click)="showCorriente = !showCorriente">
-              {{ showCorriente ? 'Ocultar' : '› Más' }}
+              {{ showCorriente ? "Ocultar" : "› Más" }}
             </button>
           </div>
           <table>
             <tr class="destacado">
               <td><strong>Total</strong></td>
-              <td><strong>{{ plcInfo.CORRIENTE_TOT }} A</strong></td>
+              <td>
+                <strong>{{ plcInfo.CORRIENTE_TOT }} A</strong>
+              </td>
             </tr>
             <tr>
               <td>Corriente A</td>
@@ -90,13 +90,15 @@
           <div class="card-header">
             <h2>Voltaje</h2>
             <button (click)="showVoltaje = !showVoltaje">
-              {{ showVoltaje ? 'Ocultar' : '› Más' }}
+              {{ showVoltaje ? "Ocultar" : "› Más" }}
             </button>
           </div>
           <table>
             <tr class="destacado">
               <td><strong>Total</strong></td>
-              <td><strong>{{ plcInfo.VOLTAJE_TOT }} V</strong></td>
+              <td>
+                <strong>{{ plcInfo.VOLTAJE_TOT }} V</strong>
+              </td>
             </tr>
             <tr>
               <td>Voltaje AB</td>
@@ -136,7 +138,9 @@
           <table>
             <tr class="destacado">
               <td><strong>Total</strong></td>
-              <td><strong>{{ plcInfo.POT_TOT }} kW</strong></td>
+              <td>
+                <strong>{{ plcInfo.POT_TOT }} kW</strong>
+              </td>
             </tr>
             <tr>
               <td>Potencia A</td>
@@ -164,7 +168,9 @@
           <table>
             <tr class="destacado">
               <td><strong>Total</strong></td>
-              <td><strong>{{ plcInfo.FPOT_TOT }}</strong></td>
+              <td>
+                <strong>{{ plcInfo.FPOT_TOT }}</strong>
+              </td>
             </tr>
             <tr>
               <td>FP A</td>
@@ -189,7 +195,9 @@
           <table>
             <tr class="destacado">
               <td><strong>FHZ Total</strong></td>
-              <td><strong>{{ plcInfo.FHZ_TOT }} Hz</strong></td>
+              <td>
+                <strong>{{ plcInfo.FHZ_TOT }} Hz</strong>
+              </td>
             </tr>
           </table>
         </div>
@@ -202,42 +210,138 @@
           <table>
             <tr class="destacado">
               <td><strong>Energia Total</strong></td>
-              <td><strong>{{ plcInfo.ENERG }} kWh</strong></td>
+              <td>
+                <strong>{{ plcInfo.ENERG }} kWh</strong>
+              </td>
             </tr>
           </table>
         </div>
+          <!-- Frecuencia -->
+      <div class="card-tarjeta">
+        <div class="card-header">
+          <h2>Frecuencia</h2>
+        </div>
+        <table>
+          <tr class="destacado">
+            <td><strong>Total</strong></td>
+            <td>
+              <strong>{{ plcInfo.FHZ_TOT }} Hz</strong>
+            </td>
+          </tr>
+          <tr>
+            <td>Fase A</td>
+            <td>{{ plcInfo.FHZ_A }} Hz</td>
+          </tr>
+          <tr>
+            <td>Fase B</td>
+            <td>{{ plcInfo.FHZ_B }} Hz</td>
+          </tr>
+          <tr>
+            <td>Fase C</td>
+            <td>{{ plcInfo.FHZ_C }} Hz</td>
+          </tr>
+        </table>
       </div>
+
+      <!-- Harmónicos -->
+      <div class="card-tarjeta">
+        <div class="card-header">
+          <h2>Harmónicos</h2>
+          <button (click)="showHarm = !showHarm">
+            {{ showHarm ? "Ocultar" : "› Más" }}
+          </button>
+        </div>
+        <table>
+          <tr class="destacado">
+            <td><strong>HARM</strong></td>
+            <td>
+              <strong>{{ plcInfo.HARM }}</strong>
+            </td>
+          </tr>
+          <tr>
+            <td>HARM MG</td>
+            <td>{{ plcInfo.HARM_MG }}</td>
+          </tr>
+          <tr *ngIf="showHarm">
+            <td>HARM 3</td>
+            <td>{{ plcInfo.HARM3 }}</td>
+          </tr>
+          <tr *ngIf="showHarm">
+            <td>HARM 5</td>
+            <td>{{ plcInfo.HARM5 }}</td>
+          </tr>
+          <tr *ngIf="showHarm">
+            <td>HARM 7</td>
+            <td>{{ plcInfo.HARM7 }}</td>
+          </tr>
+          <tr *ngIf="showHarm">
+            <td>HARM 9</td>
+            <td>{{ plcInfo.HARM9 }}</td>
+          </tr>
+          <tr *ngIf="showHarm">
+            <td>HARM 11</td>
+            <td>{{ plcInfo.HARM11 }}</td>
+          </tr>
+          <tr *ngIf="showHarm">
+            <td>HARM 13</td>
+            <td>{{ plcInfo.HARM13 }}</td>
+          </tr>
+          <tr *ngIf="showHarm">
+            <td>HARM 15</td>
+            <td>{{ plcInfo.HARM15 }}</td>
+          </tr>
+          <tr *ngIf="showHarm">
+            <td>HARM 17</td>
+            <td>{{ plcInfo.HARM17 }}</td>
+          </tr>
+          <tr *ngIf="showHarm">
+            <td>HARM 19</td>
+            <td>{{ plcInfo.HARM19 }}</td>
+          </tr>
+          <tr *ngIf="showHarm">
+            <td>HARM 21</td>
+            <td>{{ plcInfo.HARM21 }}</td>
+          </tr>
+        </table>
+      </div>
+      </div>
+
     </p-tabPanel>
 
-    <!-- Tab: Gráficos --> 
+    <!-- Tab: Gráficos -->
     <p-tabPanel header="Indicadores">
-
       <div class="filtros-horizontales">
         <label for="fechaInicio">🗓️ Inicio:</label>
-        <input id="fechaInicio" type="datetime-local" [(ngModel)]="fechaInicio" />
-      
+        <input
+          id="fechaInicio"
+        type="date"
+          [(ngModel)]="fechaInicio"
+        />
+
         <label for="fechaFin">🗓️ Fin:</label>
-        <input id="fechaFin" type="datetime-local" [(ngModel)]="fechaFin" />
-      
-        <button class="btn-consultar" (click)="getDataMedidor()">🔍 Consultar</button>
+        <input id="fechaFin" type="date" [(ngModel)]="fechaFin" />
+
+        <button class="btn-consultar" (click)="getDataMedidor()">
+          🔍 Consultar
+        </button>
       </div>
       <div class="dashboard-layout">
         <div class="widget-card">
-          <h3  class="widget-title">Consumo total de energía por equipo</h3>
-          
+          <h3 class="widget-title">Consumo total de energía por equipo</h3>
+
           <apx-chart
-          *ngIf="consumoEnergiaPieChart"
-          [series]="consumoEnergiaPieChart.series"
-          [chart]="consumoEnergiaPieChart.chart"
-          [labels]="consumoEnergiaPieChart.labels"
-          [tooltip]="consumoEnergiaPieChart.tooltip"
-          [dataLabels]="consumoEnergiaPieChart.dataLabels"
-          [legend]="consumoEnergiaPieChart.legend"
-        ></apx-chart>
-        <div class="totales mt-3">
-          <p><strong>🔋 Total energía:</strong> {{ totalEnergiaKwh }} kWh</p>
-          <p><strong>💵 Total costo:</strong> ${{ totalCostoEnergia }}</p>
-        </div>
+            *ngIf="consumoEnergiaPieChart"
+            [series]="consumoEnergiaPieChart.series"
+            [chart]="consumoEnergiaPieChart.chart"
+            [labels]="consumoEnergiaPieChart.labels"
+            [tooltip]="consumoEnergiaPieChart.tooltip"
+            [dataLabels]="consumoEnergiaPieChart.dataLabels"
+            [legend]="consumoEnergiaPieChart.legend"
+          ></apx-chart>
+          <div class="totales mt-3">
+            <p><strong>🔋 Total energía:</strong> {{ totalEnergiaKwh }} kWh</p>
+            <p><strong>💵 Total costo:</strong> ${{ totalCostoEnergia }}</p>
+          </div>
         </div>
         <!-- 🔌 Voltaje total PM -->
         <div class="widget-card">
@@ -249,11 +353,11 @@
             [yaxis]="voltajeChart.yaxis"
             [plotOptions]="voltajeChart.plotOptions"
             [dataLabels]="voltajeChart.dataLabels"
-            [tooltip]="voltajeChart.tooltip" 
+            [tooltip]="voltajeChart.tooltip"
           >
           </apx-chart>
         </div>
-    
+
         <!-- ⚡ Corriente total PM -->
         <div class="widget-card">
           <h3 class="widget-title">⚡ Corriente total</h3>
@@ -268,7 +372,7 @@
           >
           </apx-chart>
         </div>
-    
+
         <!-- 💡 Potencia total PM -->
         <div class="widget-card">
           <h3 class="widget-title">💡 Potencia total</h3>
@@ -283,7 +387,7 @@
           >
           </apx-chart>
         </div>
-    
+
         <!-- 🔄 Frecuencia total PM -->
         <div class="widget-card">
           <h3 class="widget-title">🔄 Frecuencia total</h3>
@@ -298,7 +402,7 @@
           >
           </apx-chart>
         </div>
-    
+
         <!-- ⚖️ Factor de potencia total PM -->
         <div class="widget-card">
           <h3 class="widget-title">⚖️ Factor de Potencia</h3>
@@ -313,9 +417,129 @@
           >
           </apx-chart>
         </div>
+        <!-- 🔁 THD Corriente -->
+<div class="widget-card">
+  <h3 class="widget-title">🔁 THD de Corriente</h3>
+  <apx-chart
+    [series]="thdCorrienteChart.series"
+    [chart]="thdCorrienteChart.chart"
+    [xaxis]="thdCorrienteChart.xaxis"
+    [yaxis]="thdCorrienteChart.yaxis"
+    [plotOptions]="thdCorrienteChart.plotOptions"
+    [dataLabels]="thdCorrienteChart.dataLabels"
+    [tooltip]="thdCorrienteChart.tooltip"
+  ></apx-chart>
+</div>
+
+<!-- 🔀 TH Voltaje -->
+<div class="widget-card">
+  <h3 class="widget-title">🔀 TH de Voltaje</h3>
+  <apx-chart
+    [series]="thVoltajeChart.series"
+    [chart]="thVoltajeChart.chart"
+    [xaxis]="thVoltajeChart.xaxis"
+    [yaxis]="thVoltajeChart.yaxis"
+    [plotOptions]="thVoltajeChart.plotOptions"
+    [dataLabels]="thVoltajeChart.dataLabels"
+    [tooltip]="thVoltajeChart.tooltip"
+  ></apx-chart>
+</div>
+
       </div>
     </p-tabPanel>
-   
+    <p-tabPanel header="Armónicos">
+  <div class="filtros-horizontales">
+    <label for="fechaInicioHarm">🗓️ Inicio:</label>
+    <input
+      id="fechaInicioHarm"
+      type="date"
+      [(ngModel)]="fechaInicio"
+    />
+
+    <label for="fechaFinHarm">🗓️ Fin:</label>
+    <input id="fechaFinHarm" type="date" [(ngModel)]="fechaFin" />
+
+    <button class="btn-consultar" (click)="getDataMedidor()">
+      🔍 Consultar
+    </button>
+  </div>
+
+  <div class="dashboard-layout">
+   <!-- 🔢 Armónicos por orden (dividido en bloques de 3) -->
+<div class="widget-card" *ngIf="harmChart1">
+  <h3 class="widget-title">🔢 Armónicos H3, H5, H7</h3>
+  <apx-chart
+    [series]="harmChart1.series"
+    [chart]="harmChart1.chart"
+    [xaxis]="harmChart1.xaxis"
+    [yaxis]="harmChart1.yaxis"
+    [plotOptions]="harmChart1.plotOptions"
+    [dataLabels]="harmChart1.dataLabels"
+    [tooltip]="harmChart1.tooltip"
+  [colors]="harmChart1.colors || ['#1abc9c']"
+
+  ></apx-chart>
+</div>
+
+<div class="widget-card" *ngIf="harmChart2">
+  <h3 class="widget-title">🔢 Armónicos H9, H11, H13</h3>
+  <apx-chart
+    [series]="harmChart2.series"
+    [chart]="harmChart2.chart"
+    [xaxis]="harmChart2.xaxis"
+    [yaxis]="harmChart2.yaxis"
+    [plotOptions]="harmChart2.plotOptions"
+    [dataLabels]="harmChart2.dataLabels"
+    [tooltip]="harmChart2.tooltip"
+    [colors]="harmChart1.colors || ['#1abc9c']"
+
+  ></apx-chart>
+</div>
+
+<div class="widget-card" *ngIf="harmChart3">
+  <h3 class="widget-title">🔢 Armónicos H15, H17, H19</h3>
+  <apx-chart
+    [series]="harmChart3.series"
+    [chart]="harmChart3.chart"
+    [xaxis]="harmChart3.xaxis"
+    [yaxis]="harmChart3.yaxis"
+    [plotOptions]="harmChart3.plotOptions"
+    [dataLabels]="harmChart3.dataLabels"
+    [tooltip]="harmChart3.tooltip"
+  ></apx-chart>
+</div>
+
+<div class="widget-card" *ngIf="harmChart4">
+  <h3 class="widget-title">🔢 Armónicos H21</h3>
+  <apx-chart
+    [series]="harmChart4.series"
+    [chart]="harmChart4.chart"
+    [xaxis]="harmChart4.xaxis"
+    [yaxis]="harmChart4.yaxis"
+    [plotOptions]="harmChart4.plotOptions"
+    [dataLabels]="harmChart4.dataLabels"
+    [tooltip]="harmChart4.tooltip"
+   [colors]="harmChart1.colors || ['#1abc9c']"
+
+  ></apx-chart>
+</div>
+<div class="widget-card" *ngIf="harmChart5">
+  <h3 class="widget-title">🔧 Armónicos Totales HARM y HARM_MG</h3>
+  <apx-chart
+    [series]="harmChart5.series"
+    [chart]="harmChart5.chart"
+    [xaxis]="harmChart5.xaxis"
+    [yaxis]="harmChart5.yaxis"
+    [plotOptions]="harmChart5.plotOptions"
+    [dataLabels]="harmChart5.dataLabels"
+    [tooltip]="harmChart5.tooltip"
+    [colors]="harmChart5.colors || ['#2ecc71', '#e74c3c']"
+  ></apx-chart>
+</div>
+
+
+  </div>
+</p-tabPanel>
 
   </p-tabView>
 </div>

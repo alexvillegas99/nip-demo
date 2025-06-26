@@ -1,38 +1,53 @@
 <div class="container-fluid d-flex justify-content-center align-items-center vh-100">
 
-  <div class="card">
+  <div class="card" *ngIf="!mostrarSelector">
     <div class="card-body">
       <form action="#" [formGroup]="loginForm" class="form">
         <div class="header">
           <img class="logo" src="assets/imgs/navbar/nip-icono.png" alt="icono_nip">
-
           <h1>¡Bienvenido/a a Prisma Control!</h1>
           <h2>Ingresar sus datos para continuar</h2>
         </div>
 
-
         <div class="row">
-
-          <div class="col-xxl-10 col-xl-10 col-lg-10 col-md-10 col-sm-12 col-xs-12 col-12 mb-2">
+          <div class="col-12 mb-2">
             <div class="input-box">
               <label for="correo">Email o número de teléfono</label>
               <input formControlName="correo" type="text" placeholder="Escribir email o número de teléfono" required />
             </div>
           </div>
 
-          <div class="col-xxl-10 col-xl-10 col-lg-10 col-md-10 col-sm-12 col-xs-12 col-12 mb-2">
+          <div class="col-12 mb-2">
             <div class="input-box">
               <label for="clave">Contraseña</label>
               <input formControlName="clave" type="password" placeholder="Escribir contraseña" required />
             </div>
           </div>
 
-          <div style="margin-top: 1rem; display: flex; justify-content: center; width: 100%; align-items: center;">
+          <div class="w-100 d-flex justify-content-center">
             <button (click)="login()" class="btn boton-1">Iniciar Sesión</button>
           </div>
         </div>
-
       </form>
+    </div>
+  </div>
+
+  <!-- 🔄 Pantalla de selección de empresa -->
+  <div class="card" *ngIf="mostrarSelector">
+    <div class="card-body text-center">
+      <h2 class="mb-3">Seleccionar Empresa</h2>
+      <p class="mb-4">Bienvenido {{ loginForm.value.correo }}, selecciona una empresa para continuar.</p>
+
+      <div class="row">
+        <div class="col-md-4" *ngFor="let empresa of empresas">
+          <div class="empresa-card p-3 border rounded mb-3" (click)="ingresarDashboard(empresa)">
+            <img [src]="empresa.logo" class="img-fluid mb-2" style="height: 80px;" />
+            <h5>{{ empresa.nombre }}</h5>
+            <p>{{ empresa.descripcion }}</p>
+            <button class="btn btn-primary btn-sm mt-2">Ingresar</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 

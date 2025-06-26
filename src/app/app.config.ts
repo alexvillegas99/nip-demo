@@ -18,6 +18,15 @@ import { NgxGaugeModule } from 'ngx-gauge';
 import { LinearGaugeModule } from '@syncfusion/ej2-angular-lineargauge';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { loaderInterceptor } from './core/interceptors/loader.interceptor';
+
+
+import { LOCALE_ID } from '@angular/core';
+import { registerLocaleData } from '@angular/common';
+import localeEs from '@angular/common/locales/es';
+
+// Registrar el locale español
+registerLocaleData(localeEs, 'es');
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
@@ -35,5 +44,7 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(NgxGaugeModule),
     importProvidersFrom(LinearGaugeModule),
     importProvidersFrom(NgApexchartsModule),
-  ],  
+    { provide: LOCALE_ID, useValue: 'es' },
+
+  ],
 };

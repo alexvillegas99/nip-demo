@@ -31,16 +31,16 @@ type GraficoPie = {
   legend: ApexLegend;
 };
 
-type GraficoPromedio = {
+export interface GraficoPromedio {
   chart: ApexChart;
-  xaxis?: any;
+  xaxis: ApexXAxis;
   yaxis: ApexYAxis;
   series: ApexAxisChartSeries;
-  plotOptions?: any;
-  dataLabels?: any;
-  tooltip?: any;
+  stroke?: ApexStroke;
   colors?: string[];
-};
+  dataLabels?: ApexDataLabels;
+  tooltip?: ApexTooltip;
+}
 
 export type ChartOptions = {
   series: ApexNonAxisChartSeries;
@@ -152,12 +152,16 @@ export class VariadoresComponent implements OnInit, OnDestroy {
   obtenerDataHistoricoPlc() {
     const ip = this.plcMedidor?.ip;
     if (!ip) return;
+const inicio = new Date(this.fechaInicio);
+inicio.setHours(0, 0, 0, 0);
 
+const fin = new Date(this.fechaFin);
+fin.setHours(23, 59, 59, 999);
     // Consulta inicial
     this._socketService.sendFindHistoricoPlcData(
       [this.plcMedidor.ip],
-      this.fechaInicio,
-      this.fechaFin,
+      inicio,
+      fin,
       'variador'
     );
   }
@@ -229,27 +233,6 @@ export class VariadoresComponent implements OnInit, OnDestroy {
     });
   }
   generarGraficosHistoricos(data: any[]) {
-    // Utilidad para promediar arrays
-    const avg = (arr: number[]) =>
-      arr.length
-        ? Math.round((arr.reduce((a, b) => a + b, 0) / arr.length) * 100) / 100
-        : 0;
-
-    // Filtramos los valores válidos
-    const valoresVoltaje = data
-      .map((d) => d.voltaje)
-      .filter((v) => v !== null && v !== undefined);
-    const valoresCorriente = data
-      .map((d) => d.corriente)
-      .filter((v) => v !== null && v !== undefined);
-    const valoresPotencia = data
-      .map((d) => d.potencia)
-      .filter((v) => v !== null && v !== undefined);
-    const valoresHorometro = data
-      .map((d) => d.horometro)
-      .filter((v) => v !== null && v !== undefined); // solo si hay
-
-    // 🎨 Colores aleatorios para cada gráfico
     const colores = (cantidad: number) =>
       Array.from({ length: cantidad }, () => {
         const r = Math.floor(Math.random() * 156) + 100;
@@ -258,83 +241,70 @@ export class VariadoresComponent implements OnInit, OnDestroy {
         return `rgb(${r}, ${g}, ${b})`;
       });
 
-    // 🔌 Voltaje
-    this.voltajeChart = {
-      chart: { type: 'bar', height: 250 },
-      xaxis: { categories: ['Promedio'] },
-      yaxis: { title: { text: 'Voltaje (V)' } },
-      series: [{ name: 'Voltaje', data: [avg(valoresVoltaje)] }],
-      colors: colores(1),
-      plotOptions: { bar: { columnWidth: '40%', borderRadius: 4 } },
-      dataLabels: {
-        enabled: true,
-        formatter: (val: any) => `${val.toFixed(2)} V`,
-      },
-      tooltip: {
-        y: { formatter: (val: any) => `${val.toFixed(2)} V` },
-      },
+    const crearGraficoLinea = (titulo: string, key: string, unidad: string) => {
+      const { fechas, promedios } = this.dividirBloquesConFechas(data, key);
+      return {
+        chart: { type: 'line', height: 250, toolbar: { show: true } },
+        xaxis: { categories: fechas },
+        yaxis: { title: { text: `${titulo} (${unidad})` } },
+        series: [{ name: titulo, data: promedios }],
+        stroke: { curve: 'smooth' },
+        colors: colores(1),
+        dataLabels: { enabled: false },
+        tooltip: {
+          y: {
+            formatter: (val: number) => `${val.toFixed(2)} ${unidad}`,
+          },
+        },
+      };
     };
+
+    // 🔌 Voltaje
+    this.voltajeChart = crearGraficoLinea('Voltaje', 'voltaje', 'V');
 
     // ⚡ Corriente
-    this.corrienteChart = {
-      chart: { type: 'bar', height: 250 },
-      xaxis: { categories: ['Promedio'] },
-      yaxis: { title: { text: 'Corriente (A)' } },
-      series: [{ name: 'Corriente', data: [avg(valoresCorriente)] }],
-      colors: colores(1),
-      plotOptions: { bar: { columnWidth: '40%', borderRadius: 4 } },
-      dataLabels: {
-        enabled: true,
-        formatter: (val: any) => `${val.toFixed(2)} A`,
-      },
-      tooltip: {
-        y: { formatter: (val: any) => `${val.toFixed(2)} A` },
-      },
-    };
+    this.corrienteChart = crearGraficoLinea('Corriente', 'corriente', 'A');
 
     // 💡 Potencia
-    this.potenciaChart = {
-      chart: { type: 'bar', height: 250 },
-      xaxis: { categories: ['Promedio'] },
-      yaxis: { title: { text: 'Potencia (kW)' } },
-      series: [{ name: 'Potencia', data: [avg(valoresPotencia)] }],
-      colors: colores(1),
-      plotOptions: { bar: { columnWidth: '40%', borderRadius: 4 } },
-      dataLabels: {
-        enabled: true,
-        formatter: (val: any) => `${val.toFixed(2)} kW`,
-      },
-      tooltip: {
-        y: { formatter: (val: any) => `${val.toFixed(2)} kW` },
-      },
-    };
+    this.potenciaChart = crearGraficoLinea('Potencia', 'potencia', 'kW');
 
-    // ⏱️ Horómetro (si hay valores)
-    this.horometroPieChart = {
-      series: [avg(valoresHorometro)],
-      labels: ['Tiempo de uso'],
-      chart: {
-        type: 'donut',
-        height: 300,
-        toolbar: { show: true, tools: { download: true } },
-      },
-      tooltip: {
-        y: { formatter: (val) => `${val.toFixed(2)} minutos` },
-      },
-      dataLabels: {
-        enabled: true,
-        formatter: (val) => `${val.toFixed(1)}%`,
-      },
-      legend: {
-        show: true,
-        position: 'right',
-        formatter: (label, opts) => {
-          const minutos = opts.w.globals.series[opts.seriesIndex];
-          const horas = (minutos / 60).toFixed(2);
-          return `${label}: ${horas} h`;
+    // ⏱️ Horómetro
+    const valoresHorometro = data
+      .map((d) => d.horometro)
+      .filter((v) => v != null);
+    if (valoresHorometro.length) {
+      this.horometroPieChart = {
+        series: [
+          Math.round(
+            (valoresHorometro.reduce((a, b) => a + b, 0) /
+              valoresHorometro.length) *
+              100
+          ) / 100,
+        ],
+        labels: ['Tiempo de uso'],
+        chart: {
+          type: 'donut',
+          height: 300,
+          toolbar: { show: true, tools: { download: true } },
         },
-      },
-    };
+        tooltip: {
+          y: { formatter: (val) => `${val.toFixed(2)} minutos` },
+        },
+        dataLabels: {
+          enabled: true,
+          formatter: (val) => `${val.toFixed(1)}%`,
+        },
+        legend: {
+          show: true,
+          position: 'right',
+          formatter: (label, opts) => {
+            const minutos = opts.w.globals.series[opts.seriesIndex];
+            const horas = (minutos / 60).toFixed(2);
+            return `${label}: ${horas} h`;
+          },
+        },
+      };
+    }
   }
 
   getMaxRPM(ip: string): number {
@@ -530,27 +500,11 @@ export class VariadoresComponent implements OnInit, OnDestroy {
     }
   }
 
-  voltajeChart: GraficoPromedio = {
-    chart: { type: 'bar', height: 250 },
-    xaxis: { categories: [] },
-    yaxis: {},
-    series: [],
-  };
+  voltajeChart: any;
 
-  corrienteChart: GraficoPromedio = {
-    chart: { type: 'bar', height: 250 },
-    xaxis: { categories: [] },
-    yaxis: {},
-    series: [],
-  };
+  corrienteChart: any;
 
-  potenciaChart: GraficoPromedio = {
-    chart: { type: 'bar', height: 250 },
-    xaxis: { categories: [] },
-    yaxis: {},
-    series: [],
-  };
-
+  potenciaChart: any;
   horometroPieChart: GraficoPie = {
     series: [],
     chart: {
@@ -586,15 +540,17 @@ export class VariadoresComponent implements OnInit, OnDestroy {
   datosAgrupadosPorIp: any[] = [];
 
   buscarHorometro(): void {
-    this.horometroService.obtenerPorFechas(this.plcMedidor.ip,this.fechaInicio,this.fechaFin).subscribe({
-      next: (data) => {
-        console.log('✅ Datos agrupados por IP:', data);
-        this.datosAgrupadosPorIp = data;
-        console.log('Datos agrupados por IP:', this.datosAgrupadosPorIp);
-        this.generarGraficoHorometroPie();
-      },
-      error: (err) => console.error('❌ Error al obtener datos:', err),
-    });
+    this.horometroService
+      .obtenerPorFechas(this.plcMedidor.ip, this.fechaInicio, this.fechaFin)
+      .subscribe({
+        next: (data) => {
+          console.log('✅ Datos agrupados por IP:', data);
+          this.datosAgrupadosPorIp = data;
+          console.log('Datos agrupados por IP:', this.datosAgrupadosPorIp);
+          this.generarGraficoHorometroPie();
+        },
+        error: (err) => console.error('❌ Error al obtener datos:', err),
+      });
   }
 
   generarGraficoHorometroPie(): void {
@@ -647,7 +603,68 @@ export class VariadoresComponent implements OnInit, OnDestroy {
           return `${label}: ${horas}h ${min}min`;
         },
       },
-      
     };
+  }
+
+  dividirBloquesConFechas(
+  data: any[],
+  key: string,
+  maxBloques: number = 8
+): { fechas: string[]; promedios: (number | null)[] } {
+  const datosValidos = data.filter((d) => d[key] != null && !isNaN(d[key]));
+  const cantidad = datosValidos.length;
+
+  // Si hay pocos datos, mostrar uno a uno
+  if (cantidad <= maxBloques) {
+    return {
+      fechas: datosValidos.map((d) => {
+        const f = new Date(d.fecha);
+        return `${f.getMonth() + 1}-${f.getDate()} ${f.getHours()}:${String(f.getMinutes()).padStart(2, '0')}`;
+      }),
+      promedios: datosValidos.map((d) => Math.round(d[key] * 100) / 100),
+    };
+  }
+
+  // Agrupar en bloques si hay más de maxBloques datos
+  const tamaño = Math.ceil(cantidad / maxBloques);
+  const promedios: (number | null)[] = [];
+  const fechas: string[] = [];
+
+  for (let i = 0; i < cantidad; i += tamaño) {
+    const bloque = datosValidos.slice(i, i + tamaño);
+    const valores = bloque.map((d) => d[key]).filter((v) => v != null && !isNaN(v));
+    const promedio = valores.length
+      ? Math.round((valores.reduce((a, b) => a + b, 0) / valores.length) * 100) / 100
+      : null;
+
+    promedios.push(promedio);
+
+    const fechaProm = new Date(bloque[Math.floor(bloque.length / 2)].fecha);
+    const fechaLabel = `${fechaProm.getMonth() + 1}-${fechaProm.getDate()} ${fechaProm.getHours()}:${String(
+      fechaProm.getMinutes()
+    ).padStart(2, '0')}`;
+    fechas.push(fechaLabel);
+  }
+
+  return { fechas, promedios };
+}
+
+
+  agruparYPromediar(arr: number[], chunks: number): number[] {
+    const tamaño = Math.ceil(arr.length / chunks);
+    const promedios: number[] = [];
+
+    for (let i = 0; i < arr.length; i += tamaño) {
+      const grupo = arr
+        .slice(i, i + tamaño)
+        .filter((v) => v !== null && v !== undefined);
+      const promedio = grupo.length
+        ? Math.round((grupo.reduce((a, b) => a + b, 0) / grupo.length) * 100) /
+          100
+        : 0;
+      promedios.push(promedio);
+    }
+
+    return promedios;
   }
 }

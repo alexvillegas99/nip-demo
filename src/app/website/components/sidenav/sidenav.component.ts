@@ -126,4 +126,10 @@ export class SidenavComponent implements OnInit {
       this.router.navigate([item.routeLink]).then();
     }
   }
+  cerrarSesion(): void {
+      this._authService.logout();
+      this.router.navigate(['/login']).then(() => {
+        window.location.reload();
+      });
+  }
 }

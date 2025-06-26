@@ -44,70 +44,80 @@ export class OrometroComponent implements OnInit {
   fechaFin: Date = new Date(this.fechaActual.getTime() + 24 * 60 * 60 * 1000); // dentro de 24 horas
   historialHorometros: any;
   buscarHorometro(): void {
-    const ips = this.equipos.map((equipo: any) => equipo.ip);
+  const ips = this.equipos.map((equipo: any) => equipo.ip);
 
-    forkJoin({
-      datosPorFecha: this.horometroService.obtenerPorFechas(
-        ips,
-        this.fechaInicio,
-        this.fechaFin
-      ),
-      historial: this.horometroService.obtenerHistorial(ips),
-    }).subscribe({
-      next: ({ datosPorFecha, historial }) => {
-        console.log('✅ Datos por fecha:', datosPorFecha);
-        console.log('📊 Historial:', historial);
+  forkJoin({
+    datosPorFecha: this.horometroService.obtenerPorFechas(
+      ips,
+      this.fechaInicio,
+      this.fechaFin
+    ),
+    historial: this.horometroService.obtenerHistorial(ips),
+  }).subscribe({
+    next: ({ datosPorFecha, historial }) => {
+      console.log('✅ Datos por fecha:', datosPorFecha);
+      console.log('📊 Historial:', historial);
 
-        this.datosAgrupadosPorIp = datosPorFecha;
-        this.historialHorometros = historial;
+      this.datosAgrupadosPorIp = datosPorFecha;
+      this.historialHorometros = historial;
+      console.log('🔍 Datos agrupados por IP:', historial);
 
-        this.calcularTotalPorIp(); // Mantienes tu lógica actual
-      },
-      error: (err) => console.error('❌ Error al obtener datos:', err),
+      this.calcularTotalPorIp(); // Clasifica y guarda todo por equipo
+    },
+    error: (err) => console.error('❌ Error al obtener datos:', err),
+  });
+}
+
+calcularTotalPorIp(): void {
+  for (const ip in this.datosAgrupadosPorIp) {
+    const registros = this.datosAgrupadosPorIp[ip];
+
+    const minutosActuales = registros.reduce(
+      (acc: number, reg: any) => acc + (reg.minutosEncendido || 0),
+      0
+    );
+
+    const historialSinFiltrar = this.historialHorometros[ip] || [];
+
+    const historialOrdenado = historialSinFiltrar.sort(
+      (a: any, b: any) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
+    );
+
+    const minutosHistorial = historialOrdenado.reduce(
+      (acc: number, reg: any) => acc + (reg.minutosEncendido || 0),
+      0
+    );
+
+    const totalMinutos = minutosActuales + minutosHistorial;
+
+    const horas = Math.floor(minutosActuales / 60);
+    const minutos = minutosActuales % 60;
+    const formatoActual = `${horas}h ${minutos}min`;
+
+    const horasSuma = Math.floor(totalMinutos / 60);
+    const minutosSuma = totalMinutos % 60;
+    const formatoSuma = `${horasSuma}h ${minutosSuma}min`;
+
+    const ultimaFecha = historialOrdenado[0]?.fecha
+      ? new Date(historialOrdenado[0].fecha).toLocaleString()
+      : 'Sin registro';
+
+    // Guardar en datos agrupados (opcional si lo usas en otra parte)
+    this.datosAgrupadosPorIp[ip].totalHoras = formatoActual;
+    this.datosAgrupadosPorIp[ip].totalHorasSuma = formatoSuma;
+
+    // Guardar en lista de equipos
+    this.equipos.forEach((equipo: any) => {
+      if (equipo.ip === ip) {
+        equipo.totalHoras = formatoActual;
+        equipo.totalHorasSuma = formatoSuma;
+        equipo.ultimaFechaReinicio = ultimaFecha;
+        equipo.historial = historialOrdenado;
+      }
     });
   }
-  calcularTotalPorIp(): void {
-    for (const ip in this.datosAgrupadosPorIp) {
-      const registros = this.datosAgrupadosPorIp[ip];
+}
 
-      const minutosActuales = registros.reduce(
-        (acc: number, reg: any) => acc + (reg.minutosEncendido || 0),
-        0
-      );
-
-      const historial = this.historialHorometros[ip] || [];
-      const minutosHistorial = historial.reduce(
-        (acc: number, reg: any) => acc + (reg.minutosEncendido || 0),
-        0
-      );
-
-      const totalMinutos = minutosActuales + minutosHistorial;
-
-      const horas = Math.floor(minutosActuales / 60);
-      const minutos = minutosActuales % 60;
-      const formatoActual = `${horas}h ${minutos}min`;
-
-      const horasSuma = Math.floor(totalMinutos / 60);
-      const minutosSuma = totalMinutos % 60;
-      const formatoSuma = `${horasSuma}h ${minutosSuma}min`;
-
-      console.log(
-        `🔧 IP: ${ip} | Actual: ${formatoActual} | Total Suma: ${formatoSuma}`
-      );
-
-      // Guardar en datos agrupados
-      this.datosAgrupadosPorIp[ip].totalHoras = formatoActual;
-      this.datosAgrupadosPorIp[ip].totalHorasSuma = formatoSuma;
-
-      // Guardar también en la lista de equipos
-      this.equipos.forEach((equipo: any) => {
-        if (equipo.ip === ip) {
-          equipo.totalHoras = formatoActual;
-          equipo.totalHorasSuma = formatoSuma;
-        }
-      });
-    }
-  }
 
   getDataPlc() {
     this.dataPlc.getListaEquipos().subscribe({
@@ -155,4 +165,47 @@ export class OrometroComponent implements OnInit {
       }
     });
   }
+
+  historialVisible: boolean = false;
+equipoHistorialSeleccionado: any = null;
+
+abrirHistorial(equipo: any) {
+  this.equipoHistorialSeleccionado = equipo;
+  this.historialVisible = true;
+}
+
+cerrarHistorial() {
+  this.historialVisible = false;
+}
+formatearMinutos(minutos: number): string {
+  const horas = Math.floor(minutos / 60);
+  const mins = minutos % 60;
+  return `${horas}h ${mins}min`;
+}
+formatearFechaPersonalizada(fechaStr: string): string {
+  const fecha = new Date(fechaStr);
+  const opciones: Intl.DateTimeFormatOptions = {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+  };
+
+  const formato = fecha.toLocaleDateString('es-EC', opciones);
+  const [dia, mes, anio] = formato.split(' de ');
+
+  const hora = fecha.toLocaleTimeString('es-EC', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+  });
+
+  return `${dia} de ${mes} del ${anio} a las ${hora}`;
+}
+
+
 }
