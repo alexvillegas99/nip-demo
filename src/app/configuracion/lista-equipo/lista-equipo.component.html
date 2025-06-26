@@ -109,8 +109,14 @@
 
                 <!-- IP -->
                 <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
-                    <label for="Ip">Ip:</label>
+                    <label for="ip">Ip:</label>
                     <input formControlName="ip" class="form-control" />
+                </div>
+
+                <!-- IP Equipo-->
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                    <label for="ipEquipo">Ip equipo:</label>
+                    <input formControlName="ipEquipo" class="form-control" />
                 </div>
 
                 <!-- Nombre -->
@@ -140,14 +146,8 @@
                 <!-- Imagen -->
                 <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
                     <label for="imagen">Imagen:</label>
-                    <!-- <input formControlName="imagen" class="form-control" /> -->
-                    <input type="file" id="imagen" class="form-control" (change)="onFileSelected($event)"
+                    <input type="file" id="imagen" class="form-control" (change)="onFileSelected($event, 'imagen')"
                         accept="image/*" />
-                </div>
-
-                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
-                    <img [src]="imagenPreview" alt="Vista previa de la imagen" class="img-thumbnail"
-                        style="max-width: 200px;" />
                 </div>
 
                 <!-- Campos adicionales si es variador -->
@@ -179,7 +179,8 @@
 
                 <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
                     <label for="motor">Motor:</label>
-                    <input formControlName="motor" class="form-control" />
+                    <input type="file" id="motor" class="form-control" (change)="onFileSelected($event, 'motor')"
+                        accept="image/*" />
                 </div>
                 }
             </div>

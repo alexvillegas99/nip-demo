@@ -76,19 +76,25 @@ export class ListaEquipoComponent implements OnInit {
 
   inicializarFormulario() {
     this.formDispositivo = this.fb.group({
-      tipo: new FormControl('', Validators.compose([Validators.required])),
+      tipo: new FormControl(
+        'pm',
+        Validators.compose([Validators.required])
+      ),
       ip: new FormControl('', Validators.compose([Validators.required])),
+      ipEquipo: new FormControl(''),
       nombre: new FormControl('', Validators.compose([Validators.required])),
       modelo: new FormControl('', Validators.compose([Validators.required])),
       serie: new FormControl('', Validators.compose([Validators.required])),
       area: new FormControl('', Validators.compose([Validators.required])),
       imagen: new FormControl('', Validators.compose([Validators.required])),
+      imagenBase64: new FormControl(null),
       ubicacion: new FormControl(''),
       Inom: new FormControl(''),
       Nnom: new FormControl(''),
       Pnom: new FormControl(''),
       Vnom: new FormControl(''),
       motor: new FormControl(''),
+      motorBase64: new FormControl(null),
     });
   }
 
@@ -139,9 +145,9 @@ export class ListaEquipoComponent implements OnInit {
   }
 
   abrirModal(template: TemplateRef<any>, dispositivo?: any) {
-    console.log(dispositivo);
-
     this.dipositivoSeleccionado = dispositivo ?? null;
+    console.log(dispositivo, 'dispositivo seleccionado');
+
     if (dispositivo) {
       this.formDispositivo.patchValue(dispositivo);
     } else {
@@ -190,13 +196,13 @@ export class ListaEquipoComponent implements OnInit {
         // ✅ Reabre el modal de valores con su template
         this.abrirModalValores(
           this.modalValoresTemplateRef,
-          this.valoresSeleccionados
+          this.dipositivoSeleccionado
         );
       },
       () => {
         this.abrirModalValores(
           this.modalValoresTemplateRef,
-          this.valoresSeleccionados
+          this.dipositivoSeleccionado
         );
       }
     );
@@ -216,10 +222,12 @@ export class ListaEquipoComponent implements OnInit {
   }
 
   createDevice() {
-    const data = this.formDispositivo.value;
+    console.log('Creating device...', this.formDispositivo.value);
+
+    /*const data = this.formDispositivo.value;
     if (this.dipositivoSeleccionado) {
       this.alert
-        .customAlertSweet('question', '¿Deseas actualizar este usuario?')
+        .customAlertSweet('question', '¿Deseas actualizar este dispositivo?')
         .then((ok) => {
           if (!ok) return;
 
@@ -229,13 +237,13 @@ export class ListaEquipoComponent implements OnInit {
               next: (response) => {
                 this.alert.showToast(
                   'success',
-                  'Usuario actualizado correctamente'
+                  'Dispositivo actualizado correctamente'
                 );
                 this.getDevices();
                 this.modalDispositivoRef?.hide();
               },
               error: (error) => {
-                console.log(error);
+                console.error(error);
                 this.alert.showToast(
                   'error',
                   'Error al actualizar el dispositivo'
@@ -244,32 +252,27 @@ export class ListaEquipoComponent implements OnInit {
             });
         });
     } else {
-      console.log(data, 'data para crear dispositivo....');
-
       this._listaEquiposService.createDevice(data).subscribe({
         next: (response) => {
-          console.log(response);
-          this.alert.showToast('success', 'Usuario creado correctamente');
+          this.alert.showToast('success', 'Dispositivo creado correctamente');
           this.getDevices();
           this.modalDispositivoRef?.hide();
         },
         error: (error) => {
-          console.log(error);
+          console.error(error);
           this.alert.showToast('error', 'Error al crear el dispositivo');
         },
       });
-    }
+    }*/
   }
 
   textoFiltrado(event: any) {
-    console.log(event, 'textoFiltrado....');
     this.listaDispositivoFiltrada = this.listaDispositivo.filter((item: any) =>
       item.nombre.toLowerCase().includes(event.toLowerCase())
     );
   }
 
   opcionSeleccionada(event: any) {
-    console.log(event, 'opcionSeleccionada....');
     this.listaDispositivoFiltrada = this.listaDispositivo.filter((item: any) =>
       item.tipo.toLowerCase().includes(event.toLowerCase())
     );
@@ -279,11 +282,6 @@ export class ListaEquipoComponent implements OnInit {
     if (valorEditar) {
       this.valorSeleccionado = valorEditar;
       this.formValores.patchValue(valorEditar);
-      console.log(
-        this.dipositivoSeleccionado,
-        'valorSeleccionado....',
-        this.valorSeleccionado
-      );
     }
 
     this.modalAgregarValoresRef = this._modalService.open(template, {
@@ -293,8 +291,6 @@ export class ListaEquipoComponent implements OnInit {
     });
     this.modalAgregarValoresRef.result.then(
       (result: any) => {
-        console.log(result, 'data uptdate....');
-
         // Abrir modal 1 de nuevo cuando se cierre el modal 2
         /*if (this.modal1Referencia) {
           this.openModal1(this.modal1Referencia); // Reemplaza `content1` con el contenido del modal 1
@@ -310,12 +306,6 @@ export class ListaEquipoComponent implements OnInit {
   }
 
   crearValor(dipositivo: any) {
-    console.log(
-      this.formValores.value,
-      'crearValor....',
-      this.dipositivoSeleccionado
-    );
-
     const data = this.formValores.value;
 
     this._listaEquiposService.createDevice(data).subscribe({
@@ -325,20 +315,28 @@ export class ListaEquipoComponent implements OnInit {
         this.modalValoresRef?.hide();
       },
       error: (error) => {
-        console.log(error);
+        console.error(error);
         this.alert.showToast('error', 'Error al crear el valor');
       },
     });
   }
 
   editarValor(dipositivo: any) {
-    const data = this.formValores.value;
-    data._id = this.valorSeleccionado._id;
+    const Description = this.valorSeleccionado.Description;
+    const newDescription = this.formValores.value.Description;
 
-    console.log(this.valorSeleccionado._id, 'editarValor....', data);
+    const json = {
+      data: [
+        {
+          ...this.formValores.value,
+          newDescription,
+          Description,
+        },
+      ],
+    };
 
     this._listaEquiposService
-      .updateValor(this.dipositivoSeleccionado._id, data)
+      .updateValor(this.dipositivoSeleccionado._id, json)
       .subscribe({
         next: (response) => {
           this.alert.showToast('success', 'Valor editado correctamente');
@@ -346,14 +344,14 @@ export class ListaEquipoComponent implements OnInit {
           this.modalValoresRef?.hide();
         },
         error: (error) => {
-          console.log(error);
+          console.error(error);
           this.alert.showToast('error', 'Error al editar el valor');
         },
       });
   }
 
-  abrirModalRangos(template: TemplateRef<any>, data?: any) {    
-    if (data) {
+  abrirModalRangos(template: TemplateRef<any>, data?: any) {
+    if (data.rango) {
       this.dataSeleccionada = data;
       this.formRangos.patchValue(data.rango);
     } else {
@@ -385,12 +383,11 @@ export class ListaEquipoComponent implements OnInit {
     const json = {
       data: [
         {
-          ...dataEditar
-        }
-      ]
-    }
-    console.log(json, 'editarRango....', this.dipositivoSeleccionado);
-    
+          ...dataEditar,
+        },
+      ],
+    };
+
     this._listaEquiposService
       .updateValor(this.dipositivoSeleccionado._id, json)
       .subscribe({
@@ -400,21 +397,36 @@ export class ListaEquipoComponent implements OnInit {
           this.modalRangosRef?.hide();
         },
         error: (error) => {
-          console.log(error);
+          console.error(error);
           this.alert.showToast('error', 'Error al editar el valor');
         },
       });
   }
 
-  onFileSelected(event: Event): void {
+  onFileSelected(event: Event, opcion: 'imagen' | 'motor') {    
     const input = event.target as HTMLInputElement;
-    if (!input.files || input.files.length === 0) return;
+
+    // Validar si el usuario canceló la selección
+    if (!input.files || input.files.length === 0) {
+      // Limpiar campo si es necesario
+      if (opcion === 'imagen') {
+        this.formDispositivo.get('imagenBase64')?.reset();
+      } else if (opcion === 'motor') {
+        this.formDispositivo.get('motorBase64')?.reset();
+      }
+
+      return;
+    }
 
     const file = input.files[0];
     const reader = new FileReader();
 
     reader.onload = () => {
-      this.imagenPreview = reader.result;
+      if (opcion === 'imagen') {
+        this.formDispositivo.get('imagenBase64')?.setValue(reader.result);
+      } else if (opcion === 'motor') {
+        this.formDispositivo.get('motorBase64')?.setValue(reader.result);
+      }
     };
 
     reader.readAsDataURL(file);
