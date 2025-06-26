@@ -94,7 +94,6 @@
     </div>
 </div>
 
-
 <ng-template #modalDispositivo let-modal>
     <form [formGroup]="formDispositivo">
         <div class="modal-body">
@@ -145,7 +144,14 @@
                 <!-- Imagen -->
                 <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
                     <label for="imagen">Imagen:</label>
-                    <input formControlName="imagen" class="form-control" />
+                    <!-- <input formControlName="imagen" class="form-control" /> -->
+                    <input type="file" id="imagen" class="form-control" (change)="onFileSelected($event)"
+                        accept="image/*" />
+                </div>
+
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                    <img [src]="imagenPreview" alt="Vista previa de la imagen" class="img-thumbnail"
+                        style="max-width: 200px;" />
                 </div>
 
                 <!-- Campos adicionales si es variador -->

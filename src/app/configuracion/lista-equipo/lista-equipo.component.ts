@@ -64,6 +64,8 @@ export class ListaEquipoComponent implements OnInit {
   valoresSeleccionados!: any;
   valorSeleccionado!: any;
 
+  imagenPreview: string | ArrayBuffer | null = null;
+
   ngOnInit(): void {
     this.getDevices();
     this.inicializarFormulario();
@@ -372,6 +374,20 @@ export class ListaEquipoComponent implements OnInit {
           this.alert.showToast('error', 'Error al editar el valor');
         },
       });
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) return;
+
+    const file = input.files[0];
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      this.imagenPreview = reader.result;
+    };
+
+    reader.readAsDataURL(file);
   }
 
   // bajo tolerable // bajo
