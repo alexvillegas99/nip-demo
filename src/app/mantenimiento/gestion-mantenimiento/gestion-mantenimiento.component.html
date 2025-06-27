@@ -1,8 +1,12 @@
-<div class="flex-container">
-  <div class="item">
-    <h1>GESTIÓN DE MANTENIMIENTO</h1>
-  </div>
-  <div class="item"></div>
+<div class="flex-container-cabecera">
+  <h1>GESTIÓN DE MANTENIMIENTO</h1>
+
+  <!-- @if (menu[0].active) {
+    <h2>Lista de Pedidos</h2>
+    } -->
+  @if (menu[0].active) {
+  <h2>Lista de Tareas</h2>
+  }
 </div>
 
 <div class="flex">
@@ -24,33 +28,20 @@
       Filtrar por
     </button>
 
-   <!--  @if (menu[0].active) {
+    <!--  @if (menu[0].active) {
     <button type="button" class="btn boton-1" (click)="abrirModalPedidos(crear_pedido_modal)">
       <i class="fa fa-plus" aria-hidden="true"></i> Crear nuevo pedido
     </button>
     }
  -->
     @if (menu[0].active) {
-    <button 
-    [appDisableForRoles]="['Superadministrador', 'Administrador']" [appDisableForRolesPermisos]="['crear']" 
-    type="button" class="btn boton-1 " (click)="modalNuevaTarea(content1)">
+    <button [appDisableForRoles]="['Superadministrador', 'Administrador']" [appDisableForRolesPermisos]="['crear']"
+      type="button" class="btn boton-1 " (click)="modalNuevaTarea(content1)">
       <i class="fa fa-plus" aria-hidden="true"></i> Crear nueva tarea
     </button>
     }
 
   </div>
-</div>
-
-<div class="flex">
-  <div class="item">
-  <!--   @if (menu[0].active) {
-    <h2>Lista de Pedidos</h2>
-    } -->
-    @if (menu[0].active) {
-    <h2>Lista de Tareas</h2>
-    }
-  </div>
-  <div class="item"></div>
 </div>
 
 <div class="filters">
@@ -64,7 +55,6 @@
   </div>
 </div>
 
-<div class="container-tabla">
 <!--   @if (menu[0].active) {
   <div class="table-responsive">
     <table class="table align-middle table-bordered table-bordered-sides">
@@ -108,45 +98,85 @@
 
   </div>
   } -->
-  @if (menu[0].active) {
-  <div class="table-responsive">
-    <table class="table align-middle table-bordered table-bordered-sides">
-      <thead>
-        <tr>
-          @for (header of headers_tareas; track $index) {
-          <th>{{ header | uppercase }}</th>
-          }
-        </tr>
-      </thead>
-      <tbody>
-        @for (tarea of tareas; track $index) {
-        <tr>
-          <td>{{ tarea.titulo }}</td>
-          <td>{{ tarea.descripcion }}</td>
-          <td>{{ tarea.actividades.length }}</td>
-          <!-- <td
-            [ngClass]="{'prioridad-alta': tarea.prioridad==='Alta', 'prioridad-media': tarea.prioridad==='Media' ,'prioridad-baja':  tarea.prioridad==='Baja'}">
-            {{tarea.prioridad}}
-          </td> -->
-          <td>{{ tarea.createdAt | date: 'dd/MM/yyyy' }}</td>
-          <td style="display: flex; flex-direction: row; align-items: center; justify-content: center; gap: .5rem;">
-            <button  [appDisableForRoles]="['Superadministrador', 'Administrador', 'Operador']" [appDisableForRolesPermisos]="['leer']" class="btn btn-cancel" title="Visualizar" (click)="seleccionarTarea(tarea, content1)"
-              style="color: #191D23;">
-              <i class="fa fa-eye" aria-hidden="true"></i>
-            </button>
-            <button  [appDisableForRoles]="['Superadministrador', 'Administrador']" [appDisableForRolesPermisos]="['eliminar']" class="btn btn-cancel" title="Eliminar" (click)="eliminarTarea(tarea._id)"
-              style="color: #191D23;margin-left: 5px">
-              <i class="fa fa-trash" aria-hidden="true"></i>
-            </button>
-          </td>
-        </tr>
+@if (menu[0].active) {
+<div class="table-responsive d-none d-lg-block mt-2">
+  <table class="table align-middle table-bordered table-bordered-sides">
+    <thead>
+      <tr>
+        @for (header of headers_tareas; track $index) {
+        <th>{{ header | uppercase }}</th>
         }
-      </tbody>
+      </tr>
+    </thead>
+    <tbody>
+      @for (tarea of tareas; track $index) {
+      <tr>
+        <td>{{ tarea.titulo }}</td>
+        <td>{{ tarea.descripcion }}</td>
+        <td>{{ tarea.actividades.length }}</td>
+        <!-- <td
+                [ngClass]="{'prioridad-alta': tarea.prioridad==='Alta', 'prioridad-media': tarea.prioridad==='Media' ,'prioridad-baja':  tarea.prioridad==='Baja'}">
+                {{tarea.prioridad}}
+              </td> -->
+        <td>{{ tarea.createdAt | date: 'dd/MM/yyyy' }}</td>
+        <td style="display: flex; flex-direction: row; align-items: center; justify-content: center; gap: .5rem;">
+          <button [appDisableForRoles]="['Superadministrador', 'Administrador', 'Operador']"
+            [appDisableForRolesPermisos]="['leer']" class="btn btn-cancel" title="Visualizar"
+            (click)="seleccionarTarea(tarea, content1)" style="color: #191D23;">
+            <i class="fa fa-eye" aria-hidden="true"></i>
+          </button>
+          <button [appDisableForRoles]="['Superadministrador', 'Administrador']"
+            [appDisableForRolesPermisos]="['eliminar']" class="btn btn-cancel" title="Eliminar"
+            (click)="eliminarTarea(tarea._id)" style="color: #191D23;margin-left: 5px">
+            <i class="fa fa-trash" aria-hidden="true"></i>
+          </button>
+        </td>
+      </tr>
+      }
+    </tbody>
 
-    </table>
+  </table>
+</div>
+}
+
+
+<!-- CARD RESPONSIVE -->
+<div class="d-lg-none mt-3">
+  <div class="row gy-3">
+    @for (item of tareas; track item) {
+    <div
+      class="col-xxl-2 offset-xxl-8 col-xl-8 offset-xl-2 col-lg-8 offset-lg-2  col-md-8 offset-md-2 col-sm-10 offset-sm-1 col-12">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <div class="d-flex align-items-start">
+            <div style="padding: 1rem;">
+              <div class="mb-1"><strong>Titulo:</strong> {{ item.titulo }}</div>
+              <div class="mb-1"><strong>Descripción:</strong> {{ item.descripcion }}</div>
+              <div class="mb-1"><strong>Tareas Asociadas:</strong> {{ item.actividades.length }}</div>
+              <div class="mb-1"><strong>Fecha:</strong> {{ item.createdAt | date: 'dd/MM/yyyy' }}</div>
+            </div>
+          </div>
+          <div class="d-flex justify-content-between gap-2 mb-2">
+            <div class="div-6">
+              <button [appDisableForRoles]="['Superadministrador', 'Administrador', 'Operador']"
+                [appDisableForRolesPermisos]="['leer']" class="btn btn-cancel" title="Visualizar"
+                (click)="seleccionarTarea(item, content1)" style="color: #191D23;">
+                <i class="fa fa-eye" aria-hidden="true"></i>
+              </button>
+            </div>
+            <div class="div-6">
+              <button [appDisableForRoles]="['Superadministrador', 'Administrador']"
+                [appDisableForRolesPermisos]="['eliminar']" class="btn btn-cancel me-2" title="Eliminar"
+                (click)="eliminarTarea(item._id)" style="color: #191D23;margin-left: 5px">
+                <i class="fa fa-trash" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    }
   </div>
-
-  }
 </div>
 
 <ng-template #crear_pedido_modal>
@@ -336,7 +366,9 @@
           (click)="guardarTarea()">
           Guardar
         </button>
-        <button [appDisableForRoles]="['Superadministrador', 'Administrador']" [appDisableForRolesPermisos]="['actualizar']" class="btn btn-cancel" title="Visualizar" type="submit" class="btn btn-primary" *ngIf="tareaSeleccionada" (click)="editarTarea()">
+        <button [appDisableForRoles]="['Superadministrador', 'Administrador']"
+          [appDisableForRolesPermisos]="['actualizar']" class="btn btn-cancel" title="Visualizar" type="submit"
+          class="btn btn-primary" *ngIf="tareaSeleccionada" (click)="editarTarea()">
           Editar
         </button>
       </div>
@@ -345,7 +377,9 @@
     <div class="card">
       <div class="card-body">
         <div class="button" style="margin: 5px 0px">
-          <button [appDisableForRoles]="['Superadministrador', 'Administrador']" [appDisableForRolesPermisos]="['crear']" class="btn btn-cancel" title="Visualizar" class="btn btn-primary" (click)="openModal2(content2)">
+          <button [appDisableForRoles]="['Superadministrador', 'Administrador']"
+            [appDisableForRolesPermisos]="['crear']" class="btn btn-cancel" title="Visualizar" class="btn btn-primary"
+            (click)="openModal2(content2)">
             <i class="fa fa-plus" aria-hidden="true"></i> Agregar actividades
           </button>
         </div>
@@ -369,9 +403,9 @@
                 <td>{{ tarea_asociada.duracionEstimada }}</td>
                 <td>
                   <label class="switch">
-                    <input 
-                      [appDisableForRoles]="['Superadministrador', 'Administrador']" [appDisableForRolesPermisos]="['actualizar']"
-                      type="checkbox" (change)="onEstadoChange(tarea_asociada, tareaSeleccionada)"
+                    <input [appDisableForRoles]="['Superadministrador', 'Administrador']"
+                      [appDisableForRolesPermisos]="['actualizar']" type="checkbox"
+                      (change)="onEstadoChange(tarea_asociada, tareaSeleccionada)"
                       [(ngModel)]="tarea_asociada.estado" />
                     <div class="slider">
                       <div class="circle">
@@ -404,15 +438,13 @@
                     align-items: center;
                     gap: 0.5rem;
                   ">
-                  <button 
-                    [appDisableForRoles]="['Superadministrador', 'Administrador']" [appDisableForRolesPermisos]="['eliminar']"
-                    type="button" class="btn btn-danger" title="Eliminar tarea"
-                    (click)="eliminarSubTarea($index, tareaSeleccionada)">
+                  <button [appDisableForRoles]="['Superadministrador', 'Administrador']"
+                    [appDisableForRolesPermisos]="['eliminar']" type="button" class="btn btn-danger"
+                    title="Eliminar tarea" (click)="eliminarSubTarea($index, tareaSeleccionada)">
                     <i class="fa fa-trash" aria-hidden="true"></i>
                   </button>
-                  <button 
-                    [appDisableForRoles]="['Superadministrador', 'Administrador']" [appDisableForRolesPermisos]="['actualizar']"
-                    class="btn btn-primary" title="Editar" (click)="openModal2(content2,tarea_asociada, $index ); modal.close()
+                  <button [appDisableForRoles]="['Superadministrador', 'Administrador']"
+                    [appDisableForRolesPermisos]="['actualizar']" class="btn btn-primary" title="Editar" (click)="openModal2(content2,tarea_asociada, $index ); modal.close()
                     ">
                     <i class="fa fa-pencil" aria-hidden="true"></i>
                   </button>
@@ -484,8 +516,8 @@
           <i class="fa fa-floppy-o" aria-hidden="true"></i> Guardar
         </button>
 
-        <button class="btn btn-primary" title="Editar"
-          [appDisableForRoles]="['Superadministrador', 'Administrador']" [appDisableForRolesPermisos]="['actualizar']" 
+        <button class="btn btn-primary" title="Editar" [appDisableForRoles]="['Superadministrador', 'Administrador']"
+          [appDisableForRolesPermisos]="['actualizar']"
           (click)="guardarSubTareaEditada(); this.subTareaSeleccionada = null;" *ngIf="subTareaSeleccionada"
           [disabled]="formActividades.invalid">
           <i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar

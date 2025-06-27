@@ -1,12 +1,97 @@
+<div class="flex-container-cabecera">
+    <h1>GESTIÓN DE PERFILES</h1>
+    <h2>Lista de perfiles</h2>
+</div>
+
 <div class="filters" style="margin-top: 1rem;">
     <div class="item">
         <!-- <app-search [label]="'Buscar por nombre'" (searchText)="textoFiltrado($event)"></app-search> -->
     </div>
 
     <div class="item">
-        <button [appDisableForRoles]="['Superadministrador', 'Administrador']" [appDisableForRolesPermisos]="['crear']"  type="button" class="btn boton-1 " (click)="abrirModal(modalPermiso)">
+        <button [appDisableForRoles]="['Superadministrador', 'Administrador']" [appDisableForRolesPermisos]="['crear']"
+            type="button" class="btn boton-1 " (click)="abrirModal(modalPermiso)">
             <i class="fa fa-plus" aria-hidden="true"></i> Crear nuevo perfil
         </button>
+    </div>
+</div>
+
+<div class="table-responsive d-none d-lg-block mt-2">
+    <table class="table align-middle table-bordered table-bordered-sides">
+        <thead>
+            <tr>
+                <th>PERFIL</th>
+                <th>PERMISOS</th>
+                <th>ACCIONES</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @for(item of perfiles; track item)
+            {
+            <tr>
+                <td>
+                    <h5> {{item.nombre}} </h5>
+                </td>
+
+                <td>
+                    @for (permiso of item.permisos; track $index) {
+                        @if(permiso.estado) {
+                        <p>{{permiso.descripcion}}</p>
+                        }
+                    }
+                </td>
+
+                <td>
+                    <button [appDisableForRoles]="['Superadministrador', 'Administrador']"
+                        [appDisableForRolesPermisos]="['actualizar']" class="btn btn-primary"
+                        (click)="abrirModal(modalDispositivo, item)">
+                        Editar
+                    </button>
+
+                    <p></p>
+
+
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- CARD RESPONSIVE -->
+<div class="d-lg-none mt-3">
+    <div class="row gy-3">
+        @for (item of perfiles; track item) {
+        <div class="col-xxl-2 offset-xxl-8 col-xl-8 offset-xl-2 col-lg-8 offset-lg-2  col-md-8 offset-md-2 col-sm-10 offset-sm-1 col-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-start">
+                        <div>
+                            <div class="mb-1"><strong>PERFIL:</strong> {{ item.nombre }}</div>
+                            <div class="mb-1 row"><strong>PERMISOS:</strong>
+                                @for (permiso of item.permisos; track $index) {
+                                    <div class="col-4">
+                                    @if(permiso.estado) {
+                                        <p>{{permiso.descripcion}}</p>
+                                    }
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between mt-3">
+                        <button [appDisableForRoles]="['Superadministrador', 'Administrador']"
+                            [appDisableForRolesPermisos]="['actualizar']" class="btn btn-primary"
+                            (click)="abrirModal(modalDispositivo, item)">
+                            Editar
+                        </button>
+                    <p></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        }
     </div>
 </div>
 
@@ -26,83 +111,31 @@
     </form>
 </ng-template>
 
-<div style="margin-top: 1rem;" class="row"></div>
-
-<div class="container-tabla">
-    <div class="table-responsive">
-        <table class="table align-middle table-bordered table-bordered-sides">
-            <thead>
-                <tr>
-                    <th>PERFIL</th>
-                    <th>PERMISOS</th>
-                    <th>ACCIONES</th>
-
-                </tr>
-            </thead>
-            <tbody>
-                @for(item of perfiles; track item)
-                {
-                <tr>
-                    <td>
-                        <h5> {{item.nombre}} </h5>
-                    </td>
-
-                    <td>
-                        @for (permiso of item.permisos; track $index) {
-                            @if(permiso.estado) {
-                                <p>{{permiso.descripcion}}</p>
-                            }                        
-                        }
-                    </td>
-
-                    <td>
-                        <button [appDisableForRoles]="['Superadministrador', 'Administrador']" [appDisableForRolesPermisos]="['actualizar']"  class="btn btn-primary" (click)="abrirModal(modalDispositivo, item)">
-                            Editar
-                        </button>
-
-                        <p></p>
-
-
-                    </td>
-                </tr>
-                }
-
-
-            </tbody>
-        </table>
-    </div>
-</div>
-
-
 <ng-template #modalDispositivo let-modal>
     <form [formGroup]="formPermiso">
         <div class="modal-body">
             <h4>{{ perfilSeleccionado ? "Editar Permiso" : "Nuevo Permiso" }}</h4>
- 
+
             <div class="row">
                 <div class="form-group">
                     <label for="nombre">Nombre:</label>
                     <input formControlName="nombre" class="form-control" />
-                </div>    
+                </div>
             </div>
 
             <h1></h1>
 
             <div class="row">
                 @for (item of perfilSeleccionado.permisos; track $index) {
-                    <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12 col-12 mb-2">
-                        <div class="item-group">
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" 
-                                    [checked]="item.estado"
-                                    [(value)]="item.estado"
-                                    (change)="checkModulo(item)" 
-                                    type="checkbox"
-                                    [name]="item.descripcion" />
-                                <label class="form-check-label"> {{item.descripcion}} </label>
-                            </div>
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12 col-12 mb-2">
+                    <div class="item-group">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" [checked]="item.estado" [(value)]="item.estado"
+                                (change)="checkModulo(item)" type="checkbox" [name]="item.descripcion" />
+                            <label class="form-check-label"> {{item.descripcion}} </label>
                         </div>
                     </div>
+                </div>
                 }
             </div>
 
@@ -113,13 +146,17 @@
             </button>
 
             @if (perfilSeleccionado) {
-                <button [appDisableForRoles]="['Superadministrador', 'Administrador']" [appDisableForRolesPermisos]="['actualizar']"  class="btn btn-primary" [disabled]="formPermiso.invalid" (click)="editarPermiso()">
-                    Guardar
-                </button>
+            <button [appDisableForRoles]="['Superadministrador', 'Administrador']"
+                [appDisableForRolesPermisos]="['actualizar']" class="btn btn-primary" [disabled]="formPermiso.invalid"
+                (click)="editarPermiso()">
+                Guardar
+            </button>
             } @else {
-                <button [appDisableForRoles]="['Superadministrador', 'Administrador']" [appDisableForRolesPermisos]="['crear']"  class="btn btn-primary" [disabled]="formPermiso.invalid" (click)="createPermiso()">
-                    Guardar
-                </button>
+            <button [appDisableForRoles]="['Superadministrador', 'Administrador']"
+                [appDisableForRolesPermisos]="['crear']" class="btn btn-primary" [disabled]="formPermiso.invalid"
+                (click)="createPermiso()">
+                Guardar
+            </button>
             }
         </div>
     </form>

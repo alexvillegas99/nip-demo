@@ -1,26 +1,13 @@
 <div class="container-fluid">
-  <div class="flex-container">
-    <div class="item">
-      <h1>MONITOREO</h1>
-    </div>
-    <div class="item"></div>
+
+  <div class="flex-container-cabecera">
+    <h1>MONITOREO</h1>
+    <h2>{{this.id === 'medidores' ? 'Medidores de energia' :'variadores de frecuencia' }} añadidos</h2>
   </div>
 
   <div class="flex-container">
     <div class="item">
-      <h2>{{this.id === 'medidores' ? 'Medidores de energia' :'variadores de frecuencia'  }} añadidos</h2>
-    </div>
-    <div class="item">
-      <button class="btn btn-light boton-2" type="button">
-        <img src="assets/imgs/icons/filter.svg" alt="icon_filter" />
-        Filtrar por
-      </button>
-    </div>
-  </div>
-
-  <div class="flex-container">
-    <div class="item">
-      <h1>Lista de {{ this.id === 'medidores' ? 'medidores de energia':'variadores de frecuencia'  }}</h1>
+      <h1>Lista de {{ this.id === 'medidores' ? 'medidores de energia':'variadores de frecuencia' }}</h1>
     </div>
     <div class="item"></div>
   </div>
@@ -39,7 +26,7 @@
             <div class="info-1">
 
               <h1>{{ this.id === "variadores" ? "Variadores de frecuencia" : "Medidores de energía" }}:</h1>
-              <h2>{{ item.nombre }}</h2> 
+              <h2>{{ item.nombre }}</h2>
 
               <p>
                 <img src="assets/imgs/icons/clock.svg" alt="img_clock" style="margin-right: 0.4rem" />{{ fechaActual |

@@ -45,6 +45,7 @@ $color-hover: #F8F8F9;
 $color-letra-header: #666E7D;
 $color-letra-row: #4B4B4B;
 
+$tamano-titulo: 22px;
 $tamano-fuente-1: 14px;
 $tamano-fuente-2: 12px;
 $tamano-fuente-3: 10px;
@@ -406,4 +407,19 @@ tbody tr td{
   align-items: center;
   flex-wrap: wrap;
   gap: 1rem;
+}
+
+.flex-container-cabecera {
+  h1 {
+    font-size: $tamano-titulo;
+    font-weight: 600;
+    text-align: center;
+    color: $color-texto-2;
+  }
+  h2 {
+    font-size: $tamano-fuente-1;
+    font-weight: 400;
+    text-align: center;
+    color: $color-texto-2;
+  }
 }

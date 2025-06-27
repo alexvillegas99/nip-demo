@@ -1,3 +1,8 @@
+<div class="flex-container-cabecera">
+    <h1>GESTIÓN DE EQUIPOS</h1>
+    <h2>Lista de equipos</h2>
+</div>
+
 <div class="filters">
     <div class="item">
         <app-search [label]="'Buscar por nombre'" (searchText)="textoFiltrado($event)"></app-search>
@@ -62,7 +67,7 @@
 <div class="d-lg-none">
     <div class="row gy-3">
         @for (item of listaDispositivoFiltrada; track item) {
-        <div class="col-12">
+        <div class="col-xxl-2 offset-xxl-8 col-xl-8 offset-xl-2 col-lg-8 offset-lg-2  col-md-8 offset-md-2 col-sm-10 offset-sm-1 col-12">
             <div class="card shadow-sm">
                 <div class="card-body">
                     <div class="d-flex align-items-start">
@@ -197,7 +202,6 @@
     </form>
 </ng-template>
 
-
 <ng-template #modalValores let-modal>
     <div class="container" style="margin-top: 2rem;">
         <div class="row">
@@ -264,7 +268,7 @@
 <ng-template #modalAgregarValores let-modal>
     <form [formGroup]="formValores">
         <div class="modal-body">
-            <h4>{{ dipositivoSeleccionado ? "Editar Valor" : "Nuevo Valor" }}</h4>
+            <h4>{{ valorSeleccionado ? "Editar Valor" : "Nuevo Valor" }}</h4>
 
             <div class="form-group">
                 <label for="Description">Descripción:</label>

@@ -76,17 +76,14 @@ export class ListaEquipoComponent implements OnInit {
 
   inicializarFormulario() {
     this.formDispositivo = this.fb.group({
-      tipo: new FormControl(
-        'pm',
-        Validators.compose([Validators.required])
-      ),
+      tipo: new FormControl('pm', Validators.compose([Validators.required])),
       ip: new FormControl('', Validators.compose([Validators.required])),
       ipEquipo: new FormControl(''),
       nombre: new FormControl('', Validators.compose([Validators.required])),
       modelo: new FormControl('', Validators.compose([Validators.required])),
       serie: new FormControl('', Validators.compose([Validators.required])),
       area: new FormControl('', Validators.compose([Validators.required])),
-      imagen: new FormControl('', Validators.compose([Validators.required])),
+      imagen: new FormControl(''),
       imagenBase64: new FormControl(null),
       ubicacion: new FormControl(''),
       Inom: new FormControl(''),
@@ -224,7 +221,7 @@ export class ListaEquipoComponent implements OnInit {
   createDevice() {
     console.log('Creating device...', this.formDispositivo.value);
 
-    /*const data = this.formDispositivo.value;
+    const data = this.formDispositivo.value;
     if (this.dipositivoSeleccionado) {
       this.alert
         .customAlertSweet('question', '¿Deseas actualizar este dispositivo?')
@@ -240,6 +237,7 @@ export class ListaEquipoComponent implements OnInit {
                   'Dispositivo actualizado correctamente'
                 );
                 this.getDevices();
+                this.formDispositivo.reset();
                 this.modalDispositivoRef?.hide();
               },
               error: (error) => {
@@ -263,7 +261,7 @@ export class ListaEquipoComponent implements OnInit {
           this.alert.showToast('error', 'Error al crear el dispositivo');
         },
       });
-    }*/
+    }
   }
 
   textoFiltrado(event: any) {
@@ -307,12 +305,21 @@ export class ListaEquipoComponent implements OnInit {
 
   crearValor(dipositivo: any) {
     const data = this.formValores.value;
+    const json = {
+      _id: dipositivo._id,
+      data: [
+        {
+          ...data,
+        },
+      ],
+    };
+    console.log(json, 'data a enviar');
 
-    this._listaEquiposService.createDevice(data).subscribe({
+    this._listaEquiposService.createValor(json).subscribe({
       next: (response) => {
         this.alert.showToast('success', 'Valor creado correctamente');
         this.getDevices();
-        this.modalValoresRef?.hide();
+        this.modalAgregarValoresRef?.close();
       },
       error: (error) => {
         console.error(error);
@@ -341,7 +348,7 @@ export class ListaEquipoComponent implements OnInit {
         next: (response) => {
           this.alert.showToast('success', 'Valor editado correctamente');
           this.getDevices();
-          this.modalValoresRef?.hide();
+          this.modalAgregarValoresRef?.close();
         },
         error: (error) => {
           console.error(error);
@@ -394,7 +401,7 @@ export class ListaEquipoComponent implements OnInit {
         next: (response) => {
           this.alert.showToast('success', 'Valor editado correctamente');
           this.getDevices();
-          this.modalRangosRef?.hide();
+          this.modalRangosRef?.close();
         },
         error: (error) => {
           console.error(error);
@@ -403,7 +410,7 @@ export class ListaEquipoComponent implements OnInit {
       });
   }
 
-  onFileSelected(event: Event, opcion: 'imagen' | 'motor') {    
+  onFileSelected(event: Event, opcion: 'imagen' | 'motor') {
     const input = event.target as HTMLInputElement;
 
     // Validar si el usuario canceló la selección

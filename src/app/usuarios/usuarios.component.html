@@ -1,7 +1,8 @@
-<div class="flex">
-  <div class="item">
+<div class="flex-container-cabecera">
     <h1>GESTIÓN DE USUARIOS</h1>
-  </div>
+</div>
+
+<div class="flex">
   <div class="item">
     <button [appDisableForRoles]="['Superadministrador', 'Administrador']"
       [appDisableForRolesPermisos]="['crear']" 
